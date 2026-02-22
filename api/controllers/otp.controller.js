@@ -5,7 +5,6 @@ import { generateOtp } from "../utils/generateOtp.util.js";
 import { sendMail } from "../utils/sendOtp.util.js";
 import { Otp } from "../models/Otp.model.js";
 
-
 export const sendOtp = asyncHandler(async (req, res, next) => {
     const { email } = req.body;
 
@@ -31,7 +30,6 @@ export const sendOtp = asyncHandler(async (req, res, next) => {
         message: "OTP sent successfully",
     });
 });
-
 
 export const verifyOtp = asyncHandler(async (req, res, next) => {
     const { email, otp } = req.body;

@@ -37,15 +37,24 @@ export const adminProfileThunk = createAsyncThunk(
         }
     }
 );
-
-const tokenFromStorage = localStorage.getItem("adminToken");
+export const adminLogoutThunk = createAsyncThunk(
+    "admin/logout",
+    async (_, { rejectWithValue }) => {
+        try {
+            const res = await api.post("/admin/logout");
+            return res.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message);
+        }
+    }
+);
 const initialState = {
     admin: null,
     profile: null,
     loading: false,
     error: null,
     success: false,
-    isAdminAuthenticated: !!tokenFromStorage, // true if token exists
+    isAdminAuthenticated: false,
 };
 
 // === SLICE ===
@@ -58,15 +67,14 @@ const adminSlice = createSlice({
             state.error = null;
             state.success = false;
         },
-        logoutAdmin: (state) => {
-            state.admin = null;
-            state.profile = null;
-            state.loading = false;
-            state.error = null;
-            state.success = false;
-            state.isAdminAuthenticated = false;
-            localStorage.removeItem("adminToken");
-        },
+        // logoutAdmin: (state) => {
+        //     state.admin = null;
+        //     state.profile = null;
+        //     state.loading = false;
+        //     state.error = null;
+        //     state.success = false;
+        //     state.isAdminAuthenticated = false;
+        // },
     },
     extraReducers: (builder) => {
         builder
@@ -94,12 +102,7 @@ const adminSlice = createSlice({
                 state.loading = false;
                 state.isAdminAuthenticated = true;
                 state.success = true;
-
                 state.admin = action.payload.admin ?? action.payload;
-                const token = action.payload.token;
-                if (token) {
-                    localStorage.setItem("adminToken", token);
-                }
             })
             .addCase(adminLoginThunk.rejected, (state, action) => {
                 state.loading = false;
@@ -121,6 +124,24 @@ const adminSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
                 state.isAdminAuthenticated = false;
+            })
+            // logout admin 
+            .addCase(adminLogoutThunk.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(adminLogoutThunk.fulfilled, (state) => {
+                state.loading = false;
+                state.admin = null;
+                state.profile = null;
+                state.isAdminAuthenticated = false;
+                state.success = false;
+                state.error = null;
+            })
+            .addCase(adminLogoutThunk.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+                state.isAdminAuthenticated = false;
+                state.admin = null;
             });
     },
 });

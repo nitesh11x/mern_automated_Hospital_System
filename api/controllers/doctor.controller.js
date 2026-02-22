@@ -71,7 +71,6 @@ export const registerDoctor = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 export const loginDoctor = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -114,7 +113,6 @@ export const loginDoctor = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 export const logoutDoctor = asyncHandler(async (req, res) => {
   res.cookie("doctorToken", "", {
     httpOnly: true,
@@ -126,7 +124,6 @@ export const logoutDoctor = asyncHandler(async (req, res) => {
     message: "Logged out successfully"
   });
 });
-
 
 export const doctorProfile = asyncHandler(async (req, res, next) => {
   const doctor = await Doctor.findOne({ user: req.doctor.id })
@@ -141,7 +138,6 @@ export const doctorProfile = asyncHandler(async (req, res, next) => {
     doctor
   });
 });
-
 
 export const getDoctorById = asyncHandler(async (req, res, next) => {
   const doctorId = req.params.id;
@@ -163,7 +159,6 @@ export const getDoctorById = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 export const getAllDoctor = asyncHandler(async (req, res) => {
   const doctors = await Doctor.find()
     .populate("user", "-password")
@@ -174,7 +169,6 @@ export const getAllDoctor = asyncHandler(async (req, res) => {
     doctors
   });
 });
-
 
 export const updateDoctorById = asyncHandler(async (req, res, next) => {
   const doctorId = req.params.id;
@@ -199,7 +193,6 @@ export const updateDoctorById = asyncHandler(async (req, res, next) => {
     doctor
   });
 });
-
 
 export const deleteDoctorById = asyncHandler(async (req, res, next) => {
   const doctorId = req.params.id;

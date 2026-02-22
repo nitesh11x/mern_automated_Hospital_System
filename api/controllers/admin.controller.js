@@ -150,6 +150,7 @@ export const getAllAdmin = asyncHandler(async (req, res, next) => {
     admins
   });
 });
+
 export const getAdminProfile = asyncHandler(async (req, res, next) => {
   const adminId = req.admin.id
   const admin = await Admin.findById(adminId)
@@ -163,3 +164,15 @@ export const getAdminProfile = asyncHandler(async (req, res, next) => {
     message: "adin fetch success"
   });
 });
+
+export const logoutAdmin = (req, res) => {
+  res.cookie("adminToken", "", {
+    httpOnly: true,
+    expires: new Date(0), // Set to past date to delete
+    secure: true,        // Must match how it was created
+    sameSite: "none",    // Must match how it was created
+  }).status(200).json({
+    success: true,
+    message: "Logged out successfully"
+  });
+};
