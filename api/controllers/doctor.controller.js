@@ -98,9 +98,9 @@ export const loginDoctor = asyncHandler(async (req, res, next) => {
 
   res.cookie("doctorToken", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 7 * 24 * 60 * 60 * 1000
+    secure: true,
+    sameSite: "none",
+    maxAge: process.env.MAX_AGE
   });
 
   const doctorProfile = await Doctor.findOne({ user: doctorUser._id })

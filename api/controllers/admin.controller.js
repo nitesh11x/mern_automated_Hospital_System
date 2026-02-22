@@ -71,9 +71,9 @@ export const loginAdmin = asyncHandler(async (req, res, next) => {
   );
   res.cookie("adminToken", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 7 * 24 * 60 * 60 * 1000
+    secure: true,
+    sameSite: "none",
+    maxAge: process.env.MAX_AGE
   });
 
   const safeAdmin = await Admin.findById(admin._id).select("-password");
