@@ -19,7 +19,7 @@ const Navbar = () => {
     const navLinks = [
         { name: "Home", to: "/" },
         { name: "About", to: "/about" },
-        { name: "Doctors", to: "/doctors/all" },
+        { name: "Doctors", to: "/doctor/all" },
         { name: "Contact", to: "/contact" },
     ];
 
@@ -72,6 +72,20 @@ const Navbar = () => {
                         {!isPatientAuthenticated && <Link to={'/patient/login'} className="text-sm font-semibold text-gray-700 hover:text-primary transition">
                             log In
                         </Link>}
+                        <Link
+                            to={'admin/login'}
+                            className="group flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full font-medium hover:bg-primary-dark transition shadow-lg shadow-primary/20"
+                        >
+                            Admin Login
+                            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                        <Link
+                            to={'doctor/login'}
+                            className="group flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full font-medium hover:bg-primary-dark transition shadow-lg shadow-primary/20"
+                        >
+                            Doctor Login
+                            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                        </Link>
                     </div>
                 </div>
 

@@ -13,9 +13,7 @@ const Login = () => {
     const { loading, error, isPatientAuthenticated } = useSelector(
         (state) => state.patient
     );
-
     const [showPassword, setShowPassword] = useState(false);
-
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -37,12 +35,10 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (!formData.email || !formData.password) {
             toast.error("All fields are required");
             return;
         }
-
         try {
             await dispatch(patientLoginThunk(formData)).unwrap();
             toast.success("Login successful 🎉");
