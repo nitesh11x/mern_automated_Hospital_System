@@ -1,8 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "../../utils/axios";
 
-/* ================= REGISTER ================= */
-
 export const patientRegisterThunk = createAsyncThunk(
     "patient/register",
     async (
@@ -48,8 +46,6 @@ export const patientRegisterThunk = createAsyncThunk(
     }
 );
 
-/* ================= LOGIN ================= */
-
 export const patientLoginThunk = createAsyncThunk(
     "patient/login",
     async ({ email, password }, { rejectWithValue }) => {
@@ -68,8 +64,6 @@ export const patientLoginThunk = createAsyncThunk(
     }
 );
 
-/* ================= LOGOUT ================= */
-
 export const patientLogoutThunk = createAsyncThunk(
     "patient/logout",
     async (_, { rejectWithValue }) => {
@@ -83,8 +77,6 @@ export const patientLogoutThunk = createAsyncThunk(
         }
     }
 );
-
-/* ================= SLICE ================= */
 
 const patientSlice = createSlice({
     name: "patient",
@@ -134,7 +126,7 @@ const patientSlice = createSlice({
                 state.patient = action.payload.patient;
                 state.isPatientAuthenticated = true;
                 state.error = null;
-                console.log(action.payload)
+                // console.log(action.payload)
             })
             .addCase(patientLoginThunk.rejected, (state, action) => {
                 state.loading = false;
@@ -159,5 +151,4 @@ const patientSlice = createSlice({
 });
 
 export const { clearError, resetPatientState } = patientSlice.actions;
-
 export default patientSlice.reducer;

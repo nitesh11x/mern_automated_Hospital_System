@@ -12,6 +12,15 @@ import Contact from './components/section/Contact'
 import About from './components/section/About'
 import Footer from './components/common/Footer'
 import OtpForm from './components/common/OtpForm';
+import AdminDashboard from './components/admin/AdminDashboard';
+import AdminDetail from './components/admin/AdminDetail';
+import AdminLogin from './components/admin/AdminLogin';
+import AdminProfile from './components/admin/AdminProfile';
+import AdminRegister from './components/admin/AdminRegister';
+import DoctorRegister from './components/doctor/DoctorRegister';
+import DoctorDashboard from './components/doctor/DoctorDashboard';
+import DoctorDetail from './components/doctor/DoctorDetail';
+import DoctorProfile from './components/doctor/DoctorProfile';
 
 function App() {
 
@@ -22,11 +31,11 @@ function App() {
         <Toaster position="top-right" reverseOrder />
         <Navbar />
         <Routes>
+          {/* Basic Routes  */}
           <Route path='/' element={<Hero />}></Route>
           <Route path='/about' element={<About />}></Route>
           <Route path='/contact' element={<Contact />}></Route>
           <Route path='/login' element={<OtpForm />}></Route>
-
 
           {/* patient routes  */}
           <Route path='/patient/login' element={<Login />}></Route>
@@ -35,9 +44,19 @@ function App() {
           <Route path='/patient/me' element={<Profile />}></Route>
 
           {/* doctor routes  */}
-          <Route path='/doctors/all' element={<Doctors />}></Route>
+          <Route path='/doctor/login' element={<Doctors />}></Route>
+          <Route path='/doctor/register' element={<DoctorRegister />}></Route>
+          <Route path='/doctor/dashboard' element={<DoctorDashboard />}></Route>
+          <Route path='/doctor/all' element={<Doctors />}></Route>
+          <Route path='/doctor/:id' element={<DoctorProfile />}></Route>
+          <Route path='/doctor/detail' element={<DoctorDetail />}></Route>
 
           {/* admin routes  */}
+          <Route path='/admin/login' element={<AdminLogin />}></Route >
+          <Route path='/admin/register' element={<AdminRegister />}></Route >
+          <Route path='/admin/dashboard' element={<AdminDashboard />}></Route >
+          <Route path='/admin/detail' element={<AdminDetail />}></Route >
+          <Route path='/admin/:id' element={<AdminProfile />}></Route >
 
 
           {/* appointment routes  */}
