@@ -170,6 +170,7 @@ export const deletePatientById = asyncHandler(async (req, res, next) => {
 export const updatePatientById = asyncHandler(async (req, res, next) => {
 
 })
+
 export const updatePatientStatusById = asyncHandler(async (req, res, next) => {
 
 })

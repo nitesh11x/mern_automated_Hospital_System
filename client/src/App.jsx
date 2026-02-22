@@ -1,5 +1,8 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { adminProfileThunk } from './redux/slices/admin.slice';
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Toaster } from "react-hot-toast";
 import Hero from './components/Home/Hero'
 import Navbar from './components/common/Navbar'
@@ -21,9 +24,15 @@ import DoctorRegister from './components/doctor/DoctorRegister';
 import DoctorDashboard from './components/doctor/DoctorDashboard';
 import DoctorDetail from './components/doctor/DoctorDetail';
 import DoctorProfile from './components/doctor/DoctorProfile';
+import LoginDashboard from './components/common/LoginDashboard';
+import DoctorLogin from './components/doctor/DoctorLogin';
 
 function App() {
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(adminProfileThunk());
+  }, [dispatch]);
 
   return (
     <>
@@ -36,6 +45,7 @@ function App() {
           <Route path='/about' element={<About />}></Route>
           <Route path='/contact' element={<Contact />}></Route>
           <Route path='/login' element={<OtpForm />}></Route>
+          <Route path='/management' element={<LoginDashboard />}></Route>
 
           {/* patient routes  */}
           <Route path='/patient/login' element={<Login />}></Route>
@@ -44,7 +54,7 @@ function App() {
           <Route path='/patient/me' element={<Profile />}></Route>
 
           {/* doctor routes  */}
-          <Route path='/doctor/login' element={<Doctors />}></Route>
+          <Route path='/doctor/login' element={<DoctorLogin />}></Route>
           <Route path='/doctor/register' element={<DoctorRegister />}></Route>
           <Route path='/doctor/dashboard' element={<DoctorDashboard />}></Route>
           <Route path='/doctor/all' element={<Doctors />}></Route>
