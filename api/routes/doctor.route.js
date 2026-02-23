@@ -5,11 +5,11 @@ import { isAdminAuth, isDoctorAuth } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 router.post('/register', isAdminAuth, registerDoctor)
-router.post('/login', isAdminAuth, loginDoctor)
+router.post('/login', loginDoctor)
 router.post('/logout', isDoctorAuth, logoutDoctor)
 
 router.get('/me', isDoctorAuth, doctorProfile)
-router.get('/all', isAdminAuth, getAllDoctor)
+router.get('/all', getAllDoctor)
 router.get('/:id', isAdminAuth, getDoctorById)
 
 router.put('/:id', isAdminAuth, updateDoctorById)

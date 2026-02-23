@@ -1,48 +1,85 @@
 import mongoose from "mongoose";
 
 const doctorSchema = new mongoose.Schema(
-    {
-        profile: {
-            type: String, 
-        },
-        user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Patient", 
-            required: true,
-            unique: true // usually one doctor profile per user
-        },
-        specialization: {
-            type: String,
-            trim: true
-        },
-        experience: {
-            type: Number, 
-            default: 0
-        },
-        fees: {
-            type: Number,
-            default: 0
-        },
-        bio: {
-            type: String,
-            trim: true
-        },
-        rating: {
-            type: Number,
-            default: 0
-        },
-        totalReviews: {
-            type: Number,
-            default: 0
-        },
-        availableSlots: [
-            {
-                date: Date,
-                slots: [String] // e.g. ["10:00 AM", "11:00 AM"]
-            }
-        ]
+  {
+    firstName: {
+      type: String,
+      required: true,
+      trim: true,
     },
-    { timestamps: true }
+
+    lastName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+
+    password: {
+      type: String,
+      required: true,
+      select: false,
+    },
+
+    phone: {
+      type: String,
+      required: true,
+    },
+
+    profile: {
+      url: String,
+      public_id: String,
+    },
+
+    specialization: {
+      type: String,
+      required: true,
+    },
+
+    experience: {
+      type: Number,
+      default: 0,
+    },
+
+    consultationFees: {
+      type: Number,
+      default: 0,
+    },
+
+    bio: String,
+
+    licenseNumber: String,
+
+    location: String,
+
+    languages: [String],
+
+    rating: {
+      type: Number,
+      default: 0,
+    },
+
+    totalReviews: {
+      type: Number,
+      default: 0,
+    },
+
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { timestamps: true }
 );
 
 export const Doctor = mongoose.model("Doctor", doctorSchema);

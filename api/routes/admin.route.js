@@ -15,7 +15,7 @@ import { isAdminAuth } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/register", registerAdmin);
+router.post("/register", isAdminAuth, registerAdmin);
 router.post("/login", loginAdmin);
 
 router.get("/all", isAdminAuth, getAllAdmin);
