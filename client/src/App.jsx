@@ -26,6 +26,8 @@ import DoctorDetail from './components/doctor/DoctorDetail';
 import DoctorProfile from './components/doctor/DoctorProfile';
 import LoginDashboard from './components/common/LoginDashboard';
 import DoctorLogin from './components/doctor/DoctorLogin';
+import { profileDoctorThunk } from './redux/slices/doctor.slice';
+
 
 function App() {
   const dispatch = useDispatch();
@@ -33,6 +35,9 @@ function App() {
   useEffect(() => {
     dispatch(adminProfileThunk());
   }, [dispatch]);
+  useEffect(() => {
+    dispatch(profileDoctorThunk());
+  }, []);
 
   return (
     <>
