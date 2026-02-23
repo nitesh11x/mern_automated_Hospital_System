@@ -75,38 +75,29 @@ export const registerPatient = asyncHandler(async (req, res, next) => {
 
 export const loginPatientWithPassword = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
-
   if (!email || !password) {
     return next(new ErrorHandler("Email and password required", 400));
   }
-
   const patient = await Patient.findOne({ email }).select("+password");
-
   if (!patient) {
     return next(new ErrorHandler("User not found", 404));
   }
-
   const isMatch = await patient.comparePassword(password);
-
   if (!isMatch) {
     return next(new ErrorHandler("Invalid credentials", 400));
   }
-
   const token = jwt.sign(
     { id: patient._id, role: "Patient" },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRES_IN }
   );
-
   res.cookie("patientToken", token, {
     httpOnly: true,
-    secure:true,
+    secure: true,
     sameSite: "none",
     maxAge: process.env.MAX_AGE
   });
-
   const safePatient = await Patient.findById(patient._id).select("-password");
-
   return res.status(200).json({
     success: true,
     message: "Login successful",

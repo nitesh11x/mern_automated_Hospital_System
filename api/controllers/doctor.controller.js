@@ -4,9 +4,8 @@ import mongoose from "mongoose";
 import { asyncHandler } from "../utils/asyncHandler.util.js";
 import ErrorHandler from "../utils/errorHandler.utils.js";
 import { Doctor } from "../models/Doctor.model.js";
-import { Patient } from "../models/Patient.model.js";
 import cloudinary from "cloudinary";
-
+import bcrypt from "bcryptjs";
 
 export const registerDoctor = asyncHandler(async (req, res, next) => {
   const {
@@ -17,19 +16,20 @@ export const registerDoctor = asyncHandler(async (req, res, next) => {
     phone,
     specialization,
     experience,
-    fees,
-    bio
+    consultationFees,
+    bio,
+    licenseNumber,
+    location,
+    languages,
   } = req.body;
 
-  if (!firstName || !lastName || !email || !password || !phone) {
+  if (!firstName || !lastName || !email || !password || !phone || !specialization) {
     return next(new ErrorHandler("All required fields must be provided", 400));
   }
-
-  const isExist = await Patient.findOne({ email });
+  const isExist = await Doctor.findOne({ email });
   if (isExist) {
     return next(new ErrorHandler("Doctor already registered", 400));
   }
-
   let profileData = {};
 
   if (req.files?.profile) {
@@ -43,27 +43,22 @@ export const registerDoctor = asyncHandler(async (req, res, next) => {
       public_id: result.public_id,
     };
   }
-
-  // Create Patient (user)
-  const patient = await Patient.create({
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const doctor = await Doctor.create({
     firstName,
     lastName,
     email,
-    password,
+    password: hashedPassword,
     phone,
-    role: "Doctor"
-  });
-
-  // Create Doctor Profile
-  const doctor = await Doctor.create({
-    user: patient._id,
     specialization,
     experience,
-    fees,
+    consultationFees,
     bio,
-    profile: profileData
+    licenseNumber,
+    location,
+    languages,
+    profile: profileData,
   });
-
   res.status(201).json({
     success: true,
     message: "Doctor registered successfully",
@@ -73,43 +68,35 @@ export const registerDoctor = asyncHandler(async (req, res, next) => {
 
 export const loginDoctor = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
-
   if (!email || !password) {
     return next(new ErrorHandler("Email and password required", 400));
   }
-
-  const doctorUser = await Patient.findOne({ email, role: "Doctor" }).select("+password");
-
-  if (!doctorUser) {
+  const doctor = await Doctor.findOne({ email }).select("+password");
+  if (!doctor) {
     return next(new ErrorHandler("Doctor not found", 404));
   }
-
-  const isMatch = await doctorUser.comparePassword(password);
+  const isMatch = await bcrypt.compare(password, doctor.password);
   if (!isMatch) {
     return next(new ErrorHandler("Invalid credentials", 400));
   }
-
-  const token = jwt.sign(
-    { id: doctorUser._id, role: "Doctor" },
+  const doctorToken = jwt.sign(
+    { id: doctor._id },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRES_IN }
   );
 
-  res.cookie("doctorToken", token, {
+  res.cookie("doctorToken", doctorToken, {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    maxAge: process.env.MAX_AGE
+    secure: true, // true in production (HTTPS)
+    sameSite: "none", // use "lax" if not cross-origin
+    maxAge: Number(process.env.MAX_AGE),
   });
-
-  const doctorProfile = await Doctor.findOne({ user: doctorUser._id })
-    .populate("user", "-password");
-
+  doctor.password = undefined;
   res.status(200).json({
     success: true,
     message: "Login successful",
-    doctor: doctorProfile,
-    doctorToken: token
+    doctor,
+    doctorToken,
   });
 });
 
@@ -126,13 +113,11 @@ export const logoutDoctor = asyncHandler(async (req, res) => {
 });
 
 export const doctorProfile = asyncHandler(async (req, res, next) => {
-  const doctor = await Doctor.findOne({ user: req.doctor.id })
-    .populate("user", "-password");
-
+  const doctorId = req.doctor._id
+  const doctor = await Doctor.findOne({ doctorId })
   if (!doctor) {
     return next(new ErrorHandler("Doctor not found", 404));
   }
-
   res.status(200).json({
     success: true,
     doctor
@@ -141,18 +126,10 @@ export const doctorProfile = asyncHandler(async (req, res, next) => {
 
 export const getDoctorById = asyncHandler(async (req, res, next) => {
   const doctorId = req.params.id;
-
-  if (!mongoose.Types.ObjectId.isValid(doctorId)) {
-    return next(new ErrorHandler("Invalid Doctor ID", 400));
-  }
-
   const doctor = await Doctor.findById(doctorId)
-    .populate("user", "-password");
-
   if (!doctor) {
     return next(new ErrorHandler("Doctor not found", 404));
   }
-
   res.status(200).json({
     success: true,
     doctor
@@ -161,9 +138,7 @@ export const getDoctorById = asyncHandler(async (req, res, next) => {
 
 export const getAllDoctor = asyncHandler(async (req, res) => {
   const doctors = await Doctor.find()
-    .populate("user", "-password")
-    .sort({ createdAt: -1 });
-
+  if (!doctors) return next(new ErrorHandler("doctor not found", 400))
   res.status(200).json({
     success: true,
     doctors
@@ -173,20 +148,14 @@ export const getAllDoctor = asyncHandler(async (req, res) => {
 export const updateDoctorById = asyncHandler(async (req, res, next) => {
   const doctorId = req.params.id;
 
-  if (!mongoose.Types.ObjectId.isValid(doctorId)) {
-    return next(new ErrorHandler("Invalid Doctor ID", 400));
-  }
-
   const doctor = await Doctor.findByIdAndUpdate(
     doctorId,
     req.body,
     { new: true, runValidators: true }
   );
-
   if (!doctor) {
     return next(new ErrorHandler("Doctor not found", 404));
   }
-
   res.status(200).json({
     success: true,
     message: "Doctor updated successfully",
@@ -196,17 +165,13 @@ export const updateDoctorById = asyncHandler(async (req, res, next) => {
 
 export const deleteDoctorById = asyncHandler(async (req, res, next) => {
   const doctorId = req.params.id;
-
   if (!mongoose.Types.ObjectId.isValid(doctorId)) {
     return next(new ErrorHandler("Invalid Doctor ID", 400));
   }
-
   const doctor = await Doctor.findByIdAndDelete(doctorId);
-
   if (!doctor) {
     return next(new ErrorHandler("Doctor not found", 404));
   }
-
   res.status(200).json({
     success: true,
     message: "Doctor deleted successfully"
