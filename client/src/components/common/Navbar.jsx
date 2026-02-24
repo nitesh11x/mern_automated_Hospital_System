@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 
 // Ensure these thunks are imported correctly
 import { adminLogoutThunk } from "../../redux/slices/admin.slice";
-// import { patientLogoutThunk } from "../../redux/slices/patient.slice";
+import { doctorLogoutThunk } from "../../redux/slices/doctor.slice";
 // import { doctorLogoutThunk } from "../../redux/slices/doctor.slice";
 
 const Navbar = () => {
@@ -34,7 +34,7 @@ const Navbar = () => {
                 await dispatch(adminLogoutThunk()).unwrap();
                 toast.success("Admin Logged Out");
             } else if (role === 'doctor') {
-                // await dispatch(doctorLogoutThunk()).unwrap();
+                await dispatch(doctorLogoutThunk()).unwrap();
                 toast.success("Doctor Logged Out");
             } else {
                 // await dispatch(patientLogoutThunk()).unwrap();

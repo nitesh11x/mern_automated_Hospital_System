@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 
 const AdminLogin = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { isAdminAuthenticated, loading, error } = useSelector(
     (state) => state.admin
   );
@@ -37,8 +37,7 @@ const AdminLogin = () => {
       await dispatch(adminLoginThunk({ email, password })).unwrap();
       toast.success("Login successful 🎉");
       dispatch(resetAdminState());
-
-      navigate("/admin/dashboard")
+      navigate("/admin/dashboard");
     } catch (err) {
       toast.error(err || "Login failed");
     }
@@ -52,73 +51,78 @@ const AdminLogin = () => {
   }, [error, dispatch]);
 
   return (
-    <div className="min-h-screen bg-[#0F172A] flex items-center justify-center px-6 relative overflow-hidden">
+    <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center px-6 relative overflow-hidden">
+
+      {/* Decorative background blurs */}
+      <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-5%] w-80 h-80 bg-blue-400/5 rounded-full blur-[100px] pointer-events-none" />
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-110 relative z-10"
+        className="w-full max-w-md relative z-10"
       >
         {/* Branding */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-white/5 border border-white/10 rounded-2xl mb-6 shadow-2xl">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-white border border-slate-200 rounded-2xl mb-6 shadow-xl shadow-slate-200/50">
             <ShieldAlert size={32} className="text-primary" />
           </div>
-          <h1 className="text-3xl font-black text-white tracking-tight italic">
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight italic">
             Admin<span className="text-primary">Control</span>
           </h1>
-          <p className="text-gray-400 mt-2 font-medium">
+          <p className="text-slate-500 mt-2 font-medium">
             Internal Health Systems Access
           </p>
         </div>
 
         {/* Login Card */}
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 md:p-10 rounded-[2.5rem] shadow-2xl">
+        <div className="bg-white border border-slate-100 p-8 md:p-10 rounded-[3rem] shadow-2xl shadow-slate-200/60">
           <form onSubmit={handleLogin} className="space-y-6">
 
             {/* Email */}
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">
                 Authorized Email
               </label>
               <div className="relative group">
                 <Terminal
                   size={18}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors"
                 />
                 <input
                   type="email"
                   placeholder="admin@newcare.sys"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-black/20 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-gray-600 outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all"
+                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-slate-700 placeholder:text-slate-300 outline-none focus:bg-white focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all"
                 />
               </div>
             </div>
 
             {/* Password */}
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 ml-1">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">
                 Security Secret
               </label>
               <div className="relative group">
                 <Lock
                   size={18}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors"
                 />
                 <input
                   type="password"
                   placeholder="••••••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-black/20 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-gray-600 outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all"
+                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-4 pl-12 pr-4 text-slate-700 placeholder:text-slate-300 outline-none focus:bg-white focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all"
                 />
               </div>
             </div>
 
-            {/* Biometric UI */}
+            {/* Biometric UI Notice */}
             <div className="flex items-center gap-3 p-4 bg-primary/5 border border-primary/10 rounded-2xl">
               <Fingerprint size={20} className="text-primary" />
-              <p className="text-[11px] text-gray-400 font-medium">
+              <p className="text-[11px] text-slate-500 font-medium leading-tight">
                 Biometric verification will be required after this step.
               </p>
             </div>
@@ -127,7 +131,7 @@ const AdminLogin = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary hover:bg-primary-dark text-white py-4 rounded-2xl font-black uppercase tracking-widest text-sm shadow-xl shadow-primary/20 transition-all flex items-center justify-center gap-2 group"
+              className="w-full bg-primary hover:bg-primary-dark text-white py-4 rounded-2xl font-black uppercase tracking-widest text-sm shadow-xl shadow-primary/25 transition-all flex items-center justify-center gap-2 group disabled:bg-slate-300 disabled:shadow-none"
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -144,7 +148,7 @@ const AdminLogin = () => {
           </form>
         </div>
 
-        <p className="text-center mt-8 text-gray-600 text-[10px] font-bold uppercase tracking-widest leading-loose">
+        <p className="text-center mt-8 text-slate-400 text-[10px] font-bold uppercase tracking-widest leading-loose">
           Unauthorized Access is Strictly Prohibited <br />
           All actions are logged & monitored by NewCare SecOps
         </p>

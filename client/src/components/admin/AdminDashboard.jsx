@@ -1,153 +1,139 @@
 import React from "react";
 import { motion } from "framer-motion";
 import {
-  Users,
-  UserPlus,
-  Calendar,
-  Star,
-  LogOut,
-  Activity,
-  Settings,
-  PlusCircle,
-  Stethoscope,
-  ClipboardList,
-  ShieldAlert,
-  ArrowRight
+  Users, UserPlus, Calendar, Star, LogOut, Activity,
+  Stethoscope, ClipboardList, ShieldCheck, ArrowRight,
+  Lock, Key, Eye, UserCheck, MessageSquarePlus, Edit3, ShieldAlert,
+  PlusCircle, UserMinus, Settings2, FileText
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-const SYSTEM_STATS = [
-  { label: "Total Doctors", value: "48", icon: <Stethoscope size={20} />, color: "bg-blue-500" },
-  { label: "Total Patients", value: "1,240", icon: <Users size={20} />, color: "bg-emerald-500" },
-  { label: "Appointments", value: "85", icon: <Calendar size={20} />, color: "bg-purple-500" },
-  { label: "Avg. Rating", value: "4.8", icon: <Star size={20} />, color: "bg-orange-500" },
-];
-
 const AdminDashboard = () => {
   const { isAdminAuthenticated } = useSelector((state) => state.admin);
 
-  // --- AUTHENTICATION CHECK ---
-  // If not authenticated, show a professional "Access Denied" screen
-  if (!isAdminAuthenticated) {
-    return (
-      <div className="min-h-screen bg-[#0F172A] flex items-center justify-center p-6">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md w-full bg-slate-900 border border-white/10 p-10 rounded-[3rem] text-center"
-        >
-          <div className="w-20 h-20 bg-red-500/10 text-red-500 rounded-3xl flex items-center justify-center mx-auto mb-6">
-            <ShieldAlert size={40} />
-          </div>
-          <h2 className="text-2xl font-black text-white mb-2">Access Denied</h2>
-          <p className="text-gray-500 mb-8">You must be logged in with administrative privileges to view this console.</p>
-          <Link
-            to="/admin/login"
-            className="flex items-center justify-center gap-2 w-full bg-primary text-white py-4 rounded-2xl font-bold hover:bg-primary-dark transition-all"
-          >
-            Go to Login <ArrowRight size={18} />
-          </Link>
-        </motion.div>
-      </div>
-    );
-  }
+  // If not authenticated, we return null to prevent rendering (Auth Guard handles redirect)
+  if (!isAdminAuthenticated) return null;
 
   return (
-    <div className="flex min-h-screen bg-[#0F172A] pt-16 text-gray-100">
-      {/* --- SIDEBAR --- */}
-      <aside className="w-64 bg-slate-900/50 border-r border-white/5 hidden lg:flex flex-col p-6 sticky top-16 h-[calc(100vh-64px)]">
-        <div className="mb-10 px-2">
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">System Admin</p>
-          <h2 className="text-xl font-black text-white italic">Control<span className="text-primary text-2xl">.</span></h2>
+    <div className="flex min-h-screen bg-[#F8FAFC] pt-16">
+
+      {/* SIDEBAR */}
+      <aside className="w-20 lg:w-64 bg-white border-r border-slate-200 hidden md:flex flex-col p-4 sticky top-16 h-[calc(100vh-64px)] transition-all">
+        <div className="hidden lg:block mb-10 px-2">
+          <p className="text-[10px] font-black uppercase tracking-widest text-primary">System Admin</p>
+          <h2 className="text-xl font-black text-slate-900 italic">Control.</h2>
         </div>
 
         <nav className="flex-1 space-y-2">
-          <SidebarBtn icon={<Activity size={18} />} label="Overview" active />
-          <SidebarBtn icon={<Stethoscope size={18} />} label="Manage Doctors" />
-          <SidebarBtn icon={<Users size={18} />} label="Patient Directory" />
-          <SidebarBtn icon={<ClipboardList size={18} />} label="Review Logs" />
-          <SidebarBtn icon={<Settings size={18} />} label="System Config" />
+          <SidebarBtn icon={<Activity size={20} />} label="Overview" active />
+          <SidebarBtn icon={<Stethoscope size={20} />} label="Doctors" />
+          <SidebarBtn icon={<Users size={20} />} label="Patients" />
+          <SidebarBtn icon={<Settings2 size={20} />} label="System" />
         </nav>
 
-        <button className="flex items-center gap-3 p-4 text-gray-400 hover:text-red-400 hover:bg-red-400/10 rounded-2xl transition-all mt-auto font-bold text-sm">
-          <LogOut size={18} /> Terminate Session
+        <button className="flex items-center justify-center lg:justify-start gap-3 p-3 text-slate-400 hover:text-red-500 transition-colors mt-auto font-bold">
+          <LogOut size={20} /> <span className="hidden lg:inline text-sm">Logout</span>
         </button>
       </aside>
 
-      {/* --- MAIN CONTENT --- */}
-      <main className="flex-1 p-6 lg:p-12 pb-24">
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+      {/* MAIN CONTENT */}
+      <main className="flex-1 p-4 lg:p-8 max-w-7xl mx-auto">
+        <header className="flex justify-between items-end mb-8 px-2">
           <div>
-            <h1 className="text-3xl font-black text-white">Console Overview</h1>
-            <p className="text-gray-500 text-sm mt-1">Real-time system analytics and management.</p>
+            <h1 className="text-2xl font-black text-slate-900">Console Overview</h1>
+            <p className="text-slate-500 text-xs font-medium">Global Management & Security Systems</p>
           </div>
-          <div className="flex items-center gap-3 bg-white/5 p-1 rounded-2xl border border-white/10">
-            <button className="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm shadow-lg shadow-primary/20">Live Feed</button>
-            <button className="px-6 py-2.5 text-gray-400 font-bold text-sm">Reports</button>
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100">
+            <ShieldCheck size={14} />
+            <span className="text-[10px] font-black uppercase tracking-widest">Active Protection</span>
           </div>
         </header>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {SYSTEM_STATS.map((stat, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ y: -5 }}
-              className="bg-slate-900 border border-white/5 p-6 rounded-3xl shadow-xl"
-            >
-              <div className={`${stat.color} w-10 h-10 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-black/20`}>
-                {stat.icon}
-              </div>
-              <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">{stat.label}</p>
-              <p className="text-3xl font-black text-white mt-1">{stat.value}</p>
-            </motion.div>
-          ))}
-        </div>
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
 
-        <h3 className="text-sm font-black text-gray-500 uppercase tracking-[0.2em] mb-6">Management Actions</h3>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <ActionCard title="Register Doctor" desc="Add a new specialist to the staff directory." icon={<UserPlus size={24} />} color="border-primary/20 hover:bg-primary/5" btnText="Add Now" primary />
-          <ActionCard title="Review All Doctors" desc="View, edit, or remove medical professionals." icon={<Stethoscope size={24} />} btnText="Manage List" />
-          <ActionCard title="Patient Database" desc="Access clinical records and patient history." icon={<Users size={24} />} btnText="Open Directory" />
-          <ActionCard title="Appointment Logs" desc="Track and manage all scheduled consultations." icon={<Calendar size={24} />} btnText="View Calendar" />
-          <ActionCard title="Patient Reviews" desc="Moderate feedback and service ratings." icon={<Star size={24} />} btnText="Check Reviews" />
-
-          <div className="bg-white/5 border border-dashed border-white/10 rounded-3xl flex flex-col items-center justify-center p-8 text-center group cursor-pointer hover:border-primary/50 transition-all">
-            <PlusCircle className="text-gray-600 group-hover:text-primary transition-colors mb-2" size={32} />
-            <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Custom Action</p>
+          {/* COLUMN 1: DOCTOR & STAFF */}
+          <div className="space-y-6">
+            <SectionHeader title="Staff Management" />
+            <div className="grid grid-cols-1 gap-3">
+              <MiniCard title="Register Doctor" icon={<UserPlus />} to="/doctor/register" primary />
+              <MiniCard title="View All Doctors" icon={<Stethoscope />} to="/doctor/all" />
+              <MiniCard title="Verify Credentials" icon={<UserCheck />} to="/doctor/verify" />
+              <MiniCard title="Add New Admin" icon={<Lock />} to="/admin/register" />
+            </div>
           </div>
+
+          {/* COLUMN 2: PATIENTS & CLINICAL */}
+          <div className="space-y-6">
+            <SectionHeader title="Patient & Records" />
+            <div className="grid grid-cols-1 gap-3">
+              <MiniCard title="Register Patient" icon={<PlusCircle />} to="/patient/register" />
+              <MiniCard title="View All Patients" icon={<Users />} to="/patient/all" />
+              <MiniCard title="View Appointments" icon={<Calendar />} to="/appointments" />
+              <MiniCard title="Medical Records" icon={<FileText />} to="/patient/records" />
+            </div>
+          </div>
+
+          {/* COLUMN 3: FEEDBACK & SECURITY */}
+          <div className="space-y-6">
+            <SectionHeader title="Reviews & Security" />
+            <div className="grid grid-cols-1 gap-3">
+              <MiniCard title="Add Review" icon={<MessageSquarePlus />} to="/review/add" />
+              <MiniCard title="Edit/Manage Reviews" icon={<Edit3 />} to="/review/edit" />
+              <MiniCard title="View Ratings" icon={<Star />} to="/ratings" />
+              <MiniCard title="Enable OTP / 2FA" icon={<Key />} to="/security" />
+            </div>
+          </div>
+
         </div>
+
+        {/* BOTTOM QUICK TOOLS */}
+        <section className="mt-12 p-8 bg-slate-900 rounded-[2.5rem] text-white overflow-hidden relative shadow-2xl">
+          <Activity className="absolute -right-6 -bottom-6 text-white/5" size={180} />
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+              <h4 className="text-xl font-bold mb-1">System Health</h4>
+              <p className="text-slate-400 text-sm">Security logging and server status monitoring.</p>
+            </div>
+            <div className="flex gap-4">
+              <Link to="/logs" className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl font-bold text-xs uppercase tracking-widest transition-all">View System Logs</Link>
+              <button className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-primary/30 transition-all hover:scale-105">Moderate Content</button>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );
 };
 
-// --- SUB COMPONENTS ---
+// --- HELPER COMPONENTS ---
+
+const SectionHeader = ({ title }) => (
+  <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">{title}</h3>
+);
 
 const SidebarBtn = ({ icon, label, active = false }) => (
-  <button className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold transition-all ${active ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-gray-500 hover:bg-white/5 hover:text-white"
+  <button className={`w-full flex items-center justify-center lg:justify-start gap-4 px-3 py-3 rounded-xl font-bold transition-all ${active ? "bg-primary text-white shadow-lg shadow-primary/20" : "text-slate-500 hover:bg-slate-50 hover:text-primary"
     }`}>
-    {icon} <span className="text-sm">{label}</span>
+    {icon} <span className="hidden lg:inline text-sm">{label}</span>
   </button>
 );
 
-const ActionCard = ({ title, desc, icon, btnText, primary = false, color = "border-white/5 hover:bg-white/5" }) => (
-  <motion.div
-    whileHover={{ scale: 1.02 }}
-    className={`bg-slate-900 border p-8 rounded-[2.5rem] flex flex-col items-start transition-all ${color}`}
-  >
-    <div className={`p-4 rounded-2xl mb-6 ${primary ? 'bg-primary/10 text-primary' : 'bg-white/5 text-gray-400'}`}>
-      {icon}
+const MiniCard = ({ title, icon, to, primary = false }) => (
+  <Link to={to} className="group block">
+    <div className={`flex items-center gap-4 p-4 rounded-2xl border border-slate-100 transition-all bg-white hover:border-primary/30 hover:shadow-md hover:shadow-slate-200/50 ${primary ? 'bg-primary/5 border-primary/10' : ''}`}>
+      <div className={`p-2.5 rounded-xl shrink-0 ${primary ? 'bg-primary text-white' : 'bg-slate-50 text-slate-400 group-hover:text-primary group-hover:bg-primary/10'}`}>
+        {React.cloneElement(icon, { size: 18 })}
+      </div>
+      <div className="min-w-0">
+        <p className="text-sm font-bold text-slate-900 truncate">{title}</p>
+        <div className="flex items-center gap-1 text-[9px] font-black text-primary opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-tighter">
+          Enter Module <ArrowRight size={10} />
+        </div>
+      </div>
     </div>
-    <h4 className="text-xl font-bold text-white mb-2">{title}</h4>
-    <p className="text-gray-500 text-sm leading-relaxed mb-8">{desc}</p>
-    <button className={`mt-auto px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${primary ? 'bg-primary text-white hover:bg-primary-dark' : 'bg-white/10 text-white hover:bg-white/20'
-      }`}>
-      {btnText}
-    </button>
-  </motion.div>
+  </Link>
 );
 
+// CRITICAL: This line must be present to fix your SyntaxError
 export default AdminDashboard;

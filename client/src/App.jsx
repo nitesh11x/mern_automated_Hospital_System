@@ -26,6 +26,9 @@ import DoctorDetail from './components/doctor/DoctorDetail';
 import DoctorProfile from './components/doctor/DoctorProfile';
 import LoginDashboard from './components/common/LoginDashboard';
 import DoctorLogin from './components/doctor/DoctorLogin';
+import { profileDoctorThunk } from './redux/slices/doctor.slice';
+import Patients from './components/patient/Patients';
+
 
 function App() {
   const dispatch = useDispatch();
@@ -33,6 +36,9 @@ function App() {
   useEffect(() => {
     dispatch(adminProfileThunk());
   }, [dispatch]);
+  useEffect(() => {
+    dispatch(profileDoctorThunk());
+  }, []);
 
   return (
     <>
@@ -52,6 +58,7 @@ function App() {
           <Route path='/patient/register' element={<Register />}></Route>
           <Route path='/patient/dashboard' element={<Dashboard />}></Route>
           <Route path='/patient/me' element={<Profile />}></Route>
+          <Route path='/patient/all' element={<Patients />}></Route>
 
           {/* doctor routes  */}
           <Route path='/doctor/login' element={<DoctorLogin />}></Route>
