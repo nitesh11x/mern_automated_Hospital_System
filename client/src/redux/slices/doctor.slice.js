@@ -1,13 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "../../utils/axios";
 
+
 export const registerDoctorThunk = createAsyncThunk(
     "doctor/register",
     async (formData, { rejectWithValue }) => {
         try {
-            const res = await api.post("/doctor/register", formData, {
-                headers: { "Content-Type": "multipart/form-data" },
-            });
+            const res = await api.post("/doctor/register", formData);
+            // DO NOT manually set Content-Type
+
             return res.data;
         } catch (error) {
             return rejectWithValue(
@@ -16,7 +17,6 @@ export const registerDoctorThunk = createAsyncThunk(
         }
     }
 );
-
 
 export const loginDoctorThunk = createAsyncThunk(
     "doctor/login",
@@ -49,10 +49,10 @@ export const profileDoctorThunk = createAsyncThunk(
 
 
 export const getAllDoctorsThunk = createAsyncThunk(
-    "doctor/getAll",
+    "doctor/all",
     async (_, { rejectWithValue }) => {
         try {
-            const res = await api.get("/doctor/getAll");
+            const res = await api.get("/doctor/all");
             return res.data;
         } catch (error) {
             return rejectWithValue(
@@ -92,8 +92,6 @@ export const doctorLogoutThunk = createAsyncThunk(
     }
 );
 
-
-
 const initialState = {
     doctor: null,
     doctors: [],
@@ -102,10 +100,6 @@ const initialState = {
     success: false,
     isDoctorAuthenticated: false,
 };
-
-/* ============================
-   SLICE
-============================ */
 
 const doctorSlice = createSlice({
     name: "doctor",
@@ -124,18 +118,20 @@ const doctorSlice = createSlice({
     extraReducers: (builder) => {
         builder
 
-            /* ===== REGISTER ===== */
             .addCase(registerDoctorThunk.pending, (state) => {
                 state.loading = true;
                 state.error = null;
+                state.success = false;
             })
-            .addCase(registerDoctorThunk.fulfilled, (state) => {
+            .addCase(registerDoctorThunk.fulfilled, (state, action) => {
                 state.loading = false;
                 state.success = true;
+                state.doctor = action.payload.doctor;
             })
             .addCase(registerDoctorThunk.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+                state.success = false;
             })
 
             /* ===== LOGIN ===== */
@@ -177,6 +173,7 @@ const doctorSlice = createSlice({
             .addCase(getAllDoctorsThunk.fulfilled, (state, action) => {
                 state.loading = false;
                 state.doctors = action.payload.doctors;
+                console.log(action.payload)
             })
             .addCase(getAllDoctorsThunk.rejected, (state, action) => {
                 state.loading = false;
