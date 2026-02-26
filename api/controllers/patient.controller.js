@@ -142,14 +142,14 @@ export const getPatientById = asyncHandler(async (req, res, next) => {
   });
 });
 
-export const getAllPatient = asyncHandler(async (req, res, next) => {
-  const patientId = req.params
-  if (!patientId) return next(new ErrorHandler('patient id not found ', 400))
-  const patient = await Patient.findById(patientId).select("-password")
-  if (!patient) return next(new ErrorHandler("patient not found ", 404))
-  res.status(200).json({ success: true, message: "all patients", patient })
-})
 
+export const getAllPatient = asyncHandler(async (req, res, next) => {
+  const patients = await Patient.find().select("-password").sort({ createdAt: -1 });
+  res.status(200).json({
+    success: true,
+    patients,
+  });
+});
 export const deletePatientById = asyncHandler(async (req, res, next) => {
   const patientId = req.params
   if (!patientId) return next(new ErrorHandler('patient id not found ', 400))

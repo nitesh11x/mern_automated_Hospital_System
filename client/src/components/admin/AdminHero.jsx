@@ -27,7 +27,7 @@ const AdminHero = () => {
                     <SectionHeader title="Staff Management" />
                     <div className="grid grid-cols-1 gap-3">
                         <MiniCard title="Register Doctor" icon={<UserPlus />} to="/doctor/register" primary />
-                        <MiniCard title="View All Doctors" icon={<Stethoscope />} to="/doctor/manage" />
+                        <MiniCard title="View All Doctors" icon={<Stethoscope />} to="/doctor/all" />
                         <MiniCard title="Verify Credentials" icon={<UserCheck />} to="/doctor/verify" />
                         <MiniCard title="Add New Admin" icon={<Lock />} to="/admin/register" />
                     </div>

@@ -77,11 +77,26 @@ export const patientLogoutThunk = createAsyncThunk(
         }
     }
 );
+export const getAllPatientThunk = createAsyncThunk(
+    "patient/all",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await api.get("patient/all");
+            console.log(response.data)
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message || "fetch patient failed"
+            );
+        }
+    }
+);
 
 const patientSlice = createSlice({
     name: "patient",
     initialState: {
         patient: null,
+        patients: [],
         loading: false,
         error: null,
         isPatientAuthenticated: false,
@@ -108,7 +123,6 @@ const patientSlice = createSlice({
             .addCase(patientRegisterThunk.fulfilled, (state, action) => {
                 state.loading = false;
                 state.patient = action.payload.patient;
-                state.isPatientAuthenticated = true;
                 state.error = null;
             })
             .addCase(patientRegisterThunk.rejected, (state, action) => {
@@ -146,7 +160,22 @@ const patientSlice = createSlice({
             .addCase(patientLogoutThunk.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-            });
+            })
+
+            // get all patient 
+            .addCase(getAllPatientThunk.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getAllPatientThunk.fulfilled, (state, action) => {
+                state.loading = false;
+                state.patients = action.payload.patients;
+                console.log(action.payload)
+            })
+            .addCase(getAllPatientThunk.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
     },
 });
 
