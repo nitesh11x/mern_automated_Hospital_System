@@ -1,11 +1,11 @@
 import React from 'react'
+import PatientManage from './PatientManage'
 
 const Patients = () => {
   return (
-    <div>
-      hello
-
-    </div>
+    <>
+      <PatientManage />
+    </>
   )
 }
 

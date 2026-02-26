@@ -28,6 +28,9 @@ import LoginDashboard from './components/common/LoginDashboard';
 import DoctorLogin from './components/doctor/DoctorLogin';
 import { profileDoctorThunk } from './redux/slices/doctor.slice';
 import Patients from './components/patient/Patients';
+import DoctorManage from './components/doctor/DoctorManage';
+import PatientManage from './components/patient/PatientManage';
+import AdminRoute from './utils/AdminRoute';
 
 
 function App() {
@@ -59,6 +62,7 @@ function App() {
           <Route path='/patient/dashboard' element={<Dashboard />}></Route>
           <Route path='/patient/me' element={<Profile />}></Route>
           <Route path='/patient/all' element={<Patients />}></Route>
+          <Route path='/patient/manage' element={<AdminRoute><PatientManage /></AdminRoute>}></Route>
 
           {/* doctor routes  */}
           <Route path='/doctor/login' element={<DoctorLogin />}></Route>
@@ -67,11 +71,12 @@ function App() {
           <Route path='/doctor/all' element={<Doctors />}></Route>
           <Route path='/doctor/:id' element={<DoctorProfile />}></Route>
           <Route path='/doctor/detail' element={<DoctorDetail />}></Route>
+          <Route path='/doctor/manage' element={<AdminRoute><DoctorManage /></AdminRoute>}></Route>
 
           {/* admin routes  */}
           <Route path='/admin/login' element={<AdminLogin />}></Route >
-          <Route path='/admin/register' element={<AdminRegister />}></Route >
-          <Route path='/admin/dashboard' element={<AdminDashboard />}></Route >
+          <Route path='/admin/register' element={<AdminRoute><AdminRegister /></AdminRoute>}></Route >
+          <Route path='/admin/dashboard' element={<AdminRoute><AdminDashboard /></AdminRoute>}></Route >
           <Route path='/admin/detail' element={<AdminDetail />}></Route >
           <Route path='/admin/:id' element={<AdminProfile />}></Route >
 

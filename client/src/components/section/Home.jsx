@@ -28,10 +28,10 @@ const Home = () => {
                         </p>
 
                         <div className="flex flex-wrap gap-4">
-                            <button className="bg-primary text-white px-10 py-5 rounded-2xl font-bold shadow-2xl shadow-primary/30 hover:scale-105 transition-all">
+                            <button className="bg-primary cursor-pointer text-white px-10 py-5 rounded-2xl font-bold shadow-2xl shadow-primary/30 hover:scale-105 transition-all">
                                 Book an Appointment
                             </button>
-                            <button className="flex items-center gap-3 px-8 py-5 rounded-2xl font-bold text-gray-900 hover:bg-white border border-gray-100 shadow-sm transition-all">
+                            <button className="flex items-center cursor-pointer gap-3 px-8 py-5 rounded-2xl font-bold text-gray-900 hover:bg-white border border-gray-100 shadow-sm transition-all">
                                 <Play size={18} fill="currentColor" /> Watch Story
                             </button>
                         </div>

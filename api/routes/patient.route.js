@@ -19,8 +19,8 @@ router.post("/login", loginPatientWithPassword);
 router.post("/logout", logoutPatient);
 
 router.get("/me", isPatientAuth, patientProfile);
+router.get("/all", getAllPatient);
 router.get("/:patientId", getPatientById);
-router.get("/all", isAdminAuth, isDoctorAuth, getAllPatient);
 
 router.put('/:id', updatePatientById)
 router.put('/status/:id', updatePatientStatusById)
