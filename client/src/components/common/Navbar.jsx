@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, ArrowRight, UserCog, LogOut, LayoutDashboard, User } from "lucide-react";
+import { Menu, X, ArrowRight, UserCog, LogOut, LayoutDashboard, User, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
-
-// Ensure these thunks are imported correctly
 import { adminLogoutThunk } from "../../redux/slices/admin.slice";
 import { doctorLogoutThunk } from "../../redux/slices/doctor.slice";
-// import { doctorLogoutThunk } from "../../redux/slices/doctor.slice";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -37,16 +34,13 @@ const Navbar = () => {
                 await dispatch(doctorLogoutThunk()).unwrap();
                 toast.success("Doctor Logged Out");
             } else {
-                // await dispatch(patientLogoutThunk()).unwrap();
                 toast.success("Patient Logged Out");
             }
 
-            // FORCE CLEARANCE: Ensure the UI resets even if the cookie is sticky
             setIsOpen(false);
             navigate("/");
         } catch (error) {
             toast.error(error || "Logout Failed");
-            // Fallback: If the server call fails, we still want to clear the frontend
             navigate("/management");
         }
     };
@@ -59,69 +53,78 @@ const Navbar = () => {
     ];
 
     return (
-        <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? "bg-white/90 backdrop-blur-md shadow-md py-2" : "bg-transparent py-4"
+        <nav className={`fixed w-full z-50 transition-all duration-500 ${scrolled
+                ? "bg-white border-b border-slate-200 py-3 shadow-sm"
+                : "bg-transparent py-6"
             }`}>
-            <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+            <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
 
-                {/* Logo */}
-                <Link to='/' className="flex items-center gap-2 group">
-                    <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-xl group-hover:rotate-12 transition-transform shadow-lg shadow-primary/20">
-                        N
+                {/* Logo - Clinical Style */}
+                <Link to='/' className="flex items-center gap-3 group">
+                    <div className="w-10 h-10 bg-[#0F172A] flex items-center justify-center text-cyan-400 font-black text-xl border-b-2 border-cyan-500 transition-all duration-300">
+                        <Plus size={24} />
                     </div>
-                    <span className="text-2xl font-extrabold tracking-tight text-gray-900">
-                        New<span className="text-primary">Care</span>
+                    <span className={`text-xl font-extrabold tracking-tighter uppercase ${scrolled ? "text-slate-900" : "text-slate-900"}`}>
+                        New<span className="text-cyan-600">Care</span>
                     </span>
                 </Link>
 
                 {/* Desktop Navigation */}
-                <div className="hidden lg:flex items-center space-x-8">
-                    <div className="flex space-x-6">
+                <div className="hidden lg:flex items-center space-x-10">
+                    <div className="flex space-x-8">
                         {navLinks.map((link) => (
-                            <Link key={link.name} to={link.to} className="relative text-sm font-semibold text-gray-600 hover:text-primary transition-colors group">
+                            <Link
+                                key={link.name}
+                                to={link.to}
+                                className="text-[11px] uppercase tracking-[0.2em] font-bold text-slate-500 hover:text-cyan-600 transition-colors relative group"
+                            >
                                 {link.name}
-                                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
+                                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-cyan-500 transition-all group-hover:w-full" />
                             </Link>
                         ))}
                     </div>
 
-                    <div className="flex items-center gap-3 border-l pl-6 border-gray-200">
+                    <div className="flex items-center gap-8 border-l pl-8 border-slate-200">
                         {!isAnyAuth ? (
-                            <>
-                                <Link to='/patient/login' className="text-sm font-bold text-gray-700 hover:text-primary transition flex items-center gap-1">
-                                    <User size={16} /> Login
+                            <div className="flex items-center gap-6">
+                                <Link to='/patient/login' className="text-[11px] font-bold tracking-widest text-slate-900 hover:text-cyan-600 transition flex items-center gap-2">
+                                    <User size={14} className="text-cyan-600" /> LOGIN
                                 </Link>
-                                <Link to='/management' className="flex items-center gap-1.5 text-sm font-bold text-gray-500 hover:text-primary transition px-3 py-2 bg-gray-100 rounded-lg">
-                                    <UserCog size={16} /> Management
+                                <Link to='/management' className="text-[11px] font-bold tracking-widest text-slate-400 hover:text-slate-900 transition uppercase">
+                                    Portal
                                 </Link>
-                            </>
+                            </div>
                         ) : (
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-6">
                                 <Link
                                     to={isAdminAuthenticated ? "/admin/dashboard" : isDoctorAuthenticated ? "/doctor/dashboard" : "/patient/dashboard"}
-                                    className="text-sm font-bold text-gray-700 hover:text-primary flex items-center gap-1.5"
+                                    className="text-[11px] font-bold tracking-widest text-slate-900 hover:text-cyan-600 flex items-center gap-2 uppercase"
                                 >
-                                    <LayoutDashboard size={16} /> Dashboard
+                                    <LayoutDashboard size={14} className="text-cyan-600" /> Dashboard
                                 </Link>
 
                                 <button
                                     onClick={() => handleLogout(isAdminAuthenticated ? 'admin' : isDoctorAuthenticated ? 'doctor' : 'patient')}
-                                    className="flex items-center gap-1.5 text-sm font-bold text-red-500 hover:bg-red-50 px-3 py-2 rounded-lg transition"
+                                    className="text-[11px] font-bold tracking-widest text-red-500 hover:bg-red-50 px-2 py-1 transition uppercase"
                                 >
-                                    <LogOut size={16} /> Logout
+                                    Logout
                                 </button>
                             </div>
                         )}
 
-                        <Link to='/appointment/new' className="group flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-full font-bold text-sm hover:bg-primary-dark transition shadow-lg shadow-primary/25">
+                        <Link
+                            to='/appointment/book'
+                            className="bg-[#0F172A] text-white px-7 py-3 text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-cyan-600 transition-all duration-300 flex items-center gap-2 shadow-lg shadow-slate-200"
+                        >
                             Book Now
-                            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                            <ArrowRight size={14} />
                         </Link>
                     </div>
                 </div>
 
                 {/* Mobile Toggle */}
-                <button className="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition" onClick={() => setIsOpen(!isOpen)}>
-                    {isOpen ? <X size={28} /> : <Menu size={28} />}
+                <button className="lg:hidden p-2 text-slate-900" onClick={() => setIsOpen(!isOpen)}>
+                    {isOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
             </div>
 
@@ -132,24 +135,43 @@ const Navbar = () => {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="lg:hidden bg-white border-b border-gray-100 overflow-hidden"
+                        className="absolute top-full left-0 w-full lg:hidden bg-white border-b border-slate-200 shadow-xl overflow-hidden"
                     >
-                        <div className="flex flex-col p-6 space-y-4">
+                        <div className="flex flex-col p-8 space-y-6">
                             {navLinks.map((link) => (
-                                <Link key={link.name} to={link.to} className="text-lg font-bold text-gray-800" onClick={() => setIsOpen(false)}>
+                                <Link
+                                    key={link.name}
+                                    to={link.to}
+                                    className="text-2xl font-black tracking-tighter text-slate-900 uppercase hover:text-cyan-600 transition-colors"
+                                    onClick={() => setIsOpen(false)}
+                                >
                                     {link.name}
                                 </Link>
                             ))}
-                            <hr />
+
+                            <div className="h-[1px] bg-slate-100 my-2" />
+
                             {!isAnyAuth ? (
-                                <>
-                                    <Link to='/patient/login' className="text-lg font-bold text-gray-800" onClick={() => setIsOpen(false)}>Patient Login</Link>
-                                    <Link to='/login-dashboard' className="text-lg font-bold text-primary" onClick={() => setIsOpen(false)}>Management Portal</Link>
-                                </>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <Link
+                                        to='/patient/login'
+                                        className="py-4 border border-slate-200 text-center text-[10px] font-black tracking-widest uppercase"
+                                        onClick={() => setIsOpen(false)}
+                                    >
+                                        Login
+                                    </Link>
+                                    <Link
+                                        to='/management'
+                                        className="py-4 bg-[#0F172A] text-white text-center text-[10px] font-black tracking-widest uppercase"
+                                        onClick={() => setIsOpen(false)}
+                                    >
+                                        Portal
+                                    </Link>
+                                </div>
                             ) : (
                                 <button
                                     onClick={() => handleLogout(isAdminAuthenticated ? 'admin' : isDoctorAuthenticated ? 'doctor' : 'patient')}
-                                    className="text-left text-lg font-bold text-red-500"
+                                    className="text-left text-sm font-bold tracking-widest text-red-600 uppercase py-2"
                                 >
                                     Logout Account
                                 </button>

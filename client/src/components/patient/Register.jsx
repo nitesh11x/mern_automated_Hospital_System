@@ -59,7 +59,7 @@ const Register = () => {
       });
 
       const maxNumber = Math.max(...numbers);
-      const nextId = `NEW-${maxNumber + 1}`;
+      const nextId = `new${maxNumber + 1}`;
 
       setFormData((prev) => ({
         ...prev,
@@ -68,7 +68,7 @@ const Register = () => {
     } else {
       setFormData((prev) => ({
         ...prev,
-        patientId: "NEW-1",
+        patientId: "new01",
       }));
     }
   }, [patients]);

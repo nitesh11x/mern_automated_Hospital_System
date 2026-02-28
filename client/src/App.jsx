@@ -31,6 +31,9 @@ import Patients from './components/patient/Patients';
 import DoctorManage from './components/doctor/DoctorManage';
 import PatientManage from './components/patient/PatientManage';
 import AdminRoute from './utils/AdminRoute';
+import BookAppointment from './components/appointment/BookAppointment';
+import PatientRoute from './utils/PatientRoute';
+import Services from './components/section/Services';
 
 
 function App() {
@@ -55,6 +58,7 @@ function App() {
           <Route path='/contact' element={<Contact />}></Route>
           <Route path='/login' element={<OtpForm />}></Route>
           <Route path='/management' element={<LoginDashboard />}></Route>
+          <Route path='/services' element={<Services />}></Route>
 
           {/* patient routes  */}
           <Route path='/patient/login' element={<Login />}></Route>
@@ -82,6 +86,7 @@ function App() {
 
 
           {/* appointment routes  */}
+          <Route path='/appointment/book' element={<PatientRoute><BookAppointment /> </PatientRoute>}></Route >
 
 
           {/* reviews routes  */}

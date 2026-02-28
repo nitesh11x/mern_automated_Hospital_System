@@ -7,8 +7,6 @@ export const registerDoctorThunk = createAsyncThunk(
     async (formData, { rejectWithValue }) => {
         try {
             const res = await api.post("/doctor/register", formData);
-            // DO NOT manually set Content-Type
-
             return res.data;
         } catch (error) {
             return rejectWithValue(
@@ -166,20 +164,18 @@ const doctorSlice = createSlice({
                 state.isDoctorAuthenticated = false;
             })
 
-            /* ===== GET ALL ===== */
             .addCase(getAllDoctorsThunk.pending, (state) => {
                 state.loading = true;
             })
             .addCase(getAllDoctorsThunk.fulfilled, (state, action) => {
                 state.loading = false;
                 state.doctors = action.payload.doctors;
-                console.log(action.payload)
             })
             .addCase(getAllDoctorsThunk.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
-            /* ===== LOGOUT ===== */
+
             .addCase(doctorLogoutThunk.pending, (state) => {
                 state.loading = true;
             })

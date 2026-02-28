@@ -1,30 +1,34 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "../../utils/axios";
 
-// --- Async Thunks ---
-
-// Fetch all appointments for the logged-in patient
 export const fetchPatientAppointments = createAsyncThunk(
-    "appointments/fetchAll",
+    "appointment/all",
     async (_, { rejectWithValue }) => {
         try {
-            const response = await api.get("/appointments/my-appointments");
-            return response.data;
+            const { data } = await api.get("/appointment/all");
+            return data?.appointments || data;
         } catch (error) {
-            return rejectWithValue(error.response.data);
+            return rejectWithValue(
+                error?.response?.data?.message || "Failed to fetch appointments"
+            );
         }
     }
 );
 
-// Book a new appointment
 export const bookAppointment = createAsyncThunk(
-    "appointments/book",
+    "appointment/book",
     async (appointmentData, { rejectWithValue }) => {
         try {
-            const response = await api.post("/appointments/book", appointmentData);
-            return response.data;
+            const { data } = await api.post(
+                "/appointment/book",
+                appointmentData
+            );
+
+            return data?.appointment || data;
         } catch (error) {
-            return rejectWithValue(error.response.data);
+            return rejectWithValue(
+                error?.response?.data?.message || "Booking failed"
+            );
         }
     }
 );
@@ -46,13 +50,14 @@ const appointmentSlice = createSlice({
         },
         clearAppointmentError: (state) => {
             state.error = null;
-        }
+        },
     },
     extraReducers: (builder) => {
         builder
-            // Fetch Appointments
+            // ================= FETCH =================
             .addCase(fetchPatientAppointments.pending, (state) => {
                 state.loading = true;
+                state.error = null;
             })
             .addCase(fetchPatientAppointments.fulfilled, (state, action) => {
                 state.loading = false;
@@ -60,25 +65,31 @@ const appointmentSlice = createSlice({
             })
             .addCase(fetchPatientAppointments.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload?.message || "Failed to fetch appointments";
+                state.error = action.payload;
             })
 
-            // Book Appointment
             .addCase(bookAppointment.pending, (state) => {
                 state.loading = true;
+                state.error = null;
+                state.bookingSuccess = false;
             })
             .addCase(bookAppointment.fulfilled, (state, action) => {
                 state.loading = false;
                 state.bookingSuccess = true;
-                state.appointments.push(action.payload);
+                state.appointments = [
+                    ...state.appointments,
+                    action.payload,
+                ];
             })
             .addCase(bookAppointment.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload?.message || "Booking failed";
+                state.error = action.payload;
+                state.bookingSuccess = false;
             });
     },
 });
 
-export const { resetBookingState, clearAppointmentError } = appointmentSlice.actions;
+export const { resetBookingState, clearAppointmentError } =
+    appointmentSlice.actions;
 
 export default appointmentSlice.reducer;
