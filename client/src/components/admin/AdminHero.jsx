@@ -39,7 +39,7 @@ const AdminHero = () => {
                     <div className="grid grid-cols-1 gap-3">
                         <MiniCard title="Register Patient" icon={<PlusCircle />} to="/patient/register" />
                         <MiniCard title="View All Patients" icon={<Users />} to="/patient/all" />
-                        <MiniCard title="View Appointments" icon={<Calendar />} to="/appointments" />
+                        <MiniCard title="View Appointments" icon={<Calendar />} to="/appointment/all" />
                         <MiniCard title="Medical Records" icon={<FileText />} to="/patient/records" />
                     </div>
                 </div>

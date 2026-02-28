@@ -32,7 +32,7 @@ const About = () => {
             <div className="absolute inset-0 bg-primary/10 rounded-[3rem] blur-3xl transform rotate-3" />
             <img 
               src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=800" 
-              className="relative rounded-[3rem] shadow-2xl z-10 w-full h-[400px] object-cover border-8 border-white"
+              className="relative rounded-[3rem] shadow-2xl z-10 w-full h-100 object-cover border-8 border-white"
               alt="Medical Team"
             />
           </motion.div>

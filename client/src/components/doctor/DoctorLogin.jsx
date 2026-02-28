@@ -54,7 +54,7 @@ const DoctorLogin = () => {
       >
         {/* Header */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-[2rem] shadow-xl shadow-primary/10 mb-6 border border-primary/5">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-4xl shadow-xl shadow-primary/10 mb-6 border border-primary/5">
             <Stethoscope size={32} className="text-primary" />
           </div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tight">

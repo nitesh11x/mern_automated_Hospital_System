@@ -29,7 +29,7 @@ app.use(cookieParser());
 
 app.get('/', (req, res) => {
     res.json({
-        success: true, message: "welcome to social media backend api"
+        success: true, message: "welcome to AI Powerd Hospital System backend api"
     })
 })
 import userRouter from "./routes/patient.route.js";

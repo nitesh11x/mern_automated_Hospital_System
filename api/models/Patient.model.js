@@ -12,7 +12,10 @@ const patientSchema = new mongoose.Schema(
             url: String,
             public_id: String
         },
-
+        role: {
+            type: String,
+            default: "Patient"
+        },
         firstName: {
             type: String,
             required: true,

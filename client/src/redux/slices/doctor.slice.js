@@ -7,8 +7,6 @@ export const registerDoctorThunk = createAsyncThunk(
     async (formData, { rejectWithValue }) => {
         try {
             const res = await api.post("/doctor/register", formData);
-            // DO NOT manually set Content-Type
-
             return res.data;
         } catch (error) {
             return rejectWithValue(
@@ -32,7 +30,6 @@ export const loginDoctorThunk = createAsyncThunk(
     }
 );
 
-
 export const profileDoctorThunk = createAsyncThunk(
     "doctor/me",
     async (_, { rejectWithValue }) => {
@@ -46,7 +43,6 @@ export const profileDoctorThunk = createAsyncThunk(
         }
     }
 );
-
 
 export const getAllDoctorsThunk = createAsyncThunk(
     "doctor/all",
@@ -62,7 +58,6 @@ export const getAllDoctorsThunk = createAsyncThunk(
     }
 );
 
-
 export const deleteDoctorThunk = createAsyncThunk(
     "doctor/delete",
     async (doctorId, { rejectWithValue }) => {
@@ -76,7 +71,6 @@ export const deleteDoctorThunk = createAsyncThunk(
         }
     }
 );
-
 
 export const doctorLogoutThunk = createAsyncThunk(
     "doctor/logout",
@@ -166,20 +160,18 @@ const doctorSlice = createSlice({
                 state.isDoctorAuthenticated = false;
             })
 
-            /* ===== GET ALL ===== */
             .addCase(getAllDoctorsThunk.pending, (state) => {
                 state.loading = true;
             })
             .addCase(getAllDoctorsThunk.fulfilled, (state, action) => {
                 state.loading = false;
                 state.doctors = action.payload.doctors;
-                console.log(action.payload)
             })
             .addCase(getAllDoctorsThunk.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
-            /* ===== LOGOUT ===== */
+
             .addCase(doctorLogoutThunk.pending, (state) => {
                 state.loading = true;
             })
