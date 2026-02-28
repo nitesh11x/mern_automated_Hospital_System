@@ -109,10 +109,10 @@ export const loginPatientWithPassword = asyncHandler(async (req, res, next) => {
 export const logoutPatient = asyncHandler(async (req, res) => {
   res.cookie("patientToken", "", {
     httpOnly: true,
-    expires: new Date(0)
-  });
-
-  res.status(200).json({
+    expires: new Date(0), // Set to past date to delete
+    secure: true,        // Must match how it was created
+    sameSite: "none",    // Must match how it was created
+  }).status(200).json({
     success: true,
     message: "Logged out successfully"
   });
@@ -142,7 +142,6 @@ export const getPatientById = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 export const getAllPatient = asyncHandler(async (req, res, next) => {
   const patients = await Patient.find().select("-password").sort({ createdAt: -1 });
   res.status(200).json({
@@ -150,6 +149,7 @@ export const getAllPatient = asyncHandler(async (req, res, next) => {
     patients,
   });
 });
+
 export const deletePatientById = asyncHandler(async (req, res, next) => {
   const patientId = req.params
   if (!patientId) return next(new ErrorHandler('patient id not found ', 400))

@@ -25,7 +25,10 @@ const doctorSchema = new mongoose.Schema(
       required: true,
       select: false,
     },
-
+    role: {
+      type: String,
+      default: "Doctor"
+    },
     phone: {
       type: String,
       required: true,

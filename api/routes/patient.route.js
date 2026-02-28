@@ -16,14 +16,14 @@ const router = express.Router();
 
 router.post("/register", registerPatient);
 router.post("/login", loginPatientWithPassword);
-router.post("/logout", logoutPatient);
+router.post("/logout", isPatientAuth, logoutPatient);
 
 router.get("/me", isPatientAuth, patientProfile);
-router.get("/all", getAllPatient);
-router.get("/:patientId", getPatientById);
+router.get("/all", isAdminAuth, getAllPatient);
+router.get("/:patientId", isPatientAuth, getPatientById);
 
 router.put('/:id', updatePatientById)
-router.put('/status/:id', updatePatientStatusById)
+router.put('/status/:id', isAdminAuth, updatePatientStatusById)
 
-router.delete("/:patientId", deletePatientById);
+router.delete("/:patientId", isAdminAuth, deletePatientById);
 export default router;

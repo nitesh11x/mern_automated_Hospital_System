@@ -30,7 +30,6 @@ export const loginDoctorThunk = createAsyncThunk(
     }
 );
 
-
 export const profileDoctorThunk = createAsyncThunk(
     "doctor/me",
     async (_, { rejectWithValue }) => {
@@ -44,7 +43,6 @@ export const profileDoctorThunk = createAsyncThunk(
         }
     }
 );
-
 
 export const getAllDoctorsThunk = createAsyncThunk(
     "doctor/all",
@@ -60,7 +58,6 @@ export const getAllDoctorsThunk = createAsyncThunk(
     }
 );
 
-
 export const deleteDoctorThunk = createAsyncThunk(
     "doctor/delete",
     async (doctorId, { rejectWithValue }) => {
@@ -74,7 +71,6 @@ export const deleteDoctorThunk = createAsyncThunk(
         }
     }
 );
-
 
 export const doctorLogoutThunk = createAsyncThunk(
     "doctor/logout",

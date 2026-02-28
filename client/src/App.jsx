@@ -1,49 +1,59 @@
 import './App.css'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { adminProfileThunk } from './redux/slices/admin.slice';
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Toaster } from "react-hot-toast";
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { adminProfileThunk } from './redux/slices/admin.slice';
+import { profilePatientThunk } from './redux/slices/patient.slice';
+import { profileDoctorThunk } from './redux/slices/doctor.slice';
+
 import Hero from './components/Home/Hero'
 import Navbar from './components/common/Navbar'
-import Login from './components/patient/Login'
-import Register from './components/patient/Register'
-import Dashboard from './components/patient/Dashboard'
-import Profile from './components/patient/Profile'
-import Doctors from './components/doctor/Doctors'
 import Contact from './components/section/Contact'
 import About from './components/section/About'
 import Footer from './components/common/Footer'
 import OtpForm from './components/common/OtpForm';
-import AdminDashboard from './components/admin/AdminDashboard';
+import Services from './components/section/Services';
+import LoginDashboard from './components/common/LoginDashboard';
+
+import Profile from './components/patient/Profile'
+import Login from './components/patient/Login'
+import Register from './components/patient/Register'
+import Dashboard from './components/patient/Dashboard'
+import Patients from './components/patient/Patients';
+import PatientManage from './components/patient/PatientManage';
+import PatientRoute from './utils/PatientRoute';
+
+
 import AdminDetail from './components/admin/AdminDetail';
 import AdminLogin from './components/admin/AdminLogin';
 import AdminProfile from './components/admin/AdminProfile';
 import AdminRegister from './components/admin/AdminRegister';
+import AdminDashboard from './components/admin/AdminDashboard';
+import AdminRoute from './utils/AdminRoute';
+
+import Doctors from './components/doctor/Doctors'
 import DoctorRegister from './components/doctor/DoctorRegister';
 import DoctorDashboard from './components/doctor/DoctorDashboard';
 import DoctorDetail from './components/doctor/DoctorDetail';
 import DoctorProfile from './components/doctor/DoctorProfile';
-import LoginDashboard from './components/common/LoginDashboard';
 import DoctorLogin from './components/doctor/DoctorLogin';
-import { profileDoctorThunk } from './redux/slices/doctor.slice';
-import Patients from './components/patient/Patients';
 import DoctorManage from './components/doctor/DoctorManage';
-import PatientManage from './components/patient/PatientManage';
-import AdminRoute from './utils/AdminRoute';
-import BookAppointment from './components/appointment/BookAppointment';
-import PatientRoute from './utils/PatientRoute';
-import Services from './components/section/Services';
 
+
+import BookAppointment from './components/appointment/BookAppointment';
+import ShowAppointments from './components/appointment/ShowAppointments';
 
 function App() {
   const dispatch = useDispatch();
-
   useEffect(() => {
     dispatch(adminProfileThunk());
   }, [dispatch]);
   useEffect(() => {
     dispatch(profileDoctorThunk());
+  }, []);
+  useEffect(() => {
+    dispatch(profilePatientThunk());
   }, []);
 
   return (
@@ -87,6 +97,7 @@ function App() {
 
           {/* appointment routes  */}
           <Route path='/appointment/book' element={<PatientRoute><BookAppointment /> </PatientRoute>}></Route >
+          <Route path='/appointment/all' element={<ShowAppointments /> }></Route >
 
 
           {/* reviews routes  */}

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import { adminLogoutThunk } from "../../redux/slices/admin.slice";
 import { doctorLogoutThunk } from "../../redux/slices/doctor.slice";
+import { patientLogoutThunk } from "../../redux/slices/patient.slice";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -35,10 +36,12 @@ const Navbar = () => {
                 toast.success("Doctor Logged Out");
             } else {
                 toast.success("Patient Logged Out");
+                await dispatch(patientLogoutThunk()).unwrap();
             }
-
             setIsOpen(false);
             navigate("/");
+            window.location.reload();
+
         } catch (error) {
             toast.error(error || "Logout Failed");
             navigate("/management");
@@ -54,8 +57,8 @@ const Navbar = () => {
 
     return (
         <nav className={`fixed w-full z-50 transition-all duration-500 ${scrolled
-                ? "bg-white border-b border-slate-200 py-3 shadow-sm"
-                : "bg-transparent py-6"
+            ? "bg-white border-b border-slate-200 py-3 shadow-sm"
+            : "bg-transparent py-6"
             }`}>
             <div className="max-w-7xl mx-auto px-8 flex justify-between items-center">
 
@@ -79,7 +82,7 @@ const Navbar = () => {
                                 className="text-[11px] uppercase tracking-[0.2em] font-bold text-slate-500 hover:text-cyan-600 transition-colors relative group"
                             >
                                 {link.name}
-                                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-cyan-500 transition-all group-hover:w-full" />
+                                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-500 transition-all group-hover:w-full" />
                             </Link>
                         ))}
                     </div>
@@ -149,7 +152,7 @@ const Navbar = () => {
                                 </Link>
                             ))}
 
-                            <div className="h-[1px] bg-slate-100 my-2" />
+                            <div className="h-px bg-slate-100 my-2" />
 
                             {!isAnyAuth ? (
                                 <div className="grid grid-cols-2 gap-4">

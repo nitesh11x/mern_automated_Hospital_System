@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "../../utils/axios";
 
-export const fetchPatientAppointments = createAsyncThunk(
+export const getAllAppointments = createAsyncThunk(
     "appointment/all",
     async (_, { rejectWithValue }) => {
         try {
@@ -55,15 +55,15 @@ const appointmentSlice = createSlice({
     extraReducers: (builder) => {
         builder
             // ================= FETCH =================
-            .addCase(fetchPatientAppointments.pending, (state) => {
+            .addCase(getAllAppointments.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchPatientAppointments.fulfilled, (state, action) => {
+            .addCase(getAllAppointments.fulfilled, (state, action) => {
                 state.loading = false;
                 state.appointments = action.payload;
             })
-            .addCase(fetchPatientAppointments.rejected, (state, action) => {
+            .addCase(getAllAppointments.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })

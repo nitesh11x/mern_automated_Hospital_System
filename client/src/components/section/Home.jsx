@@ -17,7 +17,7 @@ const Home = () => {
                         className="space-y-8"
                     >
                         <div className="flex items-center gap-3">
-                            <span className="h-[2px] w-8 bg-cyan-500"></span>
+                            <span className="h-0.5 w-8 bg-cyan-500"></span>
                             <span className="text-xs font-bold tracking-[0.2em] uppercase text-cyan-600">
                                 Global Excellence in Medicine
                             </span>
@@ -55,7 +55,7 @@ const Home = () => {
 
                         <img
                             src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1000"
-                            className="w-full h-[500px] object-cover border-[12px] border-slate-50 shadow-2xl"
+                            className="w-full h-125 object-cover border-12 border-slate-50 shadow-2xl"
                             alt="Modern Hospital Facility"
                         />
 
