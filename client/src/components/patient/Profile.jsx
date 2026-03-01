@@ -10,7 +10,8 @@ import {
     Edit3,
     Camera,
     Fingerprint,
-    HeartPulse
+    HeartPulse,
+    Download
 } from "lucide-react";
 
 const Profile = () => {
@@ -29,45 +30,47 @@ const Profile = () => {
     });
 
     return (
-        <div className="min-h-screen bg-[#F4F7FE] mt-16 pb-20">
-            <div className="max-w-5xl mx-auto px-6 py-10">
+        <div className="min-h-screen bg-[#F8FAFC] mt-16 pb-20">
+            <div className="max-w-6xl mx-auto px-6 py-10">
 
                 {/* --- PROFILE HEADER CARD --- */}
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-sm border border-gray-100 mb-8 relative overflow-hidden"
+                    className="bg-white rounded-sm p-8 md:p-12 shadow-xl shadow-indigo-100/50 border border-gray-100 mb-8 relative overflow-hidden"
                 >
-                    {/* Decorative background element */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-20 -mt-20 blur-3xl" />
+                    {/* Sharp accent line */}
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-linear-to-r from-indigo-600 to-purple-600" />
 
-                    <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                    <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
                         <div className="relative group">
-                            <div className="w-32 h-32 md:w-40 md:h-40 bg-primary/10 rounded-full border-4 border-white shadow-xl flex items-center justify-center text-primary overflow-hidden">
-                                <User size={64} />
+                            <div className="w-32 h-32 md:w-44 md:h-44 bg-indigo-50 rounded-sm border-2 border-indigo-100 shadow-inner flex items-center justify-center text-indigo-600 overflow-hidden">
+                                <User size={72} strokeWidth={1.5} />
                             </div>
-                            <button className="absolute bottom-2 right-2 p-2.5 bg-primary text-white rounded-full shadow-lg hover:scale-110 transition-transform">
+                            <button className="absolute -bottom-3 -right-3 p-3 bg-purple-600 text-white rounded-sm shadow-lg hover:bg-purple-700 transition-colors border-2 border-white">
                                 <Camera size={18} />
                             </button>
                         </div>
 
                         <div className="text-center md:text-left flex-1">
-                            <div className="flex flex-col md:flex-row md:items-center gap-3 mb-2">
-                                <h1 className="text-4xl font-black text-gray-900">{patient.firstName} {patient.lastName}</h1>
-                                <span className="w-fit mx-auto md:mx-0 px-3 py-1 bg-green-100 text-green-600 text-[10px] font-black uppercase tracking-widest rounded-full">
-                                    Verified Account
+                            <div className="flex flex-col md:flex-row md:items-center gap-4 mb-3">
+                                <h1 className="text-4xl font-black text-gray-900 tracking-tighter italic uppercase">
+                                    {patient.firstName} {patient.lastName}
+                                </h1>
+                                <span className="w-fit mx-auto md:mx-0 px-3 py-1 border border-indigo-200 text-indigo-600 text-[10px] font-black uppercase tracking-[0.2em] rounded-sm bg-indigo-50">
+                                    Verified Patient
                                 </span>
                             </div>
-                            <p className="text-gray-500 font-medium mb-6 flex items-center justify-center md:justify-start gap-2">
-                                <Fingerprint size={16} /> Patient ID: {patient.patientId}
+                            <p className="text-gray-400 font-bold mb-8 flex items-center justify-center md:justify-start gap-2 text-sm uppercase tracking-widest">
+                                <Fingerprint size={16} className="text-purple-500" /> ID: {patient.patientId}
                             </p>
 
-                            <div className="flex flex-wrap justify-center md:justify-start gap-4">
-                                <button className="bg-primary text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-primary-dark transition-all">
-                                    <Edit3 size={18} /> Edit Profile
+                            <div className="flex flex-wrap justify-center md:justify-start gap-3">
+                                <button className="bg-indigo-600 text-white px-8 py-3 rounded-sm font-black uppercase tracking-widest text-xs flex items-center gap-3 hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200">
+                                    <Edit3 size={16} /> Edit Profile
                                 </button>
-                                <button className="bg-white border border-gray-200 text-gray-700 px-6 py-3 rounded-2xl font-bold hover:bg-gray-50 transition-all">
-                                    Security Settings
+                                <button className="bg-white border border-gray-200 text-gray-700 px-8 py-3 rounded-sm font-black uppercase tracking-widest text-xs hover:bg-gray-50 transition-all">
+                                    Security
                                 </button>
                             </div>
                         </div>
@@ -79,11 +82,14 @@ const Profile = () => {
 
                     {/* Left Column: Personal Details */}
                     <div className="md:col-span-2 space-y-8">
-                        <section className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-gray-100">
-                            <h3 className="text-xl font-bold text-gray-900 mb-8 flex items-center gap-2">
-                                <User size={20} className="text-primary" /> Personal Information
-                            </h3>
-                            <div className="grid sm:grid-cols-2 gap-y-8 gap-x-12">
+                        <section className="bg-white rounded-sm p-8 shadow-sm border border-gray-100">
+                            <div className="flex items-center gap-4 mb-10">
+                                <div className="w-1.5 h-6 bg-indigo-600" />
+                                <h3 className="text-xs font-black text-indigo-900 uppercase tracking-[0.3em]">
+                                    Personal Information
+                                </h3>
+                            </div>
+                            <div className="grid sm:grid-cols-2 gap-y-10 gap-x-12">
                                 <InfoItem label="First Name" value={patient.firstName} icon={<User />} />
                                 <InfoItem label="Last Name" value={patient.lastName} icon={<User />} />
                                 <InfoItem label="Email Address" value={patient.email} icon={<Mail />} />
@@ -93,11 +99,14 @@ const Profile = () => {
                             </div>
                         </section>
 
-                        <section className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-gray-100">
-                            <h3 className="text-xl font-bold text-gray-900 mb-8 flex items-center gap-2">
-                                <MapPin size={20} className="text-primary" /> Contact & Location
-                            </h3>
-                            <div className="space-y-6">
+                        <section className="bg-white rounded-sm p-8 shadow-sm border border-gray-100">
+                            <div className="flex items-center gap-4 mb-10">
+                                <div className="w-1.5 h-6 bg-purple-600" />
+                                <h3 className="text-xs font-black text-indigo-900 uppercase tracking-[0.3em]">
+                                    Contact & Location
+                                </h3>
+                            </div>
+                            <div className="space-y-8">
                                 <InfoItem label="Home Address" value={patient.address} icon={<MapPin />} fullWidth />
                                 <InfoItem label="Emergency Contact" value={patient.emergencyContact} icon={<ShieldCheck />} fullWidth />
                             </div>
@@ -106,21 +115,25 @@ const Profile = () => {
 
                     {/* Right Column: Health Quick Look */}
                     <aside className="space-y-8">
-                        <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-[2.5rem] p-8 text-white shadow-xl shadow-gray-200">
-                            <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
-                                <HeartPulse size={20} className="text-primary" /> Medical Brief
+                        <div className="bg-linear-to-br from-indigo-700 to-purple-800 rounded-sm p-8 text-white shadow-xl shadow-indigo-200 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 p-4 opacity-10">
+                                <HeartPulse size={80} />
+                            </div>
+
+                            <h3 className="text-[10px] font-black mb-8 flex items-center gap-2 uppercase tracking-[0.3em] text-indigo-100">
+                                Medical Brief
                             </h3>
-                            <div className="space-y-6">
+                            <div className="space-y-8 relative z-10">
                                 <div>
-                                    <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">Blood Group</p>
-                                    <p className="text-3xl font-black">{patient.bloodGroup}</p>
+                                    <p className="text-indigo-200 text-[10px] font-black uppercase tracking-widest mb-2">Blood Group</p>
+                                    <p className="text-5xl font-black tracking-tighter">{patient.bloodGroup}</p>
                                 </div>
-                                <div className="h-px bg-white/10 w-full" />
+                                <div className="h-px bg-white/20 w-full" />
                                 <div>
-                                    <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">Allergies</p>
-                                    <div className="flex flex-wrap gap-2 mt-2">
+                                    <p className="text-indigo-200 text-[10px] font-black uppercase tracking-widest mb-3">Known Allergies</p>
+                                    <div className="flex flex-wrap gap-2">
                                         {["Peanuts", "Penicillin"].map(item => (
-                                            <span key={item} className="px-3 py-1 bg-white/10 rounded-lg text-xs font-bold">
+                                            <span key={item} className="px-3 py-1 bg-white/10 border border-white/20 rounded-sm text-[10px] font-black uppercase tracking-tighter">
                                                 {item}
                                             </span>
                                         ))}
@@ -129,13 +142,13 @@ const Profile = () => {
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-gray-100">
-                            <h4 className="font-bold text-gray-900 mb-4 text-sm">Download My Data</h4>
-                            <p className="text-gray-500 text-xs mb-6 leading-relaxed">
-                                Export your medical records and profile details in a secure PDF format.
+                        <div className="bg-white rounded-sm p-8 shadow-sm border border-gray-100">
+                            <h4 className="font-black text-indigo-900 mb-4 text-[10px] uppercase tracking-widest">Reports</h4>
+                            <p className="text-gray-500 text-xs mb-8 leading-relaxed font-medium">
+                                Export your clinical records and identity details in a secure, encrypted PDF format.
                             </p>
-                            <button className="w-full py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold text-gray-700 hover:bg-gray-100 transition-all">
-                                Generate Health Report
+                            <button className="w-full py-4 bg-gray-50 border border-gray-200 rounded-sm text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all flex items-center justify-center gap-3">
+                                <Download size={14} /> Generate Report
                             </button>
                         </div>
                     </aside>
@@ -149,11 +162,11 @@ const Profile = () => {
 // --- HELPER COMPONENT ---
 const InfoItem = ({ label, value, icon, fullWidth = false }) => (
     <div className={`${fullWidth ? "w-full" : ""}`}>
-        <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-2 ml-1">
+        <p className="text-indigo-700 text-[10px] font-black uppercase tracking-[0.2em] mb-3 ml-1">
             {label}
         </p>
-        <div className="flex items-center gap-3 p-4 bg-gray-50 border border-gray-100 rounded-2xl">
-            <div className="text-primary/50 shrink-0">
+        <div className="flex items-center gap-4 p-4 bg-gray-50 border border-gray-100 rounded-sm group hover:border-indigo-200 transition-colors">
+            <div className="text-indigo-300 group-hover:text-indigo-600 transition-colors shrink-0">
                 {React.cloneElement(icon, { size: 18 })}
             </div>
             <p className="text-gray-900 font-bold text-sm truncate">{value}</p>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { patientLoginThunk } from "../../redux/slices/patient.slice";
 import { useNavigate, Link } from "react-router-dom";
@@ -41,122 +41,137 @@ const Login = () => {
         }
         try {
             await dispatch(patientLoginThunk(formData)).unwrap();
-            toast.success("Login successful 🎉");
+            toast.success("Identity Verified 🎉");
         } catch (err) {
-            toast.error(err || "Login failed");
+            toast.error(err || "Authentication failed");
         }
     };
 
     return (
-        <div className="min-h-screen flex items-stretch bg-white">
-            {/* LEFT SIDE */}
+        <div className="min-h-screen flex items-stretch bg-white font-sans">
+            {/* LEFT SIDE: BRANDING & SECURE OVERLAY */}
             <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                className="hidden lg:flex w-1/2 bg-primary relative items-center justify-center p-12 overflow-hidden"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1 }}
+                className="hidden lg:flex w-1/2 bg-indigo-700 relative items-center justify-center p-16 overflow-hidden"
             >
-                <div className="relative z-10 max-w-md text-center">
-                    <h2 className="text-4xl font-bold text-white mb-6">
-                        Welcome Back to <br /> NewCare Portal
+                {/* Decorative Elements */}
+                <div className="absolute inset-0 opacity-10" 
+                     style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
+                <div className="absolute top-[-10%] right-[-10%] w-96 h-96 bg-purple-500 rounded-full blur-[120px] opacity-30" />
+                
+                <div className="relative z-10 max-w-lg">
+                    <div className="mb-10 inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-sm border border-white/20">
+                        <ShieldCheck className="text-indigo-200" size={20} />
+                        <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">Secure Terminal v3.2</span>
+                    </div>
+                    <h2 className="text-6xl font-black text-white mb-8 tracking-tighter italic uppercase leading-[0.9]">
+                        NewCare <br /> <span className="text-indigo-300">Protocol</span>
                     </h2>
-                    <p className="text-white/80 text-lg">
-                        Securely access your health records anytime.
+                    <p className="text-indigo-100 text-lg font-medium max-w-sm leading-relaxed border-l-2 border-indigo-400 pl-6">
+                        Accessing the central healthcare registry requires verified credentials.
                     </p>
                 </div>
             </motion.div>
 
-            {/* RIGHT SIDE */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-20">
+            {/* RIGHT SIDE: AUTH FORM */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-[#FBFBFF]">
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="w-full max-w-md space-y-8"
+                    className="w-full max-w-md"
                 >
-                    <div>
-                        <h3 className="text-3xl font-extrabold text-gray-900">
+                    <div className="mb-12">
+                        <h3 className="text-4xl font-black text-slate-900 uppercase italic tracking-tighter">
                             Sign In
                         </h3>
-                        <p className="text-gray-500 mt-2">
-                            Don't have an account?
-                            <Link
-                                to="/login"
-                                className="text-primary font-bold ml-1 hover:underline"
-                            >
-                                Create one
-                            </Link>
-                        </p>
+                        <div className="flex items-center gap-2 mt-3">
+                            <span className="w-8 h-1 bg-indigo-600 rounded-sm" />
+                            <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">
+                                New User? 
+                                <Link to="/register" className="text-indigo-600 ml-2 hover:text-purple-600 transition-colors">
+                                    Register Account
+                                </Link>
+                            </p>
+                        </div>
                     </div>
 
-                    <form className="space-y-5" onSubmit={handleSubmit}>
-                        {/* Email */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-700 ml-1">
-                                Email Address
+                    <form className="space-y-6" onSubmit={handleSubmit}>
+                        {/* Email Input */}
+                        <div className="space-y-3">
+                            <label className="text-[10px] font-black text-indigo-900 uppercase tracking-[0.2em] ml-1">
+                                System Identifier (Email)
                             </label>
-                            <div className="relative">
-                                <Mail
-                                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                                    size={20}
-                                />
+                            <div className="relative group">
+                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-500 transition-colors" size={18} />
                                 <input
                                     type="email"
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    placeholder="name@company.com"
-                                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 outline-none"
+                                    placeholder="USER@NEWCARE.ORG"
+                                    className="w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-sm focus:border-indigo-500 focus:ring-0 outline-none transition-all font-bold text-sm uppercase tracking-wider placeholder:text-slate-200 shadow-sm"
                                 />
                             </div>
                         </div>
 
-                        {/* Password */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-700">
-                                Password
-                            </label>
-                            <div className="relative">
-                                <Lock
-                                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                                    size={20}
-                                />
+                        {/* Password Input */}
+                        <div className="space-y-3">
+                            <div className="flex justify-between items-end px-1">
+                                <label className="text-[10px] font-black text-indigo-900 uppercase tracking-[0.2em]">
+                                    Security Cipher
+                                </label>
+                                <a href="#" className="text-[9px] font-black text-slate-400 uppercase tracking-widest hover:text-indigo-600">Forgot?</a>
+                            </div>
+                            <div className="relative group">
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-500 transition-colors" size={18} />
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
                                     placeholder="••••••••"
-                                    className="w-full pl-12 pr-12 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 outline-none"
+                                    className="w-full pl-12 pr-12 py-4 bg-white border border-slate-200 rounded-sm focus:border-indigo-500 focus:ring-0 outline-none transition-all font-bold text-sm shadow-sm"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-indigo-600 transition-colors"
                                 >
-                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
                         </div>
 
                         {error && (
-                            <p className="text-red-500 text-sm font-medium">
-                                {error}
-                            </p>
+                            <motion.div 
+                                initial={{ opacity: 0, x: -5 }} 
+                                animate={{ opacity: 1, x: 0 }}
+                                className="bg-red-50 border-l-4 border-red-500 p-4"
+                            >
+                                <p className="text-red-700 text-[10px] font-black uppercase tracking-widest">
+                                    System Error: {error}
+                                </p>
+                            </motion.div>
                         )}
 
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-primary text-white py-4 rounded-2xl font-bold shadow-xl hover:bg-primary-dark transition-all flex items-center justify-center gap-2"
+                            className="w-full bg-slate-900 text-white py-5 rounded-sm font-black uppercase tracking-[0.3em] text-xs shadow-2xl shadow-indigo-200 hover:bg-indigo-600 transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
                         >
-                            {loading ? "Signing In..." : "Sign In"}
-                            {!loading && <ArrowRight size={20} />}
+                            {loading ? "Authorizing..." : "Initiate Login"}
+                            {!loading && <ArrowRight size={18} />}
                         </button>
                     </form>
 
-                    <p className="text-center text-xs text-gray-400 px-8">
-                        By signing in, you agree to our Terms and Privacy Policy.
-                    </p>
+                    <div className="mt-12 pt-8 border-t border-slate-100 flex flex-col items-center">
+                        <p className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em] text-center leading-loose">
+                            End-to-End Encrypted Session <br />
+                            Compliance: HIPAA / GDPR Secure
+                        </p>
+                    </div>
                 </motion.div>
             </div>
         </div>

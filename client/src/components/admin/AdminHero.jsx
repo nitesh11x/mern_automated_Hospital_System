@@ -4,29 +4,38 @@ import {
     UserPlus, Stethoscope, UserCheck, Lock,
     PlusCircle, Users, Calendar, FileText,
     MessageSquarePlus, Edit3, Star, Key,
-    ArrowRight, ShieldCheck, Activity
+    ArrowRight, ShieldCheck, Activity, ChevronRight
 } from "lucide-react";
 
 const AdminHero = () => {
     return (
-        <div className="max-w-7xl mx-auto">
-            <header className="flex justify-between items-end mb-8 px-2">
+        <div className="max-w-7xl mx-auto px-4 font-sans">
+            {/* --- HEADER --- */}
+            <header className="flex justify-between items-end mb-10 px-1">
                 <div>
-                    <h1 className="text-2xl font-black text-slate-900">Console Overview</h1>
-                    <p className="text-slate-500 text-xs font-medium">Global Management & Security Systems</p>
+                    <div className="flex items-center gap-2 mb-1">
+                        <div className="w-2 h-2 bg-indigo-600 rounded-full animate-pulse" />
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-600">Central Command</span>
+                    </div>
+                    <h1 className="text-3xl font-black text-slate-900 uppercase italic tracking-tighter">
+                        Console <span className="text-indigo-600">Overview</span>
+                    </h1>
                 </div>
-                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100">
-                    <ShieldCheck size={14} />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Active Protection</span>
+
+                <div className="hidden sm:flex items-center gap-3 px-4 py-2 bg-white border border-slate-100 rounded-sm shadow-sm">
+                    <ShieldCheck size={16} className="text-emerald-500" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">System Integrity: Optimal</span>
                 </div>
             </header>
 
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                {/* COLUMN 1: DOCTOR & STAFF */}
+            {/* --- CORE GRID --- */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+
+                {/* COLUMN 1: STAFF MANAGEMENT */}
                 <div className="space-y-6">
-                    <SectionHeader title="Staff Management" />
-                    <div className="grid grid-cols-1 gap-3">
-                        <MiniCard title="Register Doctor" icon={<UserPlus />} to="/doctor/register" primary />
+                    <SectionHeader title="Staff & Personnel" />
+                    <div className="space-y-3">
+                        <MiniCard title="Register Doctor" icon={<UserPlus />} to="/doctor/register" highlight />
                         <MiniCard title="View All Doctors" icon={<Stethoscope />} to="/doctor/all" />
                         <MiniCard title="Verify Credentials" icon={<UserCheck />} to="/doctor/verify" />
                         <MiniCard title="Add New Admin" icon={<Lock />} to="/admin/register" />
@@ -35,8 +44,8 @@ const AdminHero = () => {
 
                 {/* COLUMN 2: PATIENTS & CLINICAL */}
                 <div className="space-y-6">
-                    <SectionHeader title="Patient & Records" />
-                    <div className="grid grid-cols-1 gap-3">
+                    <SectionHeader title="Clinical Workflow" />
+                    <div className="space-y-3">
                         <MiniCard title="Register Patient" icon={<PlusCircle />} to="/patient/register" />
                         <MiniCard title="View All Patients" icon={<Users />} to="/patient/all" />
                         <MiniCard title="View Appointments" icon={<Calendar />} to="/appointment/all" />
@@ -44,29 +53,44 @@ const AdminHero = () => {
                     </div>
                 </div>
 
-                {/* COLUMN 3: FEEDBACK & SECURITY */}
+                {/* COLUMN 3: SYSTEM AUDIT */}
                 <div className="space-y-6">
-                    <SectionHeader title="Reviews & Security" />
-                    <div className="grid grid-cols-1 gap-3">
+                    <SectionHeader title="Security & Feedback" />
+                    <div className="space-y-3">
                         <MiniCard title="Add Review" icon={<MessageSquarePlus />} to="/review/add" />
-                        <MiniCard title="Edit/Manage Reviews" icon={<Edit3 />} to="/review/edit" />
-                        <MiniCard title="View Ratings" icon={<Star />} to="/ratings" />
-                        <MiniCard title="Enable OTP / 2FA" icon={<Key />} to="/security" />
+                        <MiniCard title="Manage Feedback" icon={<Edit3 />} to="/review/edit" />
+                        <MiniCard title="System Ratings" icon={<Star />} to="/ratings" />
+                        <MiniCard title="Security Protocols" icon={<Key />} to="/security" />
                     </div>
                 </div>
             </div>
 
-            {/* SYSTEM HEALTH SECTION */}
-            <section className="mt-12 p-8 bg-slate-900 rounded-[2.5rem] text-white overflow-hidden relative shadow-2xl">
-                <Activity className="absolute -right-6 -bottom-6 text-white/5" size={180} />
-                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div>
-                        <h4 className="text-xl font-bold mb-1">System Health</h4>
-                        <p className="text-slate-400 text-sm">Security logging and server status monitoring.</p>
+            {/* --- SYSTEM TELEMETRY FOOTER --- */}
+            <section className="mt-12 bg-white border border-slate-100 rounded-sm p-8 shadow-xl shadow-indigo-900/5 relative overflow-hidden group">
+                {/* Visual Accent */}
+                <div className="absolute top-0 left-0 w-1.5 h-full bg-linear-to-b from-indigo-600 to-purple-600" />
+                <Activity className="absolute -right-10 -bottom-10 text-slate-50 group-hover:text-indigo-50/50 transition-colors" size={200} />
+
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+                    <div className="space-y-2">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-indigo-600 text-white rounded-sm">
+                                <Activity size={20} />
+                            </div>
+                            <h4 className="text-xl font-black text-slate-900 uppercase italic">Network Telemetry</h4>
+                        </div>
+                        <p className="text-slate-500 text-xs font-medium max-w-md">
+                            Monitor real-time security logs, server uptime, and active administrative sessions across the hospital network.
+                        </p>
                     </div>
-                    <div className="flex gap-4">
-                        <Link to="/logs" className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl font-bold text-xs uppercase tracking-widest transition-all">View System Logs</Link>
-                        <button className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-primary/30 transition-all hover:scale-105">Moderate Content</button>
+
+                    <div className="flex flex-wrap gap-4">
+                        <Link to="/logs" className="px-6 py-3 border border-slate-200 hover:border-indigo-600 rounded-sm font-black text-[10px] uppercase tracking-[0.2em] transition-all text-slate-600">
+                            Audit Logs
+                        </Link>
+                        <button className="px-8 py-3 bg-slate-900 hover:bg-indigo-600 text-white rounded-sm font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-slate-200 transition-all flex items-center gap-2">
+                            Moderate Content <ChevronRight size={14} />
+                        </button>
                     </div>
                 </div>
             </section>
@@ -74,20 +98,38 @@ const AdminHero = () => {
     );
 };
 
+// --- SUB-COMPONENTS ---
+
 const SectionHeader = ({ title }) => (
-    <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">{title}</h3>
+    <div className="flex items-center gap-3 mb-4">
+        <div className="h-px flex-1 bg-slate-100" />
+        <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">{title}</h3>
+    </div>
 );
 
-const MiniCard = ({ title, icon, to, primary = false }) => (
+const MiniCard = ({ title, icon, to, highlight = false }) => (
     <Link to={to} className="group block">
-        <div className={`flex items-center gap-4 p-4 rounded-2xl border border-slate-100 transition-all bg-white hover:border-primary/30 hover:shadow-md hover:shadow-slate-200/50 ${primary ? 'bg-primary/5 border-primary/10' : ''}`}>
-            <div className={`p-2.5 rounded-xl shrink-0 ${primary ? 'bg-primary text-white' : 'bg-slate-50 text-slate-400 group-hover:text-primary group-hover:bg-primary/10'}`}>
-                {React.cloneElement(icon, { size: 18 })}
+        <div className={`
+            flex items-center gap-4 p-4 rounded-sm border transition-all duration-300
+            ${highlight
+                ? 'bg-indigo-50/30 border-indigo-100 hover:border-indigo-600'
+                : 'bg-white border-slate-100 hover:border-purple-600 hover:shadow-lg hover:shadow-indigo-900/5'}
+        `}>
+            <div className={`
+                p-2.5 rounded-sm transition-colors
+                ${highlight
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-slate-50 text-slate-400 group-hover:bg-purple-600 group-hover:text-white'}
+            `}>
+                {React.cloneElement(icon, { size: 18, strokeWidth: 2.5 })}
             </div>
-            <div className="min-w-0">
-                <p className="text-sm font-bold text-slate-900 truncate">{title}</p>
-                <div className="flex items-center gap-1 text-[9px] font-black text-primary opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-tighter">
-                    Enter Module <ArrowRight size={10} />
+
+            <div className="flex-1 min-w-0">
+                <p className="text-xs font-black text-slate-800 uppercase tracking-tight group-hover:text-slate-900">
+                    {title}
+                </p>
+                <div className="flex items-center gap-1 text-[9px] font-black text-indigo-600 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all uppercase tracking-widest mt-0.5">
+                    Launch Module <ArrowRight size={10} />
                 </div>
             </div>
         </div>

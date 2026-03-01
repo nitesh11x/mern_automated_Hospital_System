@@ -11,126 +11,138 @@ import {
     Activity,
     Droplets,
     Thermometer,
-    Menu,
-    User
-
+    ChevronRight,
+    ArrowUpRight,
+    Zap
 } from "lucide-react";
 
-// --- Dummy Data ---
+// --- Metrics Data ---
 const RECENT_VISITS = [
-    { id: 1, doctor: "Dr. Sarah Johnson", specialty: "Cardiology", date: "Oct 12, 2025", status: "Completed" },
-    { id: 2, doctor: "Dr. Michael Chen", specialty: "General Medicine", date: "Sept 28, 2025", status: "Follow-up" },
-    { id: 3, doctor: "Dr. Emily Blunt", specialty: "Dermatology", date: "Aug 15, 2025", status: "Completed" },
+    { id: 1, doctor: "Dr. Sarah Johnson", specialty: "Cardiology", date: "OCT 12, 2026", status: "Completed" },
+    { id: 2, doctor: "Dr. Michael Chen", specialty: "General Medicine", date: "SEP 28, 2026", status: "Follow-up" },
+    { id: 3, doctor: "Dr. Emily Blunt", specialty: "Dermatology", date: "AUG 15, 2026", status: "Completed" },
 ];
 
 const HEALTH_STATS = [
-    { label: "Heart Rate", value: "72 bpm", icon: <Activity size={20} className="text-red-500" />, color: "bg-red-50" },
-    { label: "Glucose", value: "95 mg/dL", icon: <Droplets size={20} className="text-blue-500" />, color: "bg-blue-50" },
-    { label: "Body Temp", value: "36.6 °C", icon: <Thermometer size={20} className="text-orange-500" />, color: "bg-orange-50" },
+    { label: "Heart Rate", value: "72 bpm", icon: <Activity size={18} />, color: "text-rose-500", border: "border-rose-200" },
+    { label: "Glucose", value: "95 mg/dL", icon: <Droplets size={18} />, color: "text-indigo-500", border: "border-indigo-200" },
+    { label: "Body Temp", value: "36.6 °C", icon: <Thermometer size={18} />, color: "text-amber-500", border: "border-amber-200" },
 ];
 
 const Dashboard = () => {
     const [activeTab, setActiveTab] = useState("dashboard");
 
     return (
-        // mt-16 accounts for your fixed navbar height
-        <div className="flex min-h-screen bg-[#F4F7FE] pt-16">
+        <div className="flex min-h-screen bg-[#FBFBFF] pt-16 font-sans">
 
-            {/* --- SIDEBAR (Desktop) --- */}
-            <aside className="w-64 bg-white border-r border-gray-100 hidden lg:flex flex-col p-6 sticky top-16 h-[calc(100vh-64px)]">
-                <nav className="flex-1 space-y-2">
+            {/* --- SIDEBAR (ARCHITECTURAL RIGIDITY) --- */}
+            <aside className="w-72 bg-white border-r border-slate-200 hidden lg:flex flex-col p-8 sticky top-16 h-[calc(100vh-64px)]">
+                <div className="mb-10 px-4">
+                    <p className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em]">Patient Terminal v3</p>
+                </div>
+
+                <nav className="flex-1 space-y-1">
                     <SidebarItem
-                        icon={<LayoutDashboard size={20} />}
-                        label="Dashboard"
+                        icon={<LayoutDashboard size={18} />}
+                        label="System Overview"
                         active={activeTab === "dashboard"}
                         onClick={() => setActiveTab("dashboard")}
                     />
                     <SidebarItem
-                        icon={<Calendar size={20} />}
+                        icon={<Calendar size={18} />}
                         label="Appointments"
                         active={activeTab === "visits"}
                         onClick={() => setActiveTab("visits")}
                     />
-                    <SidebarItem icon={<FileText size={20} />} label="Health Records" />
-                    <SidebarItem icon={<Settings size={20} />} label="Settings" />
+                    <SidebarItem icon={<FileText size={18} />} label="Health Records" />
+                    <SidebarItem icon={<Settings size={18} />} label="Settings" />
                 </nav>
 
-                <button className="flex items-center gap-3 p-3 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all mt-auto font-medium">
-                    <LogOut size={20} /> Logout
+                <button className="flex items-center gap-3 px-6 py-4 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-sm transition-all mt-auto font-black text-[10px] uppercase tracking-widest border border-transparent hover:border-red-100">
+                    <LogOut size={16} /> Terminate Session
                 </button>
             </aside>
 
-            {/* --- MOBILE BOTTOM NAV --- */}
-            <div className="lg:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 px-6 py-3 flex justify-between items-center z-40 shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
-                <MobileNavItem icon={<LayoutDashboard size={20} />} active={activeTab === "dashboard"} onClick={() => setActiveTab("dashboard")} />
-                <MobileNavItem icon={<Calendar size={20} />} active={activeTab === "visits"} onClick={() => setActiveTab("visits")} />
-                <MobileNavItem icon={<FileText size={20} />} />
-                <MobileNavItem icon={<User size={20} />} />
-            </div>
-
             {/* --- MAIN CONTENT --- */}
-            <main className="flex-1 p-4 md:p-8 lg:p-12 pb-24 lg:pb-12">
-                {/* Header */}
-                <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+            <main className="flex-1 p-6 md:p-12 pb-24 lg:pb-12 max-w-7xl">
+                {/* Header Section */}
+                <header className="flex flex-col xl:flex-row xl:items-end justify-between gap-8 mb-16">
                     <div>
-                        <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">Welcome back, Alex! 👋</h1>
-                        <p className="text-gray-500 text-sm md:text-base">Your health overview is ready.</p>
+                        <div className="flex items-center gap-2 mb-4">
+                            <span className="w-10 h-1 bg-indigo-600 rounded-sm" />
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Biometric Data Log</p>
+                        </div>
+                        <h1 className="text-6xl font-black text-slate-900 tracking-tighter uppercase italic leading-none">
+                            Welcome, <span className="text-indigo-600 underline decoration-4 underline-offset-8">Alex</span>
+                        </h1>
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <div className="relative flex-1 md:flex-none">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                        <div className="relative group">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-600 transition-colors" size={18} />
                             <input
                                 type="text"
-                                placeholder="Search..."
-                                className="w-full md:w-64 pl-10 pr-4 py-2.5 bg-white border border-gray-100 rounded-xl shadow-sm focus:ring-2 focus:ring-primary/20 outline-none"
+                                placeholder="QUERY PATIENT RECORDS..."
+                                className="w-full md:w-80 pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-sm shadow-sm focus:border-indigo-600 outline-none font-bold text-[10px] tracking-widest uppercase"
                             />
                         </div>
-                        <button className="p-2.5 bg-white border border-gray-100 rounded-xl shadow-sm text-gray-500 relative">
+                        <button className="p-4 bg-white border border-slate-200 rounded-sm text-slate-400 hover:text-indigo-600 hover:border-indigo-200 transition-all relative">
                             <Bell size={20} />
-                            <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
+                            <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-indigo-600 rounded-sm border-2 border-white" />
                         </button>
                     </div>
                 </header>
 
-                {/* Health Stats Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-10">
+                {/* Telemetry Stats Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
                     {HEALTH_STATS.map((stat, i) => (
                         <motion.div
                             key={i}
-                            whileHover={{ y: -5 }}
-                            className="bg-white p-5 rounded-3xl shadow-sm border border-gray-50 flex items-center gap-4"
+                            whileHover={{ y: -2 }}
+                            className={`bg-white p-8 rounded-sm shadow-sm border-l-4 ${stat.border} flex flex-col gap-4 group hover:shadow-md transition-all`}
                         >
-                            <div className={`w-12 h-12 ${stat.color} rounded-2xl flex items-center justify-center shrink-0`}>
+                            <div className={`${stat.color} flex justify-between items-start`}>
                                 {stat.icon}
+                                <ArrowUpRight size={14} className="opacity-20 group-hover:opacity-100 transition-opacity" />
                             </div>
                             <div>
-                                <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">{stat.label}</p>
-                                <p className="text-xl font-black text-gray-900">{stat.value}</p>
+                                <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mb-1">{stat.label}</p>
+                                <p className="text-4xl font-black text-slate-900 tracking-tighter italic leading-none">{stat.value}</p>
                             </div>
                         </motion.div>
                     ))}
                 </div>
 
-                <div className="grid lg:grid-cols-3 gap-8">
-                    {/* Visit History */}
-                    <section className="lg:col-span-2 bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
-                        <div className="p-6 md:p-8 border-b border-gray-50 flex justify-between items-center">
-                            <h3 className="text-lg font-bold text-gray-900">Recent Visits</h3>
-                            <button className="text-primary font-bold text-xs uppercase tracking-widest hover:underline">View All</button>
+                <div className="grid lg:grid-cols-3 gap-10">
+                    {/* Visit Protocol Section */}
+                    <section className="lg:col-span-2 bg-white rounded-sm border border-slate-200 shadow-sm overflow-hidden">
+                        <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/30">
+                            <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.3em]">Visit Protocol Logs</h3>
+                            <button className="text-indigo-600 font-black text-[10px] uppercase tracking-widest hover:text-purple-700 flex items-center gap-2 group">
+                                View Registry <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                            </button>
                         </div>
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
-                                <tbody className="divide-y divide-gray-50">
+                                <thead>
+                                    <tr className="bg-white border-b border-slate-100">
+                                        <th className="px-8 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Medical Officer</th>
+                                        <th className="px-8 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Date Node</th>
+                                        <th className="px-8 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">Auth Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-50">
                                     {RECENT_VISITS.map((visit) => (
-                                        <tr key={visit.id} className="hover:bg-gray-50/50 transition-colors group">
-                                            <td className="px-6 md:px-8 py-5">
-                                                <p className="font-bold text-gray-900">{visit.doctor}</p>
-                                                <p className="text-xs text-gray-400">{visit.specialty}</p>
+                                        <tr key={visit.id} className="hover:bg-indigo-50/20 transition-colors group">
+                                            <td className="px-8 py-6">
+                                                <p className="font-black text-slate-900 text-sm uppercase tracking-tight italic">{visit.doctor}</p>
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{visit.specialty}</p>
                                             </td>
-                                            <td className="px-6 md:px-8 py-5 text-sm text-gray-500 hidden sm:table-cell">{visit.date}</td>
-                                            <td className="px-6 md:px-8 py-5 text-right">
-                                                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${visit.status === 'Completed' ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600'
+                                            <td className="px-8 py-6 text-[10px] font-black text-slate-500 tracking-widest">{visit.date}</td>
+                                            <td className="px-8 py-6 text-right">
+                                                <span className={`px-4 py-1.5 rounded-sm text-[9px] font-black uppercase tracking-[0.15em] border ${visit.status === 'Completed'
+                                                    ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                                                    : 'bg-indigo-50 text-indigo-700 border-indigo-100'
                                                     }`}>
                                                     {visit.status}
                                                 </span>
@@ -142,26 +154,30 @@ const Dashboard = () => {
                         </div>
                     </section>
 
-                    {/* Quick Actions */}
-                    <section className="space-y-6">
-                        <div className="bg-primary rounded-[2.5rem] p-8 text-white relative overflow-hidden group">
-                            <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform" />
-                            <h4 className="text-xl font-bold mb-2 relative z-10">Instant Booking</h4>
-                            <p className="text-primary-light/80 text-sm mb-6 relative z-10">Available specialists ready to help you now.</p>
-                            <button className="w-full bg-white text-primary py-3.5 rounded-2xl font-black text-sm uppercase tracking-wider hover:shadow-lg transition-all relative z-10">
-                                Book Now
-                            </button>
+                    {/* Action Hub */}
+                    <section className="space-y-8">
+                        <div className="bg-slate-900 rounded-sm p-10 text-white relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <Zap size={100} strokeWidth={4} />
+                            </div>
+                            <div className="relative z-10">
+                                <h4 className="text-3xl font-black italic uppercase tracking-tighter mb-2">Priority<br />Booking</h4>
+                                <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest leading-relaxed mb-8">Direct interface with verified specialists.</p>
+                                <button className="w-full bg-indigo-600 text-white py-5 rounded-sm font-black text-[11px] uppercase tracking-[0.2em] hover:bg-white hover:text-slate-900 transition-all">
+                                    Iniate Sync
+                                </button>
+                            </div>
                         </div>
 
-                        <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-gray-100">
-                            <h4 className="text-sm font-black text-gray-400 uppercase tracking-widest mb-4">Next Appointment</h4>
-                            <div className="flex gap-4 items-center p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                                <div className="bg-white p-3 rounded-xl text-primary shadow-sm">
-                                    <Calendar size={20} />
+                        <div className="bg-white rounded-sm p-8 border border-slate-200 shadow-sm">
+                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6">Upcoming Event</h4>
+                            <div className="flex gap-5 items-center p-6 bg-slate-50 rounded-sm border border-slate-100">
+                                <div className="bg-indigo-600 p-3 rounded-sm text-white shadow-lg shadow-indigo-200">
+                                    <Calendar size={18} />
                                 </div>
                                 <div>
-                                    <p className="text-sm font-bold text-gray-900">Dr. Emily Blunt</p>
-                                    <p className="text-xs text-gray-500 font-medium tracking-tight">24 Oct • 10:00 AM</p>
+                                    <p className="text-[11px] font-black text-slate-900 uppercase tracking-widest">Dr. Emily Blunt</p>
+                                    <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-tighter mt-0.5">24 OCT • 10:00 AM</p>
                                 </div>
                             </div>
                         </div>
@@ -175,22 +191,13 @@ const Dashboard = () => {
 const SidebarItem = ({ icon, label, active, onClick }) => (
     <button
         onClick={onClick}
-        className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold transition-all ${active
-            ? "bg-primary text-white shadow-xl shadow-primary/20"
-            : "text-gray-400 hover:bg-gray-50 hover:text-gray-900"
+        className={`w-full flex items-center gap-4 px-6 py-4 rounded-sm transition-all border-l-4 uppercase tracking-[0.2em] text-[10px] font-black ${active
+            ? "bg-indigo-50 text-indigo-600 border-indigo-600"
+            : "text-slate-400 border-transparent hover:bg-slate-50 hover:text-slate-900"
             }`}
     >
         {icon}
-        <span className="text-sm">{label}</span>
-    </button>
-);
-
-const MobileNavItem = ({ icon, active, onClick }) => (
-    <button
-        onClick={onClick}
-        className={`p-3 rounded-xl transition-all ${active ? "bg-primary/10 text-primary" : "text-gray-400"}`}
-    >
-        {icon}
+        <span>{label}</span>
     </button>
 );
 

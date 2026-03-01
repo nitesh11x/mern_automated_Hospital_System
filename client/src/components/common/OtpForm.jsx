@@ -1,11 +1,10 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, ShieldCheck, ArrowRight, X, RefreshCcw } from "lucide-react";
+import { Mail, ShieldCheck, ArrowRight, X, RefreshCcw, Lock, Key } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { sendOtpThunk, verifyOtpThunk } from "../../redux/slices/otp.slice";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-
 
 const OtpForm = () => {
     const dispatch = useDispatch();
@@ -17,34 +16,29 @@ const OtpForm = () => {
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const inputsRef = useRef([]);
 
-    /* ================= SEND OTP ================= */
+    /* ================= SYSTEM LOGIC ================= */
     const handleSendOtp = async (e) => {
         e.preventDefault();
         if (!email) {
-            toast.error("Please enter an email");
+            toast.error("IDENTIFIER_REQUIRED");
             return;
         }
-
         try {
             await dispatch(sendOtpThunk(email)).unwrap();
-            toast.success("OTP sent successfully 📩");
+            toast.success("Verification packet dispatched.");
             setIsModalOpen(true);
             localStorage.setItem("patientEmail", email);
-            // focus first otp input after modal open
-            setTimeout(() => inputsRef.current[0]?.focus(), 120);
+            setTimeout(() => inputsRef.current[0]?.focus(), 150);
         } catch (err) {
-            toast.error(err || "Failed to send OTP");
+            toast.error(err || "DISPATCH_FAILED");
         }
     };
 
-    /* ================= OTP INPUT ================= */
     const handleOtpChange = (value, index) => {
-        if (!/^\d?$/.test(value)) return; // allow empty or single digit
-
+        if (!/^\d?$/.test(value)) return;
         const newOtp = [...otp];
         newOtp[index] = value;
         setOtp(newOtp);
-
         if (value && inputsRef.current[index + 1]) {
             inputsRef.current[index + 1].focus();
         }
@@ -54,157 +48,132 @@ const OtpForm = () => {
         if (e.key === "Backspace" && !otp[index] && inputsRef.current[index - 1]) {
             inputsRef.current[index - 1].focus();
         }
-        if (e.key === "ArrowLeft" && inputsRef.current[index - 1]) {
-            inputsRef.current[index - 1].focus();
-        }
-        if (e.key === "ArrowRight" && inputsRef.current[index + 1]) {
-            inputsRef.current[index + 1].focus();
-        }
     };
 
-    /* ================= VERIFY OTP ================= */
     const verifyOtp = async () => {
         const finalOtp = otp.join("");
         if (finalOtp.length !== 6) {
-            toast.error("Enter complete 6-digit OTP");
+            toast.error("COMPLETE_SEQUENCE_REQUIRED");
             return;
         }
-
         const storedEmail = localStorage.getItem("patientEmail");
-        if (!storedEmail) {
-            toast.error("Email lost — please resend OTP");
-            setIsModalOpen(false);
-            return;
-        }
-
         try {
             await dispatch(verifyOtpThunk({ email: storedEmail, otp: finalOtp })).unwrap();
-            toast.success("OTP verified 🎉");
-            // clear otp inputs
+            toast.success("Identity Authenticated.");
             setOtp(["", "", "", "", "", ""]);
             setIsModalOpen(false);
-            // redirect to register (replace so user can't go back)
             navigate("/patient/register", { replace: true });
         } catch (err) {
-            toast.error(err || "Invalid OTP");
-        }
-    };
-
-    /* ================= RESEND OTP ================= */
-    const handleResend = async () => {
-        const storedEmail = localStorage.getItem("patientEmail") || email;
-        if (!storedEmail) {
-            toast.error("No email to resend to");
-            return;
-        }
-        try {
-            await dispatch(sendOtpThunk(storedEmail)).unwrap();
-            toast.success("OTP resent 📩");
-            setIsModalOpen(true);
-            setTimeout(() => inputsRef.current[0]?.focus(), 120);
-        } catch (err) {
-            toast.error(err || "Resend failed");
+            toast.error(err || "INVALID_SEQUENCE");
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#F4F7FE] px-6">
-            {/* EMAIL STEP */}
+        <div className="min-h-screen flex items-center justify-center bg-[#FBFBFF] px-6 font-sans">
+
+            {/* STEP 1: INITIAL DISPATCH */}
             <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="w-full max-w-md bg-white p-10 rounded-[2.5rem] shadow-xl border border-gray-100"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="w-full max-w-lg bg-white p-12 lg:p-16 rounded-sm shadow-2xl border border-slate-200"
             >
-                <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-6">
-                    <Mail size={32} />
+                <div className="flex items-center gap-4 mb-10">
+                    <div className="w-12 h-1 bg-indigo-600" />
+                    <span className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.4em]">Auth Protocol 02</span>
                 </div>
 
-                <h2 className="text-3xl font-black text-gray-900 mb-2">Enter Email</h2>
-                <p className="text-gray-500 mb-8 font-medium">Enter your email and we'll send a 6-digit code.</p>
+                <h2 className="text-4xl font-black text-slate-900 mb-4 uppercase italic tracking-tighter">
+                    Access <span className="text-indigo-600">Verification</span>
+                </h2>
+                <p className="text-slate-400 text-[11px] font-black uppercase tracking-widest leading-loose mb-10">
+                    Enter your registered email to receive a 6-digit authentication sequence.
+                </p>
 
-                <form onSubmit={handleSendOtp} className="space-y-6">
-                    <input
-                        required
-                        type="email"
-                        placeholder="name@company.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 outline-none"
-                    />
+                <form onSubmit={handleSendOtp} className="space-y-8">
+                    <div className="relative group">
+                        <Mail size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-600 transition-colors" />
+                        <input
+                            required
+                            type="email"
+                            placeholder="USER@SYSTEM-NETWORK.COM"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full pl-14 pr-6 py-5 bg-slate-50 border border-slate-100 rounded-sm outline-none focus:bg-white focus:border-indigo-600 transition-all text-[11px] font-black tracking-widest uppercase placeholder:opacity-30"
+                        />
+                    </div>
 
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-primary text-white py-4 rounded-2xl font-bold shadow-lg flex items-center justify-center gap-2"
+                        className="w-full bg-slate-900 text-white py-6 rounded-sm font-black uppercase tracking-[0.3em] text-[12px] shadow-xl hover:bg-indigo-600 transition-all flex items-center justify-center gap-3 group disabled:opacity-50"
                     >
-                        {loading ? "Sending..." : "Send OTP"}
-                        {!loading && <ArrowRight size={20} />}
+                        {loading ? "INITIALIZING DISPATCH..." : "GENERATE ACCESS CODE"}
+                        {!loading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
                     </button>
-                    <div className="text-center mt-4 text-sm">
-                        Already have an account?
-                        <Link
-                            to="/patient/login"
-                            className="text-primary font-bold ml-1 hover:underline"
-                        >
-                            Login
+
+                    <div className="text-center pt-8 border-t border-slate-50 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                        Existing Node?
+                        <Link to="/patient/login" className="text-indigo-600 ml-2 hover:text-slate-900">
+                            Return to Login
                         </Link>
                     </div>
-                    
                 </form>
             </motion.div>
 
-            {/* OTP MODAL */}
+            {/* STEP 2: VERIFICATION TERMINAL (MODAL) */}
             <AnimatePresence>
                 {isModalOpen && (
-                    <div className="fixed inset-0 z-[60] flex items-center justify-center p-6">
+                    <div className="fixed inset-0 z-60 flex items-center justify-center p-6">
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setIsModalOpen(false)}
-                            className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"
+                            className="absolute inset-0 bg-slate-900/80 backdrop-blur-md"
                         />
 
                         <motion.div
-                            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 50, scale: 0.9 }}
-                            className="relative w-full max-w-sm bg-white rounded-[3rem] p-10 shadow-2xl"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="relative w-full max-w-md bg-white rounded-sm p-12 shadow-2xl border-t-4 border-indigo-600"
                         >
-                            <button onClick={() => setIsModalOpen(false)} className="absolute top-6 right-6 text-gray-400">
+                            <button onClick={() => setIsModalOpen(false)} className="absolute top-6 right-6 text-slate-300 hover:text-red-500 transition-colors">
                                 <X size={20} />
                             </button>
 
                             <div className="text-center">
-                                <div className="w-16 h-16 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <ShieldCheck size={32} />
+                                <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-50 border border-slate-100 rounded-sm mb-8">
+                                    <Key size={28} className="text-indigo-600" />
                                 </div>
 
-                                <h3 className="text-2xl font-black mb-6">Verify OTP</h3>
+                                <h3 className="text-2xl font-black text-slate-900 uppercase italic tracking-tighter mb-2">Sequence Entry</h3>
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-10">
+                                    Input 6-digit key sent to your terminal
+                                </p>
 
-                                <div className="flex justify-center gap-3 mb-8">
+                                <div className="flex justify-between gap-2 mb-10">
                                     {otp.map((digit, index) => (
                                         <input
                                             key={index}
                                             ref={(el) => (inputsRef.current[index] = el)}
                                             type="text"
                                             inputMode="numeric"
-                                            pattern="\d*"
                                             maxLength="1"
                                             value={digit}
                                             onChange={(e) => handleOtpChange(e.target.value, index)}
                                             onKeyDown={(e) => handleOtpKeyDown(e, index)}
-                                            className="w-14 h-16 text-2xl font-black text-center bg-gray-50 border rounded-2xl focus:ring-4 focus:ring-primary/10 outline-none"
+                                            className="w-full h-16 text-xl font-black text-center bg-slate-50 border border-slate-200 rounded-sm focus:border-indigo-600 focus:bg-white outline-none transition-all text-slate-900"
                                         />
                                     ))}
                                 </div>
 
-                                <button onClick={verifyOtp} disabled={loading} className="w-full bg-gray-900 text-white py-4 rounded-2xl font-bold mb-4">
-                                    {loading ? "Verifying..." : "Verify & Proceed"}
+                                <button onClick={verifyOtp} disabled={loading} className="w-full bg-indigo-600 text-white py-6 rounded-sm font-black uppercase tracking-[0.3em] text-[11px] mb-6 shadow-lg shadow-indigo-600/20 hover:bg-slate-900 transition-all">
+                                    {loading ? "VALIDATING..." : "AUTHENTICATE SESSION"}
                                 </button>
 
-                                <button onClick={handleResend} className="flex items-center justify-center gap-2 mx-auto text-sm font-bold text-primary hover:underline">
-                                    <RefreshCcw size={14} /> Resend Code
+                                <button onClick={handleResend} className="flex items-center justify-center gap-2 mx-auto text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-indigo-600 transition-colors">
+                                    <RefreshCcw size={12} /> Request New Sequence
                                 </button>
                             </div>
                         </motion.div>

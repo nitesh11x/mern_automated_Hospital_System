@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Stethoscope, User, Mail, Lock, Phone, Award,
-  FileText, Globe, MapPin, DollarSign, Camera, ShieldCheck, Plus, ShieldAlert, ArrowRight
+  FileText, Globe, MapPin, DollarSign, Camera, ShieldCheck, Plus, ShieldAlert, ArrowRight, Activity
 } from "lucide-react";
 import { registerDoctorThunk } from "../../redux/slices/doctor.slice";
 import { toast } from "react-hot-toast";
@@ -48,7 +48,7 @@ const DoctorRegister = () => {
     const result = await dispatch(registerDoctorThunk(data));
 
     if (registerDoctorThunk.fulfilled.match(result)) {
-      toast.success("Doctor Registered Successfully!");
+      toast.success("Personnel Successfully Provisioned");
       setFormData({
         firstName: "", lastName: "", email: "", password: "",
         phone: "", specialization: "", experience: "",
@@ -58,124 +58,143 @@ const DoctorRegister = () => {
       setProfile(null);
       setPreview(null);
     } else {
-      toast.error(result.payload || "Registration Failed");
+      toast.error(result.payload || "Authentication/Registration Failure");
     }
   };
 
-  // --- PROTECTED ACCESS VIEW ---
+  // --- UNAUTHORIZED TERMINAL VIEW ---
   if (!isAdminAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-6">
-        <div className="max-w-md w-full bg-white border border-slate-100 p-10 rounded-[3rem] text-center shadow-xl shadow-slate-200/50">
-          <div className="w-20 h-20 bg-red-50 text-red-500 rounded-3xl flex items-center justify-center mx-auto mb-6">
-            <ShieldAlert size={40} />
+      <div className="min-h-screen bg-[#FBFBFF] flex items-center justify-center p-6 font-sans">
+        <div className="max-w-md w-full bg-white border border-slate-200 p-12 rounded-sm text-center shadow-sm">
+          <div className="w-20 h-20 bg-red-50 text-red-600 rounded-sm flex items-center justify-center mx-auto mb-8 border border-red-100">
+            <ShieldAlert size={40} strokeWidth={2.5} />
           </div>
-          <h2 className="text-2xl font-black text-slate-900 mb-2">Unauthorized</h2>
-          <p className="text-slate-500 mb-8 font-medium">Only system administrators can register new medical personnel.</p>
+          <h2 className="text-3xl font-black text-slate-900 mb-2 uppercase italic tracking-tighter">Access Denied</h2>
+          <p className="text-[10px] text-slate-400 mb-10 font-black uppercase tracking-widest leading-loose">
+            Security Clearance Level 4 Required.<br />Only System Administrators may provision credentials.
+          </p>
           <Link
             to="/admin/login"
-            className="flex items-center justify-center gap-2 w-full bg-primary text-white py-4 rounded-2xl font-bold hover:bg-primary-dark transition-all shadow-lg shadow-primary/20"
+            className="flex items-center justify-center gap-3 w-full bg-slate-900 text-white py-5 rounded-sm font-black text-[11px] uppercase tracking-[0.2em] hover:bg-indigo-600 transition-all shadow-xl shadow-indigo-900/10"
           >
-            Admin Login <ArrowRight size={18} />
+            Authenticate Admin <ArrowRight size={16} />
           </Link>
         </div>
       </div>
     );
   }
 
-  // --- AUTHORIZED REGISTRATION VIEW ---
+  // --- AUTHORIZED PROVISIONING VIEW ---
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pt-32 pb-20 px-6">
-      <div className="max-w-4xl mx-auto">
-        {/* Header Section */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 text-primary rounded-2xl mb-4">
-            <Stethoscope size={32} />
+    <div className="min-h-screen bg-[#FBFBFF] pt-32 pb-20 px-6 font-sans">
+      <div className="max-w-5xl mx-auto">
+
+        {/* Header Protocol */}
+        <div className="mb-16">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="w-12 h-1 bg-indigo-600 rounded-sm" />
+            <p className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.4em]">Administrative Terminal</p>
           </div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight">
-            Doctor <span className="text-primary">Registration</span>
+          <h1 className="text-5xl md:text-6xl font-black text-slate-900 uppercase italic tracking-tighter leading-none">
+            Provision <span className="text-indigo-600">Personnel</span>
           </h1>
-          <p className="text-slate-500 mt-2 font-medium italic">Provisioning new medical staff credentials.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {/* PROFILE IMAGE SECTION */}
-          <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 flex flex-col items-center">
-            <div className="relative group">
-              <div className="w-32 h-32 rounded-3xl bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden transition-all group-hover:border-primary/50">
-                {preview ? (
-                  <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+
+          {/* Left Column: Media & Core Auth */}
+          <div className="lg:col-span-4 space-y-8">
+            <div className="bg-white p-10 rounded-sm border border-slate-200 shadow-sm flex flex-col items-center">
+              <div className="relative group">
+                <div className="w-40 h-40 rounded-sm bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden transition-all group-hover:border-indigo-600/50">
+                  {preview ? (
+                    <img src={preview} alt="Preview" className="w-full h-full object-cover grayscale-[0.2]" />
+                  ) : (
+                    <Camera className="text-slate-300" size={40} />
+                  )}
+                </div>
+                <label className="absolute -bottom-3 -right-3 p-3 bg-indigo-600 text-white rounded-sm cursor-pointer hover:bg-slate-900 transition-all shadow-lg">
+                  <Plus size={20} />
+                  <input type="file" onChange={handleFileChange} className="hidden" accept="image/*" />
+                </label>
+              </div>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-8">Identify Bio-Metric Image</p>
+            </div>
+
+            <div className="bg-slate-900 p-8 rounded-sm text-white border border-slate-800">
+              <div className="flex items-center gap-3 mb-6">
+                <Activity size={18} className="text-indigo-400" />
+                <h3 className="text-[11px] font-black uppercase tracking-widest text-indigo-400">Security Clearance</h3>
+              </div>
+              <Input dark label="Access Email" name="email" type="email" icon={<Mail size={16} />} value={formData.email} onChange={handleInputChange} placeholder="ID@SYSTEM.COM" />
+              <div className="mt-4">
+                <Input dark label="Terminal Password" name="password" type="password" icon={<Lock size={16} />} value={formData.password} onChange={handleInputChange} placeholder="••••••••" />
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Personnel Data */}
+          <div className="lg:col-span-8 space-y-8">
+            {/* PERSONAL DATA GRID */}
+            <div className="bg-white p-10 rounded-sm border border-slate-200 shadow-sm">
+              <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.3em] mb-10 pb-4 border-b border-slate-100 flex items-center gap-3">
+                <User size={18} className="text-indigo-600" /> Personal Identifier Registry
+              </h3>
+              <div className="grid md:grid-cols-2 gap-x-8 gap-y-10">
+                <Input label="First Name" name="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="JOHN" />
+                <Input label="Last Name" name="lastName" value={formData.lastName} onChange={handleInputChange} placeholder="DOE" />
+                <Input label="Primary Phone" name="phone" icon={<Phone size={16} />} value={formData.phone} onChange={handleInputChange} placeholder="+1.000.000.0000" />
+                <Input label="Duty Station" name="location" icon={<MapPin size={16} />} value={formData.location} onChange={handleInputChange} placeholder="HQ - NEW YORK" />
+              </div>
+            </div>
+
+            {/* MEDICAL DATA GRID */}
+            <div className="bg-white p-10 rounded-sm border border-slate-200 shadow-sm">
+              <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.3em] mb-10 pb-4 border-b border-slate-100 flex items-center gap-3">
+                <Award size={18} className="text-indigo-600" /> Professional Credentials
+              </h3>
+              <div className="grid md:grid-cols-2 gap-x-8 gap-y-10">
+                <Input label="Specialization" name="specialization" icon={<Stethoscope size={16} />} value={formData.specialization} onChange={handleInputChange} placeholder="CARDIOLOGY" />
+                <Input label="Service Years" name="experience" type="number" icon={<Award size={16} />} value={formData.experience} onChange={handleInputChange} placeholder="10" />
+                <Input label="License ID" name="licenseNumber" icon={<FileText size={16} />} value={formData.licenseNumber} onChange={handleInputChange} placeholder="MD-882-991" />
+                <Input label="Consult Fee (USD)" name="consultationFees" type="number" icon={<DollarSign size={16} />} value={formData.consultationFees} onChange={handleInputChange} placeholder="250" />
+              </div>
+
+              <div className="mt-10">
+                <Input label="Linguistic Skills (Comma Sep)" name="languages" icon={<Globe size={16} />} value={formData.languages} onChange={handleInputChange} placeholder="ENGLISH, SPANISH, FRENCH" />
+              </div>
+
+              <div className="mt-10">
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Personnel Biography / Expertise</label>
+                <textarea
+                  name="bio"
+                  value={formData.bio}
+                  onChange={handleInputChange}
+                  placeholder="ENTER MEDICAL HISTORY AND BOARD CERTIFICATIONS..."
+                  className="w-full mt-3 p-5 bg-slate-50 border border-slate-100 rounded-sm outline-none focus:bg-white focus:border-indigo-600 transition-all min-h-35 text-[11px] font-bold text-slate-700 uppercase tracking-wider"
+                />
+              </div>
+            </div>
+
+            {/* FINAL AUTHENTICATION */}
+            <div className="flex flex-col items-end gap-6">
+              <div className="flex items-center gap-3 text-emerald-600 bg-emerald-50/50 px-6 py-3 border border-emerald-100 rounded-sm">
+                <ShieldCheck size={16} strokeWidth={3} />
+                <p className="text-[9px] font-black uppercase tracking-[0.2em]">Validated HIPAA-Ready Entry</p>
+              </div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full md:w-80 bg-indigo-600 text-white py-6 rounded-sm font-black uppercase tracking-[0.3em] text-[12px] shadow-xl shadow-indigo-900/20 hover:bg-slate-900 transition-all disabled:bg-slate-300 flex items-center justify-center gap-4 group"
+              >
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
-                  <Camera className="text-slate-300" size={32} />
+                  <>Authorize Provisioning <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" /></>
                 )}
-              </div>
-              <label className="absolute -bottom-2 -right-2 p-2 bg-primary text-white rounded-xl cursor-pointer hover:scale-110 transition-transform shadow-lg">
-                <Plus size={18} />
-                <input type="file" onChange={handleFileChange} className="hidden" accept="image/*" />
-              </label>
+              </button>
             </div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-4">Professional Photo</p>
-          </div>
-
-          {/* BASIC INFORMATION SECTION */}
-          <div className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-sm border border-slate-100">
-            <h3 className="text-xl font-bold text-slate-900 mb-8 flex items-center gap-2">
-              <User size={20} className="text-primary" /> Basic Information
-            </h3>
-            <div className="grid md:grid-cols-2 gap-6">
-              <Input label="First Name" name="firstName" icon={<User size={18} />} value={formData.firstName} onChange={handleInputChange} placeholder="John" />
-              <Input label="Last Name" name="lastName" icon={<User size={18} />} value={formData.lastName} onChange={handleInputChange} placeholder="Smith" />
-              <Input label="Email" name="email" type="email" icon={<Mail size={18} />} value={formData.email} onChange={handleInputChange} placeholder="dr.smith@newcare.com" />
-              <Input label="Password" name="password" type="password" icon={<Lock size={18} />} value={formData.password} onChange={handleInputChange} placeholder="••••••••" />
-              <Input label="Phone" name="phone" icon={<Phone size={18} />} value={formData.phone} onChange={handleInputChange} placeholder="+1 (555) 000-0000" />
-              <Input label="Location" name="location" icon={<MapPin size={18} />} value={formData.location} onChange={handleInputChange} placeholder="New York, USA" />
-            </div>
-          </div>
-
-          {/* PROFESSIONAL DETAILS SECTION */}
-          <div className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-sm border border-slate-100">
-            <h3 className="text-xl font-bold text-slate-900 mb-8 flex items-center gap-2">
-              <Award size={20} className="text-primary" /> Professional Details
-            </h3>
-            <div className="grid md:grid-cols-2 gap-6">
-              <Input label="Specialization" name="specialization" icon={<Stethoscope size={18} />} value={formData.specialization} onChange={handleInputChange} placeholder="Cardiology" />
-              <Input label="Experience (Years)" name="experience" type="number" icon={<Award size={18} />} value={formData.experience} onChange={handleInputChange} placeholder="10" />
-              <Input label="License Number" name="licenseNumber" icon={<FileText size={18} />} value={formData.licenseNumber} onChange={handleInputChange} placeholder="LIC-992034" />
-              <Input label="Consultation Fees" name="consultationFees" type="number" icon={<DollarSign size={18} />} value={formData.consultationFees} onChange={handleInputChange} placeholder="150" />
-              <div className="md:col-span-2">
-                <Input label="Languages (Comma separated)" name="languages" icon={<Globe size={18} />} value={formData.languages} onChange={handleInputChange} placeholder="English, Spanish" />
-              </div>
-            </div>
-
-            <div className="mt-6">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Professional Bio</label>
-              <textarea
-                name="bio"
-                value={formData.bio}
-                onChange={handleInputChange}
-                placeholder="Medical background and expertise..."
-                className="w-full mt-2 p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:bg-white focus:border-primary transition-all min-h-[120px] text-sm text-slate-700"
-              />
-            </div>
-          </div>
-
-          {/* SUBMIT SECTION */}
-          <div className="flex flex-col items-center gap-6">
-            <div className="flex items-center gap-2 text-emerald-600">
-              <ShieldCheck size={18} />
-              <p className="text-[10px] font-black uppercase tracking-widest text-center">System Logged HIPAA-Ready Registration</p>
-            </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full md:w-80 bg-primary text-white py-5 rounded-3xl font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:bg-primary-dark transition-all disabled:bg-slate-300 flex items-center justify-center"
-            >
-              {loading ? (
-                <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              ) : (
-                "Register Doctor"
-              )}
-            </button>
           </div>
         </form>
       </div>
@@ -183,15 +202,22 @@ const DoctorRegister = () => {
   );
 };
 
-const Input = ({ label, icon, ...props }) => (
-  <div className="space-y-2">
-    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">{label}</label>
+const Input = ({ label, icon, dark, ...props }) => (
+  <div className="space-y-3">
+    <label className={`text-[10px] font-black uppercase tracking-widest ml-1 ${dark ? 'text-indigo-400' : 'text-slate-400'}`}>
+      {label}
+    </label>
     <div className="relative group">
-      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors">
-        {icon}
-      </div>
+      {icon && (
+        <div className={`absolute left-5 top-1/2 -translate-y-1/2 transition-colors ${dark ? 'text-indigo-800 group-focus-within:text-indigo-400' : 'text-slate-300 group-focus-within:text-indigo-600'}`}>
+          {icon}
+        </div>
+      )}
       <input
-        className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all text-sm text-slate-700 placeholder:text-slate-300"
+        className={`w-full ${icon ? 'pl-14' : 'pl-5'} pr-5 py-4 rounded-sm outline-none transition-all text-[11px] font-black uppercase tracking-widest placeholder:opacity-50
+            ${dark
+            ? 'bg-slate-800 border border-slate-700 text-white focus:bg-slate-950 focus:border-indigo-500'
+            : 'bg-slate-50 border border-slate-100 text-slate-900 focus:bg-white focus:border-indigo-600'}`}
         {...props}
       />
     </div>

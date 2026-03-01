@@ -1,132 +1,158 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Activity, ShieldCheck, Clock, PhoneCall, Plus } from "lucide-react";
+import { ArrowRight, Activity, ShieldCheck, Clock, PhoneCall, Plus, Microscope } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Home = () => {
     return (
-        <div className="pt-20 min-h-screen bg-white text-slate-900">
+        <div className="pt-20 min-h-screen bg-linear-to-br from-indigo-50 via-white to-purple-50 text-slate-900">
 
-            {/* --- HERO SECTION --- */}
-            <section className="relative px-6 lg:px-12 py-16 lg:py-24 max-w-7xl mx-auto">
-                <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* --- MODULAR HERO SECTION --- */}
+            <section className="px-6 lg:px-12 py-12 max-w-7xl mx-auto">
+                <div className="grid lg:grid-cols-12 gap-4">
 
+                    {/* Main Statement Box */}
                     <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        className="space-y-8"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="lg:col-span-8 bg-white border border-slate-200 p-10 lg:p-16 flex flex-col justify-between shadow-sm"
                     >
-                        <div className="flex items-center gap-3">
-                            <span className="h-0.5 w-8 bg-cyan-500"></span>
-                            <span className="text-xs font-bold tracking-[0.2em] uppercase text-cyan-600">
-                                Global Excellence in Medicine
-                            </span>
+                        <div>
+                            <p className="text-purple-600 font-bold text-[10px] tracking-[0.5em] uppercase mb-8 flex items-center gap-3">
+                                <span className="w-2 h-2 bg-indigo-600"></span> Bio-Tech Integration
+                            </p>
+
+                            <h1 className="text-5xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-8">
+                                Redefining the <br />
+                                <span className="bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                                    Clinical Experience.
+                                </span>
+                            </h1>
+
+                            <p className="text-slate-600 text-lg max-w-xl leading-relaxed">
+                                NewCare combines algorithmic precision with elite clinical expertise
+                                to deliver a healthcare model built for the next century.
+                            </p>
                         </div>
 
-                        <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight leading-[1.1]">
-                            Advanced Care <br />
-                            <span className="text-slate-400 font-light italic text-4xl lg:text-6xl">for a</span> <br />
-                            New Generation.
-                        </h1>
-
-                        <p className="text-lg text-slate-500 max-w-md leading-relaxed border-l-2 border-slate-100 pl-6">
-                            NewCare combines world-class clinical expertise with next-generation
-                            digital health infrastructure to provide seamless patient outcomes.
-                        </p>
-
-                        <div className="flex flex-col sm:flex-row gap-4">
-                            <Link to={'/appointment/book'} className="bg-[#0F172A] text-white cursor-pointer px-10 py-5 text-sm font-bold uppercase tracking-widest hover:bg-cyan-600 transition-all flex items-center gap-3">
-                                Book Consultation <ArrowRight size={18} />
+                        <div className="mt-12 flex flex-wrap gap-4">
+                            <Link
+                                to={'/appointment/book'}
+                                className="bg-linear-to-r from-indigo-600 to-purple-600 text-white px-8 py-5 text-xs font-bold uppercase tracking-widest hover:from-indigo-700 hover:to-purple-700 transition-all flex items-center gap-4 shadow-lg"
+                            >
+                                Book Appointment <ArrowRight size={16} />
                             </Link>
-                            <button className="border border-slate-200 cursor-pointer px-10 py-5 text-sm font-bold uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center gap-3">
-                                <PhoneCall size={18} /> Emergency
+
+                            <button className="border border-indigo-200 text-indigo-700 px-8 py-5 text-xs font-bold uppercase tracking-widest hover:bg-indigo-50 transition-all">
+                                View Specialists
                             </button>
                         </div>
                     </motion.div>
 
+                    {/* Side Visual/Action Box */}
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="relative"
+                        initial={{ opacity: 0, x: 10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="lg:col-span-4 grid grid-rows-2 gap-4"
                     >
-                        {/* Medical Grid Pattern Overlay */}
-                        <div className="absolute inset-0 z-10 opacity-10 pointer-events-none"
-                            style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
+                        <div className="bg-linear-to-br from-indigo-600 to-purple-600 p-8 text-white flex flex-col justify-between">
+                            <Activity size={32} strokeWidth={1.5} />
+                            <div>
+                                <h2 className="text-2xl font-bold leading-tight mb-2">Emergency Response</h2>
+                                <p className="text-indigo-100 text-sm mb-6">
+                                    Immediate surgical intervention & triage.
+                                </p>
+                                <button className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest bg-white text-purple-600 px-4 py-3 self-start hover:text-indigo-600 transition">
+                                    <PhoneCall size={14} /> Call Now
+                                </button>
+                            </div>
+                        </div>
 
-                        <img
-                            src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1000"
-                            className="w-full h-125 object-cover border-12 border-slate-50 shadow-2xl"
-                            alt="Modern Hospital Facility"
-                        />
-
-                        {/* Floating Credibility Badge */}
-                        <div className="absolute -bottom-6 -left-6 bg-cyan-500 text-white p-8 hidden md:block">
-                            <Activity size={32} className="mb-4" />
-                            <p className="text-3xl font-black">24/7</p>
-                            <p className="text-[10px] font-bold tracking-widest uppercase opacity-80">Critical Response</p>
+                        <div className="relative group overflow-hidden rounded-sm">
+                            <img
+                                src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1000"
+                                className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                                alt="Hospital"
+                            />
+                            <div className="absolute inset-0 bg-purple-900/10 group-hover:bg-transparent transition-all" />
                         </div>
                     </motion.div>
                 </div>
             </section>
 
-            {/* --- MODERN MARQUEE BAR --- */}
-            <div className="bg-[#0F172A] border-y border-white/10 py-5 overflow-hidden">
+            {/* --- THE BENTO FEATURES --- */}
+            <section className="px-6 lg:px-12 pb-24 max-w-7xl mx-auto">
+                <div className="grid md:grid-cols-4 gap-4">
+
+                    <div className="bg-white border border-slate-200 p-8 shadow-sm">
+                        <ShieldCheck className="text-indigo-600 mb-6" size={24} />
+                        <h3 className="text-sm font-bold uppercase tracking-widest mb-3">Accredited</h3>
+                        <p className="text-xs text-slate-500 leading-relaxed">
+                            International Health Commission (IHC) Platinum status.
+                        </p>
+                    </div>
+
+                    <div className="bg-white border border-slate-200 p-8 shadow-sm">
+                        <Clock className="text-purple-600 mb-6" size={24} />
+                        <h3 className="text-sm font-bold uppercase tracking-widest mb-3">Wait Times</h3>
+                        <p className="text-xs text-slate-500 leading-relaxed">
+                            Average triage-to-specialist time: 14.5 minutes.
+                        </p>
+                    </div>
+
+                    <div className="md:col-span-2 bg-slate-50 border border-slate-200 p-8 flex justify-between items-end shadow-sm">
+                        <div className="max-w-[60%]">
+                            <Microscope className="text-indigo-600 mb-6" size={24} />
+                            <h3 className="text-sm font-bold uppercase tracking-widest mb-3">Diagnostics</h3>
+                            <p className="text-xs text-slate-500 leading-relaxed">
+                                Access encrypted lab results through our secure 256-bit portal.
+                            </p>
+                        </div>
+                        <div className="text-right">
+                            <span className="text-4xl font-light bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                                03
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* --- STRIPED MARQUEE --- */}
+            <div className="bg-linear-to-r from-indigo-700 to-purple-700 py-4 overflow-hidden">
                 <motion.div
-                    animate={{ x: [0, -1500] }}
+                    animate={{ x: [-1000, 0] }}
                     transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
-                    className="flex whitespace-nowrap gap-16 text-white/90"
+                    className="flex whitespace-nowrap gap-16 text-white"
                 >
-                    {[1, 2, 3].map((i) => (
-                        <React.Fragment key={i}>
-                            <div className="flex items-center gap-4">
-                                <Plus className="text-cyan-400" size={16} />
-                                <span className="text-[11px] font-bold tracking-[0.3em] uppercase">Emergency Dept. Active</span>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <Plus className="text-cyan-400" size={16} />
-                                <span className="text-[11px] font-bold tracking-[0.3em] uppercase">ISO 9001 Certified</span>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <Plus className="text-cyan-400" size={16} />
-                                <span className="text-[11px] font-bold tracking-[0.3em] uppercase">Top Rated Specialists</span>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <Plus className="text-cyan-400" size={16} />
-                                <span className="text-[11px] font-bold tracking-[0.3em] uppercase">HIPAA Compliant Data</span>
-                            </div>
-                        </React.Fragment>
+                    {[1, 2, 3, 4, 5].map((i) => (
+                        <div key={i} className="flex items-center gap-6 font-bold text-[10px] uppercase tracking-[0.4em]">
+                            <Plus size={14} />
+                            <span>System Online</span>
+                            <span>•</span>
+                            <span>Physicians Active</span>
+                            <span>•</span>
+                            <span>Network Secured</span>
+                        </div>
                     ))}
                 </motion.div>
             </div>
 
-            {/* --- QUICK STATS SECTION --- */}
-            <section className="bg-slate-50 py-20">
-                <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-12">
-                    <div className="space-y-4">
-                        <div className="w-12 h-12 bg-white flex items-center justify-center shadow-sm">
-                            <ShieldCheck className="text-cyan-600" />
-                        </div>
-                        <h3 className="text-lg font-bold uppercase tracking-tight">Accredited Excellence</h3>
-                        <p className="text-sm text-slate-500 leading-relaxed">Verified by the International Healthcare Commission for surgical and diagnostic precision.</p>
-                    </div>
+            {/* --- FOOTER CTA --- */}
+            <section className="py-24 px-6 text-center border-b border-slate-100 bg-white">
+                <h2 className="text-4xl font-bold tracking-tight mb-8">
+                    Ready for a better healthcare experience?
+                </h2>
 
-                    <div className="space-y-4">
-                        <div className="w-12 h-12 bg-white flex items-center justify-center shadow-sm border-t-2 border-cyan-500">
-                            <Clock className="text-cyan-600" />
-                        </div>
-                        <h3 className="text-lg font-bold uppercase tracking-tight">Zero-Wait Triage</h3>
-                        <p className="text-sm text-slate-500 leading-relaxed">Our digital intake system ensures you are seen by a specialist in record time.</p>
-                    </div>
-
-                    <div className="space-y-4">
-                        <div className="w-12 h-12 bg-[#0F172A] flex items-center justify-center shadow-sm">
-                            <Activity className="text-cyan-400" />
-                        </div>
-                        <h3 className="text-lg font-bold uppercase tracking-tight">Live Diagnostics</h3>
-                        <p className="text-sm text-slate-500 leading-relaxed">Access your lab results and medical history in real-time through our patient portal.</p>
-                    </div>
+                <div className="inline-flex border border-indigo-600">
+                    <button className="px-10 py-5 bg-linear-to-r from-indigo-600 to-purple-600 text-white text-xs font-bold uppercase tracking-widest hover:from-indigo-700 hover:to-purple-700 transition-colors">
+                        New Patient Intake
+                    </button>
+                    <button className="px-10 py-5 bg-white text-indigo-700 text-xs font-bold uppercase tracking-widest border-l border-indigo-600 hover:bg-indigo-50 transition-colors">
+                        Contact Office
+                    </button>
                 </div>
             </section>
+
         </div>
     );
 };
