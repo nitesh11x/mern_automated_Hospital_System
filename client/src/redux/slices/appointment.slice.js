@@ -15,6 +15,49 @@ export const getAllAppointments = createAsyncThunk(
     }
 );
 
+export const getPatientAppointments = createAsyncThunk(
+    "appointment/patient/me",
+    async (_, { rejectWithValue }) => {
+        try {
+            const { data } = await api.get("/appointment/patient/me");
+            return data?.appointments || data;
+        } catch (error) {
+            return rejectWithValue(
+                error?.response?.data?.message || "Failed to fetch patient appointments"
+            );
+        }
+    }
+);
+
+
+export const getDoctorAppointments = createAsyncThunk(
+    "appointment/doctor/me",
+    async (_, { rejectWithValue }) => {
+        try {
+            const { data } = await api.get("/appointment/doctor/me");
+            return data?.appointments || data;
+        } catch (error) {
+            return rejectWithValue(
+                error?.response?.data?.message || "Failed to fetch doctor appointments"
+            );
+        }
+    }
+);
+
+export const updateAppointmentStatus = createAsyncThunk(
+    "appointment/status/update",
+    async ({ id, status }, { rejectWithValue }) => {
+        try {
+            const { data } = await api.put(`/appointment/status/${id}`, { status });
+            return data?.appointment || data;
+        } catch (error) {
+            return rejectWithValue(
+                error?.response?.data?.message || "Failed to update appointment status"
+            );
+        }
+    }
+);
+
 export const bookAppointment = createAsyncThunk(
     "appointment/book",
     async (appointmentData, { rejectWithValue }) => {
@@ -66,6 +109,41 @@ const appointmentSlice = createSlice({
             .addCase(getAllAppointments.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+            // ================= PATIENT APPOINTMENTS =================
+            .addCase(getPatientAppointments.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getPatientAppointments.fulfilled, (state, action) => {
+                state.loading = false;
+                state.appointments = action.payload;
+            })
+            .addCase(getPatientAppointments.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
+
+            // ================= DOCTOR APPOINTMENTS =================
+            .addCase(getDoctorAppointments.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getDoctorAppointments.fulfilled, (state, action) => {
+                state.loading = false;
+                state.appointments = action.payload;
+            })
+            .addCase(getDoctorAppointments.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            // ================= UPDATE STATUS =================
+            .addCase(updateAppointmentStatus.fulfilled, (state, action) => {
+                const updatedAppointment = action.payload;
+                state.appointments = state.appointments.map((appt) =>
+                    appt._id === updatedAppointment._id ? updatedAppointment : appt
+                );
             })
 
             .addCase(bookAppointment.pending, (state) => {

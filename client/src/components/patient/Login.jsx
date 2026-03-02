@@ -88,7 +88,7 @@ const Login = () => {
                         <div className="flex items-center justify-center lg:justify-start gap-2 mt-3">
                             <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">
                                 New Patient?
-                                <Link to="/register" className="text-indigo-600 ml-2 hover:underline transition-all">
+                                <Link to="/login" className="text-indigo-600 ml-2 hover:underline transition-all">
                                     Create Account
                                 </Link>
                             </p>

@@ -8,7 +8,8 @@ import {
     deleteAdminById,
     getAllAdmin,
     getAdminProfile,
-    logoutAdmin
+    logoutAdmin,
+    getDashboardStats
 } from "../controllers/admin.controller.js";
 
 import { isAdminAuth } from "../middlewares/auth.middleware.js";
@@ -19,6 +20,7 @@ router.post("/register", isAdminAuth, registerAdmin);
 router.post("/login", loginAdmin);
 
 router.get("/all", isAdminAuth, getAllAdmin);
+router.get("/stats", isAdminAuth, getDashboardStats);
 router.get("/me", isAdminAuth, getAdminProfile);
 router.post("/logout", isAdminAuth, logoutAdmin);
 

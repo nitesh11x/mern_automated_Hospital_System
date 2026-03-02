@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 import { asyncHandler } from "../utils/asyncHandler.util.js";
 import ErrorHandler from "../utils/errorHandler.utils.js";
 import { Admin } from "../models/Admin.model.js";
+import { Patient } from "../models/Patient.model.js";
+import { Doctor } from "../models/Doctor.model.js";
+import { Appointment } from "../models/Appointment.model.js";
 import cloudinary from "cloudinary";
 
 
@@ -176,3 +179,21 @@ export const logoutAdmin = (req, res) => {
     message: "Logged out successfully"
   });
 };
+
+export const getDashboardStats = asyncHandler(async (req, res, next) => {
+  const totalPatients = await Patient.countDocuments();
+  const totalDoctors = await Doctor.countDocuments();
+  const totalAppointments = await Appointment.countDocuments();
+
+  const completedAppointments = await Appointment.countDocuments({ status: "completed" });
+
+  res.status(200).json({
+    success: true,
+    stats: {
+      totalPatients,
+      totalDoctors,
+      totalAppointments,
+      completedAppointments
+    }
+  });
+});

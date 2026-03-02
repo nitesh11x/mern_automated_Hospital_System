@@ -159,10 +159,33 @@ export const deletePatientById = asyncHandler(async (req, res, next) => {
 })
 
 export const updatePatientById = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const patient = await Patient.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
+  if (!patient) return next(new ErrorHandler("Patient not found", 404));
 
-})
+  res.status(200).json({
+    success: true,
+    message: "Patient updated successfully",
+    patient
+  });
+});
 
 export const updatePatientStatusById = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const { isBlocked, isVerified } = req.body;
 
-})
+  const patient = await Patient.findById(id);
+  if (!patient) return next(new ErrorHandler("Patient not found", 404));
+
+  if (isBlocked !== undefined) patient.isBlocked = isBlocked;
+  if (isVerified !== undefined) patient.isVerified = isVerified;
+
+  await patient.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Patient status updated successfully",
+    patient
+  });
+});
 

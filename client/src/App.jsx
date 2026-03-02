@@ -43,6 +43,7 @@ import DoctorManage from './components/doctor/DoctorManage';
 
 import BookAppointment from './components/appointment/BookAppointment';
 import ShowAppointments from './components/appointment/ShowAppointments';
+import BookAppointmentOfSpecificDoctor from './components/appointment/BookAppointmentOfSpecificDoctor';
 
 function App() {
   const dispatch = useDispatch();
@@ -97,7 +98,8 @@ function App() {
 
           {/* appointment routes  */}
           <Route path='/appointment/book' element={<PatientRoute><BookAppointment /> </PatientRoute>}></Route >
-          <Route path='/appointment/all' element={<ShowAppointments /> }></Route >
+          <Route path='/appointment/book/:doctorId' element={<PatientRoute><BookAppointmentOfSpecificDoctor /> </PatientRoute>}></Route >
+          <Route path='/appointment/all' element={<AdminRoute><ShowAppointments /></AdminRoute>}></Route >
 
 
           {/* reviews routes  */}

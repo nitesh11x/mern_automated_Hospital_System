@@ -68,6 +68,20 @@ const OtpForm = () => {
         }
     };
 
+    const handleResend = async () => {
+        const storedEmail = localStorage.getItem("patientEmail");
+        if (!storedEmail) {
+            toast.error("IDENTIFIER_REQUIRED");
+            return;
+        }
+        try {
+            await dispatch(sendOtpThunk(storedEmail)).unwrap();
+            toast.success("Verification packet dispatched.");
+        } catch (err) {
+            toast.error(err || "DISPATCH_FAILED");
+        }
+    };
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#FBFBFF] px-6 font-sans">
 
