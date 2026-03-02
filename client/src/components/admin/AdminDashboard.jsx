@@ -96,7 +96,7 @@ const AdminDashboard = () => {
                         </div>
                         <div className="flex items-center gap-3 bg-white p-2 border border-slate-200 rounded shadow-sm">
                             <ShieldCheck size={16} className="text-emerald-500" />
-                            <span className="text-[9px] font-black uppercase tracking-[0.1em] text-slate-500">Security: Tier 1 Authorized</span>
+                            <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">Security: Tier 1 Authorized</span>
                         </div>
                     </div>
 
