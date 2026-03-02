@@ -6,6 +6,8 @@ import {
   Stethoscope,
   ArrowRight,
   ShieldCheck,
+  Activity,
+  Terminal,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginDoctorThunk } from "../../redux/slices/doctor.slice";
@@ -23,13 +25,9 @@ const DoctorLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const res = await dispatch(
-        loginDoctorThunk({ email, password })
-      ).unwrap();
-      toast.success("Login successful 🎉");
-
+      const res = await dispatch(loginDoctorThunk({ email, password })).unwrap();
+      toast.success("Identity Verified. Welcome back.");
       if (res.success) {
         navigate("/doctor/dashboard");
       }
@@ -39,118 +37,139 @@ const DoctorLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center px-6 py-20 relative overflow-hidden">
+    <div className="min-h-screen bg-[#FBFBFF] flex items-center justify-center font-sans relative overflow-hidden">
+      {/* Structural Decorative Elements */}
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
+        style={{ backgroundImage: `radial-gradient(#4F46E5 1px, transparent 1px)`, size: '40px 40px' }} />
 
-      {/* Decorative */}
-      <div className="absolute top-0 right-0 p-20 opacity-[0.03] pointer-events-none">
-        <Stethoscope size={400} />
-      </div>
-      <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="max-w-5xl w-full grid lg:grid-cols-2 bg-white shadow-2xl rounded-sm overflow-hidden border border-slate-200 m-6">
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md relative z-10"
-      >
-        {/* Header */}
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-4xl shadow-xl shadow-primary/10 mb-6 border border-primary/5">
-            <Stethoscope size={32} className="text-primary" />
+        {/* Left Column: Visual Branding */}
+        <div className="hidden lg:flex flex-col justify-between bg-slate-900 p-16 text-white relative overflow-hidden">
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-8">
+              <Activity className="text-indigo-500" size={24} />
+              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-indigo-400">Personnel Node 01</span>
+            </div>
+            <h1 className="text-6xl font-black uppercase italic tracking-tighter leading-none mb-4">
+              Medical <br /> <span className="text-indigo-500 text-7xl">Portal</span>
+            </h1>
+            <p className="text-slate-400 text-xs font-black uppercase tracking-widest max-w-xs leading-loose">
+              Secure gateway for verified medical practitioners and staff.
+            </p>
           </div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">
-            Doctor <span className="text-primary">Portal</span>
-          </h1>
-          <p className="text-slate-500 mt-2 font-medium">
-            Authorized medical personnel access only
-          </p>
+
+          <div className="relative z-10 border-t border-slate-800 pt-8">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-indigo-600/20 rounded-sm flex items-center justify-center border border-indigo-500/30">
+                <Terminal size={18} className="text-indigo-400" />
+              </div>
+              <div>
+                <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">System Status</p>
+                <p className="text-[10px] font-black uppercase text-emerald-500">All Modules Operational</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Background Aesthetic */}
+          <Stethoscope size={500} className="absolute -right-20 -bottom-20 text-slate-800/40 rotate-12" />
         </div>
 
-        {/* Card */}
-        <div className="bg-white p-8 md:p-10 rounded-[3rem] shadow-2xl shadow-slate-200/60 border border-slate-100">
-          <form onSubmit={handleSubmit} className="space-y-6">
-
-            {/* Email */}
-            <div className="space-y-2">
-              <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">
-                Work Email
-              </label>
-              <div className="relative group">
-                <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors" />
-                <input
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  type="email"
-                  placeholder="dr.smith@hospital.com"
-                  className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all text-slate-700"
-                />
+        {/* Right Column: Auth Form */}
+        <div className="p-10 md:p-16 flex flex-col justify-center">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+          >
+            <div className="mb-10 lg:hidden">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-1 bg-indigo-600" />
+                <span className="text-indigo-600 font-black text-[10px] uppercase tracking-widest">Login</span>
               </div>
+              <h2 className="text-3xl font-black text-slate-900 uppercase italic">Doctor Access</h2>
             </div>
 
-            {/* Password */}
-            <div className="space-y-2">
-              <div className="flex justify-between items-center px-1">
-                <label className="text-[11px] font-black uppercase tracking-widest text-slate-400">
-                  Password
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Email */}
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">
+                  Access Identifier (Email)
                 </label>
-                <Link
-                  to="/forgot-password"
-                  className="text-[11px] font-bold text-primary hover:underline"
-                >
-                  Forgot?
-                </Link>
+                <div className="relative group">
+                  <Mail size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-600 transition-colors" />
+                  <input
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    type="email"
+                    placeholder="ID@HOSPITAL-NETWORK.COM"
+                    className="w-full pl-14 pr-6 py-5 bg-slate-50 border border-slate-100 rounded-sm outline-none focus:bg-white focus:border-indigo-600 transition-all text-[11px] font-black uppercase tracking-widest placeholder:opacity-50"
+                  />
+                </div>
               </div>
-              <div className="relative group">
-                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors" />
-                <input
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  type="password"
-                  placeholder="••••••••••••"
-                  className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all text-slate-700"
-                />
-              </div>
-            </div>
 
-            {/* Security Notice */}
-            <div className="flex items-center gap-3 p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
-              <ShieldCheck size={20} className="text-emerald-500 shrink-0" />
-              <p className="text-[10px] text-emerald-700 font-semibold leading-tight">
-                Your session is encrypted and secure.
+              {/* Password */}
+              <div className="space-y-3">
+                <div className="flex justify-between items-center px-1">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                    Security Credentials
+                  </label>
+                  <Link
+                    to="/forgot-password"
+                    className="text-[9px] font-black uppercase text-indigo-600 tracking-widest hover:text-slate-900"
+                  >
+                    Reset Password
+                  </Link>
+                </div>
+                <div className="relative group">
+                  <Lock size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-600 transition-colors" />
+                  <input
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    type="password"
+                    placeholder="••••••••••••"
+                    className="w-full pl-14 pr-6 py-5 bg-slate-50 border border-slate-100 rounded-sm outline-none focus:bg-white focus:border-indigo-600 transition-all text-[11px] font-black uppercase tracking-widest"
+                  />
+                </div>
+              </div>
+
+              {/* Security Protocol */}
+              <div className="flex items-center gap-4 p-5 bg-slate-50 border border-slate-100 rounded-sm">
+                <ShieldCheck size={20} className="text-indigo-600 shrink-0" strokeWidth={3} />
+                <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest leading-relaxed">
+                  Encryption active. Unauthorized access is <br />
+                  logged and reported to security.
+                </p>
+              </div>
+
+              {/* Button */}
+              <button
+                disabled={loading}
+                className="w-full bg-slate-900 text-white py-6 rounded-sm font-black uppercase tracking-[0.3em] text-[12px] shadow-xl shadow-slate-900/10 hover:bg-indigo-600 transition-all flex items-center justify-center gap-3 group disabled:opacity-50"
+              >
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <>
+                    Initialize Session
+                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
+              </button>
+            </form>
+
+            <div className="mt-12 pt-8 border-t border-slate-100 text-center">
+              <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest">
+                Network Technical Support:{" "}
+                <Link to="/contact" className="text-indigo-600 hover:text-slate-900 ml-2">
+                  Request Assistance
+                </Link>
               </p>
             </div>
-
-            {/* Button */}
-            <button
-              disabled={loading}
-              className="w-full bg-primary text-white py-4 rounded-2xl font-bold shadow-lg shadow-primary/25 hover:bg-primary-dark transition-all flex items-center justify-center gap-2 group disabled:opacity-70"
-            >
-              {loading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              ) : (
-                <>
-                  Sign In to Dashboard
-                  <ArrowRight
-                    size={18}
-                    className="group-hover:translate-x-1 transition-transform"
-                  />
-                </>
-              )}
-            </button>
-          </form>
+          </motion.div>
         </div>
-
-        <p className="text-center mt-8 text-slate-400 text-xs font-medium">
-          Need technical assistance?{" "}
-          <Link
-            to="/contact"
-            className="text-primary font-bold hover:underline"
-          >
-            Contact IT Support
-          </Link>
-        </p>
-      </motion.div>
+      </div>
     </div>
   );
 };

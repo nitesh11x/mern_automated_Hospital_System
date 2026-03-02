@@ -40,6 +40,7 @@ const Register = () => {
     dob: "",
     gender: "",
   });
+
   useEffect(() => {
     if (!isOtpVerified) {
       navigate("/login");
@@ -124,17 +125,21 @@ const Register = () => {
   return (
     <div className="min-h-screen bg-[#F8FAFC] pt-28 pb-20 px-6">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-4xl mx-auto bg-white rounded-[3rem] shadow-xl overflow-hidden border"
+        className="max-w-5xl mx-auto bg-white rounded-sm shadow-2xl overflow-hidden border border-gray-100"
       >
         <div className="flex flex-col md:flex-row">
-          {/* LEFT SIDE */}
-          <div className="md:w-1/3 bg-primary p-12 text-white flex flex-col items-center text-center">
-            <h2 className="text-3xl font-bold mb-6">Join NewCare</h2>
+          {/* LEFT SIDE: Branding & Profile */}
+          <div className="md:w-1/3 bg-indigo-700 p-12 text-white flex flex-col items-center text-center relative">
+            <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-purple-500 to-indigo-500"></div>
+
+            <h2 className="text-3xl font-black mb-12 uppercase tracking-tighter">
+              Join <br /> NewCare
+            </h2>
 
             <div className="relative group">
-              <div className="w-32 h-32 rounded-full border-4 border-white/20 overflow-hidden bg-white/10 flex items-center justify-center">
+              <div className="w-40 h-40 rounded-sm border-2 border-white/30 overflow-hidden bg-white/10 flex items-center justify-center backdrop-blur-sm transition-all group-hover:border-purple-400">
                 {profilePreview ? (
                   <img
                     src={profilePreview}
@@ -142,12 +147,12 @@ const Register = () => {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <User size={48} className="text-white/40" />
+                  <User size={64} className="text-white/20" />
                 )}
               </div>
 
-              <label className="absolute bottom-0 right-0 bg-white text-primary p-2 rounded-full cursor-pointer shadow-lg">
-                <Camera size={18} />
+              <label className="absolute -bottom-4 -right-4 bg-purple-600 hover:bg-purple-700 text-white p-3 rounded-sm cursor-pointer shadow-xl transition-all border border-white/20">
+                <Camera size={20} />
                 <input
                   type="file"
                   className="hidden"
@@ -156,12 +161,16 @@ const Register = () => {
                 />
               </label>
             </div>
+
+            <p className="mt-12 text-indigo-100/60 text-xs font-bold uppercase tracking-widest leading-loose">
+              Complete your profile to <br /> access personalized care
+            </p>
           </div>
 
-          {/* RIGHT SIDE */}
-          <div className="md:w-2/3 p-8 lg:p-12">
+          {/* RIGHT SIDE: Form */}
+          <div className="md:w-2/3 p-8 lg:p-14">
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
                 <InputField
                   label="Patient ID"
                   name="patientId"
@@ -212,15 +221,15 @@ const Register = () => {
                   icon={<Calendar size={18} />}
                 />
 
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700 ml-1">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-indigo-700 ml-1">
                     Gender
                   </label>
                   <select
                     name="gender"
                     value={formData.gender}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-gray-50 border rounded-2xl"
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-sm focus:border-purple-600 outline-none transition-all text-sm font-medium appearance-none cursor-pointer"
                   >
                     <option value="">Select Gender</option>
                     <option value="Male">Male</option>
@@ -242,16 +251,18 @@ const Register = () => {
               </div>
 
               {error && (
-                <p className="text-red-500 text-sm font-medium">{error}</p>
+                <div className="p-3 bg-red-50 border-l-4 border-red-500 text-red-600 text-xs font-bold uppercase">
+                  {error}
+                </div>
               )}
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-primary text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2"
+                className="w-full bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-4 rounded-sm font-black uppercase tracking-[0.2em] text-xs flex items-center justify-center gap-3 shadow-lg shadow-indigo-100 transition-all disabled:opacity-70 group"
               >
-                {loading ? "Creating..." : "Create Account"}
-                <ArrowRight size={20} />
+                {loading ? "Creating..." : "Complete Registration"}
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </button>
             </form>
           </div>
@@ -270,12 +281,12 @@ const InputField = ({
   icon,
   readOnly,
 }) => (
-  <div className="space-y-2">
-    <label className="text-sm font-bold text-gray-700 ml-1">
+  <div className="space-y-1">
+    <label className="text-[10px] font-black uppercase tracking-widest text-indigo-700 ml-1">
       {label}
     </label>
     <div className="relative">
-      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-300">
         {icon}
       </div>
       <input
@@ -284,7 +295,11 @@ const InputField = ({
         value={value}
         readOnly={readOnly}
         onChange={onChange}
-        className="w-full pl-12 pr-4 py-3 bg-gray-50 border rounded-2xl"
+        className={`w-full pl-12 pr-4 py-3 border rounded-sm outline-none transition-all text-sm font-medium
+          ${readOnly
+            ? "bg-gray-100 border-gray-200 text-gray-500 cursor-not-allowed"
+            : "bg-gray-50 border-gray-200 focus:border-purple-600 focus:bg-white"
+          }`}
       />
     </div>
   </div>

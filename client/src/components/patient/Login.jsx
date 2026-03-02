@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck, Building2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { patientLoginThunk } from "../../redux/slices/patient.slice";
 import { useNavigate, Link } from "react-router-dom";
@@ -41,122 +41,140 @@ const Login = () => {
         }
         try {
             await dispatch(patientLoginThunk(formData)).unwrap();
-            toast.success("Login successful 🎉");
+            toast.success("Access Granted");
         } catch (err) {
-            toast.error(err || "Login failed");
+            toast.error(err || "Authentication failed");
         }
     };
 
     return (
-        <div className="min-h-screen flex items-stretch bg-white">
-            {/* LEFT SIDE */}
+        <div className="min-h-screen flex items-stretch bg-white font-sans">
+            {/* LEFT SIDE: INSTITUTIONAL BRANDING */}
             <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 transition={{ duration: 0.8 }}
-                className="hidden lg:flex w-1/2 bg-primary relative items-center justify-center p-12 overflow-hidden"
+                className="hidden lg:flex w-1/2 bg-indigo-600 relative items-center justify-center p-16 overflow-hidden"
             >
-                <div className="relative z-10 max-w-md text-center">
-                    <h2 className="text-4xl font-bold text-white mb-6">
-                        Welcome Back to <br /> NewCare Portal
+                {/* Clean background pattern */}
+                <div className="absolute inset-0 opacity-5"
+                    style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+
+                <div className="relative z-10 max-w-lg">
+                    <div className="mb-8 inline-flex items-center gap-3 bg-white/10 px-4 py-2 rounded-sm border border-white/20">
+                        <Building2 className="text-white" size={18} />
+                        <span className="text-[10px] font-bold text-white uppercase tracking-[0.2em]">Patient Care Portal</span>
+                    </div>
+                    <h2 className="text-5xl font-extrabold text-white mb-8 tracking-tight uppercase leading-[1.1]">
+                        Medical <br /> <span className="text-indigo-200">Excellence</span>
                     </h2>
-                    <p className="text-white/80 text-lg">
-                        Securely access your health records anytime.
+                    <p className="text-indigo-50 text-lg font-medium max-w-sm leading-relaxed border-l-4 border-indigo-300 pl-6">
+                        Secure access to your personal health records, appointments, and medical staff communications.
                     </p>
                 </div>
             </motion.div>
 
-            {/* RIGHT SIDE */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-20">
+            {/* RIGHT SIDE: AUTH FORM */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-[#F8FAFC]">
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="w-full max-w-md space-y-8"
+                    className="w-full max-w-md bg-white p-10 shadow-sm border border-slate-200 rounded-sm"
                 >
-                    <div>
-                        <h3 className="text-3xl font-extrabold text-gray-900">
+                    <div className="mb-10 text-center lg:text-left">
+                        <h3 className="text-3xl font-extrabold text-slate-900 uppercase tracking-tight">
                             Sign In
                         </h3>
-                        <p className="text-gray-500 mt-2">
-                            Don't have an account?
-                            <Link
-                                to="/login"
-                                className="text-primary font-bold ml-1 hover:underline"
-                            >
-                                Create one
-                            </Link>
-                        </p>
+                        <div className="flex items-center justify-center lg:justify-start gap-2 mt-3">
+                            <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">
+                                New Patient?
+                                <Link to="/register" className="text-indigo-600 ml-2 hover:underline transition-all">
+                                    Create Account
+                                </Link>
+                            </p>
+                        </div>
                     </div>
 
-                    <form className="space-y-5" onSubmit={handleSubmit}>
-                        {/* Email */}
+                    <form className="space-y-6" onSubmit={handleSubmit}>
+                        {/* Email Input */}
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-700 ml-1">
+                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">
                                 Email Address
                             </label>
-                            <div className="relative">
-                                <Mail
-                                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                                    size={20}
-                                />
+                            <div className="relative group">
+                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-600 transition-colors" size={18} />
                                 <input
                                     type="email"
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    placeholder="name@company.com"
-                                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 outline-none"
+                                    placeholder="patient@example.com"
+                                    className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-sm focus:bg-white focus:border-indigo-600 focus:ring-0 outline-none transition-all font-bold text-sm uppercase tracking-wider placeholder:text-slate-300"
                                 />
                             </div>
                         </div>
 
-                        {/* Password */}
+                        {/* Password Input */}
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-700">
-                                Password
-                            </label>
-                            <div className="relative">
-                                <Lock
-                                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                                    size={20}
-                                />
+                            <div className="flex justify-between items-end px-1">
+                                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                                    Access Key
+                                </label>
+                                <a href="#" className="text-[9px] font-bold text-indigo-600 uppercase tracking-widest hover:text-indigo-800">Recovery?</a>
+                            </div>
+                            <div className="relative group">
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-600 transition-colors" size={18} />
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
                                     placeholder="••••••••"
-                                    className="w-full pl-12 pr-12 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 outline-none"
+                                    className="w-full pl-12 pr-12 py-4 bg-slate-50 border border-slate-200 rounded-sm focus:bg-white focus:border-indigo-600 focus:ring-0 outline-none transition-all font-bold text-sm"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-indigo-600 transition-colors"
                                 >
-                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
                         </div>
 
                         {error && (
-                            <p className="text-red-500 text-sm font-medium">
-                                {error}
-                            </p>
+                            <motion.div
+                                initial={{ opacity: 0, x: -5 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className="bg-rose-50 border-l-4 border-rose-500 p-4"
+                            >
+                                <p className="text-rose-700 text-[10px] font-bold uppercase tracking-widest">
+                                    Login Failed: {error}
+                                </p>
+                            </motion.div>
                         )}
 
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-primary text-white py-4 rounded-2xl font-bold shadow-xl hover:bg-primary-dark transition-all flex items-center justify-center gap-2"
+                            className="w-full bg-indigo-600 text-white py-5 rounded-sm font-bold uppercase tracking-[0.2em] text-xs shadow-md shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center justify-center gap-3 active:translate-y-0.5"
                         >
-                            {loading ? "Signing In..." : "Sign In"}
-                            {!loading && <ArrowRight size={20} />}
+                            {loading ? "Authenticating..." : "Sign Into Account"}
+                            {!loading && <ArrowRight size={18} />}
                         </button>
                     </form>
 
-                    <p className="text-center text-xs text-gray-400 px-8">
-                        By signing in, you agree to our Terms and Privacy Policy.
-                    </p>
+                    <div className="mt-12 pt-8 border-t border-slate-100 flex flex-col items-center">
+                        <div className="flex items-center gap-2 mb-2">
+                            <ShieldCheck size={14} className="text-emerald-500" />
+                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+                                Encrypted Healthcare Session
+                            </p>
+                        </div>
+                        <p className="text-[8px] font-medium text-slate-300 uppercase tracking-widest">
+                            System Compliance: HIPAA / GDPR / HL7
+                        </p>
+                    </div>
                 </motion.div>
             </div>
         </div>

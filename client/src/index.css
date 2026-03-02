@@ -1,4 +1,4 @@
-@import "tailwindcss";
+/* @import "tailwindcss";
 
 @theme {
     --color-primary: #0D9488;
@@ -8,4 +8,27 @@
 
 body::-webkit-scrollbar {
     display: none;
+} */
+
+@import "tailwindcss";
+
+@theme {
+  /* Primary Identity (Indigo) */
+  --color-primary: #4f46e5;       /* Indigo-600 */
+  --color-primary-dark: #4338ca;  /* Indigo-700 */
+  
+  /* Accent Identity (Purple) */
+  --color-accent: #9333ea;       /* Purple-600 */
+  --color-accent-dark: #7e22ce;  /* Purple-700 */
+  
+  /* Background & Surface */
+  --color-background: #f9fafb;    /* Gray-50 */
+  
+  /* Custom Gradient Mix */
+  --background-image-brand-gradient: linear-gradient(to right, var(--color-primary), var(--color-accent));
+}
+
+/* Scrollbar Fix (Keep as is) */
+body::-webkit-scrollbar {
+  display: none;
 }

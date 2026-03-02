@@ -9,7 +9,9 @@ import {
   Clock,
   Settings,
   Edit,
-  Activity
+  Activity,
+  Fingerprint,
+  Database
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { adminProfileThunk } from "../../redux/slices/admin.slice";
@@ -31,8 +33,9 @@ const AdminProfile = () => {
   // 🔹 Loading UI
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A0F1E] text-white flex items-center justify-center">
-        <h2 className="text-xl font-bold">Loading Profile...</h2>
+      <div className="min-h-screen bg-[#FDFDFF] flex flex-col items-center justify-center">
+        <div className="w-10 h-10 border-4 border-indigo-600/20 border-t-indigo-600 rounded-full animate-spin mb-4" />
+        <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Synchronizing Dossier...</h2>
       </div>
     );
   }
@@ -40,13 +43,14 @@ const AdminProfile = () => {
   // 🔹 Error UI
   if (error) {
     return (
-      <div className="min-h-screen bg-[#0A0F1E] text-red-500 flex items-center justify-center">
-        <h2 className="text-xl font-bold">{error}</h2>
+      <div className="min-h-screen bg-[#FDFDFF] flex items-center justify-center">
+        <div className="p-6 bg-rose-50 border border-rose-100 rounded-sm">
+          <h2 className="text-sm font-black text-rose-600 uppercase tracking-widest">{error}</h2>
+        </div>
       </div>
     );
   }
 
-  // 🔹 Safe destructuring
   const {
     firstName,
     lastName,
@@ -59,91 +63,99 @@ const AdminProfile = () => {
   } = profile || {};
 
   return (
-    <div className="min-h-screen bg-[#0A0F1E] text-white pt-16 pb-20 px-6">
+    <div className="min-h-screen bg-[#FDFDFF] text-slate-900 pt-24 pb-20 px-6 font-sans">
       <div className="max-w-6xl mx-auto py-10">
 
-        {/* ---------- HEADER ---------- */}
+        {/* ---------- HEADER / CREDENTIAL CARD ---------- */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[3rem] p-8 md:p-12 mb-8"
+          className="bg-white border border-slate-100 rounded-sm p-8 md:p-12 mb-8 shadow-xl shadow-indigo-900/5 relative overflow-hidden"
         >
+          {/* Theme Accent Strip */}
+          <div className="absolute top-0 left-0 w-full h-1.5 bg-linear-to-r from-indigo-600 to-purple-600" />
+
           <div className="flex flex-col md:flex-row items-center gap-10">
 
-            {/* Avatar */}
+            {/* Avatar with Clinical Styling */}
             <div className="relative">
-              <div className="w-32 h-32 md:w-40 md:h-40 rounded-3xl border-2 border-primary shadow-2xl shadow-primary/20 flex items-center justify-center bg-black/40 overflow-hidden">
+              <div className="w-32 h-32 md:w-44 md:h-44 rounded-sm border border-slate-100 p-1 flex items-center justify-center bg-slate-50 overflow-hidden shadow-inner">
                 <img
                   src={avatar?.url || DEFAULT_IMAGE}
-                  alt="Admin"
-                  className="w-full h-full object-cover"
+                  alt="Admin Credentials"
+                  className="w-full h-full object-cover grayscale-[0.2] hover:grayscale-0 transition-all"
                 />
               </div>
 
-              <div className="absolute -bottom-3 -right-3 bg-primary p-2 rounded-xl border-4 border-[#0A0F1E]">
+              <div className="absolute -bottom-3 -right-3 bg-indigo-600 p-2.5 rounded-sm shadow-lg shadow-indigo-200">
                 <ShieldCheck size={20} className="text-white" />
               </div>
             </div>
 
-            {/* Identity */}
+            {/* Identity Block */}
             <div className="flex-1 text-center md:text-left">
-              <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
-                <h1 className="text-4xl font-black tracking-tight">
-                  {firstName} {lastName}
+              <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+                <h1 className="text-4xl font-black tracking-tighter uppercase italic text-slate-900">
+                  {firstName} <span className="text-indigo-600">{lastName}</span>
                 </h1>
 
-                <span className="w-fit mx-auto md:mx-0 px-3 py-1 bg-primary/20 text-primary border border-primary/30 text-[10px] font-black uppercase tracking-[0.2em] rounded-lg">
-                  {role}
+                <span className="w-fit mx-auto md:mx-0 px-4 py-1.5 bg-purple-50 text-purple-600 border border-purple-100 text-[10px] font-black uppercase tracking-[0.2em] rounded-sm">
+                  {role || "System Admin"}
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-gray-400">
-                <IdentityStat icon={<Key size={14} />} label="Role" value={role} />
-                <IdentityStat icon={<Clock size={14} />} label="Status" value={status} />
-                <IdentityStat icon={<Terminal size={14} />} label="Admin ID" value={_id} />
-                <IdentityStat icon={<Activity size={14} />} label="System" value="Online" />
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <IdentityStat icon={<Key size={14} />} label="Access Level" value={role} />
+                <IdentityStat icon={<Clock size={14} />} label="Registry Status" value={status} color="text-emerald-500" />
+                <IdentityStat icon={<Fingerprint size={14} />} label="Node ID" value={_id?.slice(-8)} />
+                <IdentityStat icon={<Activity size={14} />} label="Core Health" value="Stable" />
               </div>
             </div>
 
-            <button className="bg-white text-black px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-primary hover:text-white transition-all">
-              <Edit size={18} /> Edit Profile
+            <button className="bg-slate-900 text-white px-8 py-4 rounded-sm font-black text-[11px] uppercase tracking-widest flex items-center gap-3 hover:bg-indigo-600 transition-all shadow-lg shadow-slate-200 active:scale-95">
+              <Edit size={16} /> Update Bio-Data
             </button>
 
           </div>
         </motion.div>
 
-        {/* ---------- DETAILS SECTION ---------- */}
+        {/* ---------- INFORMATION GRID ---------- */}
         <div className="grid lg:grid-cols-3 gap-8">
 
-          {/* Left */}
+          {/* Detailed Specifications */}
           <div className="lg:col-span-2">
-            <section className="bg-white/5 border border-white/10 rounded-[2.5rem] p-8">
-              <h3 className="text-lg font-bold mb-8 flex items-center gap-2">
-                <Settings size={20} className="text-primary" />
-                Admin Details
+            <section className="bg-white border border-slate-100 rounded-sm p-10 shadow-sm">
+              <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-indigo-600 mb-10 flex items-center gap-3">
+                <Settings size={18} />
+                Contact Specifications
               </h3>
 
-              <div className="grid sm:grid-cols-2 gap-8">
-                <AdminDetail label="Email Address" value={email} icon={<Mail />} />
-                <AdminDetail label="Contact Number" value={phone} icon={<Phone />} />
-                <AdminDetail label="Account Status" value={status} icon={<ShieldCheck />} />
-                <AdminDetail label="Admin ID" value={_id} icon={<Terminal />} />
+              <div className="grid sm:grid-cols-2 gap-x-12 gap-y-10">
+                <AdminDetail label="Network Mail" value={email} icon={<Mail />} />
+                <AdminDetail label="Secure Line" value={phone} icon={<Phone />} />
+                <AdminDetail label="Validation Status" value={status} icon={<ShieldCheck />} />
+                <AdminDetail label="Database ID" value={_id} icon={<Database />} />
               </div>
             </section>
           </div>
 
-          {/* Right */}
-          <aside>
-            <div className="bg-primary/10 border border-primary/20 rounded-[2.5rem] p-8">
-              <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
-                <Terminal size={20} className="text-primary" />
-                System Info
+          {/* System Context Sidebar */}
+          <aside className="space-y-6">
+            <div className="bg-linear-to-br from-indigo-50 to-purple-50 border border-indigo-100 rounded-sm p-8">
+              <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-900 mb-6 flex items-center gap-3">
+                <Terminal size={18} />
+                Technical Logs
               </h3>
 
-              <div className="space-y-4 text-sm text-gray-300">
-                <p><strong>Role:</strong> {role}</p>
-                <p><strong>Status:</strong> {status}</p>
-                <p><strong>Registered:</strong> {profile?.createdAt?.slice(0, 10)}</p>
+              <div className="space-y-5">
+                <LogItem label="Authority" value={role} />
+                <LogItem label="Connectivity" value="Active Layer 7" />
+                <LogItem label="Initialization" value={profile?.createdAt?.slice(0, 10)} />
+                <div className="pt-4 mt-4 border-t border-indigo-100">
+                  <div className="flex items-center gap-2 text-[10px] font-black text-indigo-600 uppercase tracking-widest">
+                    <Activity size={12} /> Live Telemetry
+                  </div>
+                </div>
               </div>
             </div>
           </aside>
@@ -154,30 +166,37 @@ const AdminProfile = () => {
   );
 };
 
-// ---------- Helper Components ----------
+// ---------- Helper Components (Themed) ----------
 
-const IdentityStat = ({ icon, label, value }) => (
+const IdentityStat = ({ icon, label, value, color = "text-slate-900" }) => (
   <div>
-    <p className="text-[9px] font-black uppercase tracking-widest text-gray-600 flex items-center gap-1 mb-1">
-      {icon} {label}
+    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-1.5 mb-2">
+      <span className="text-purple-500">{icon}</span> {label}
     </p>
-    <p className="text-xs font-bold text-white">{value || "N/A"}</p>
+    <p className={`text-xs font-black uppercase italic ${color}`}>{value || "Pending..."}</p>
   </div>
 );
 
 const AdminDetail = ({ label, value, icon }) => (
-  <div className="space-y-2">
-    <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+  <div className="space-y-3 group">
+    <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">
       {label}
     </p>
-    <div className="flex items-center gap-3 p-4 bg-black/20 border border-white/5 rounded-2xl">
-      <div className="text-primary">
+    <div className="flex items-center gap-4 p-4 bg-slate-50 border border-slate-100 rounded-sm group-hover:border-indigo-200 transition-colors">
+      <div className="text-indigo-600">
         {React.cloneElement(icon, { size: 18 })}
       </div>
-      <p className="text-sm font-bold text-gray-300">
-        {value || "N/A"}
+      <p className="text-[13px] font-bold text-slate-700 truncate">
+        {value || "Not Configured"}
       </p>
     </div>
+  </div>
+);
+
+const LogItem = ({ label, value }) => (
+  <div className="flex justify-between items-center text-[11px]">
+    <span className="font-black uppercase text-slate-400 tracking-tighter">{label}</span>
+    <span className="font-bold text-indigo-900">{value}</span>
   </div>
 );
 
