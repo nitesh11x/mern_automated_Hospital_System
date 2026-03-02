@@ -8,8 +8,10 @@ import {
 } from 'lucide-react';
 import { getAllDoctorsThunk } from "../../redux/slices/doctor.slice";
 import { Link } from 'react-router-dom';
+import { api } from "../../utils/axios";
+import { toast } from "react-hot-toast";
 
-const DoctorManage = () => {
+const DoctorManage = ({ isEmbedded }) => {
     const dispatch = useDispatch();
     const { doctors, loading } = useSelector((state) => state.doctor);
 
@@ -19,6 +21,16 @@ const DoctorManage = () => {
     useEffect(() => {
         dispatch(getAllDoctorsThunk());
     }, [dispatch]);
+
+    const handleBlockDoctor = async (id, isBlocked) => {
+        try {
+            await api.put(`/doctor/${id}`, { isBlocked: !isBlocked });
+            toast.success(`Doctor ${isBlocked ? 'unblocked' : 'blocked'} successfully`);
+            dispatch(getAllDoctorsThunk());
+        } catch (error) {
+            toast.error(error?.response?.data?.message || "Failed to update status");
+        }
+    };
 
     const departments = useMemo(() => {
         if (!doctors) return [];
@@ -37,51 +49,55 @@ const DoctorManage = () => {
     }, [doctors, searchTerm, selectedDept]);
 
     return (
-        <div className="p-6 md:p-10 bg-[#FBFBFF] min-h-screen pt-24 font-sans">
-            <div className="max-w-7xl mx-auto">
+        <div className={isEmbedded ? "" : "p-6 md:p-10 bg-[#FBFBFF] min-h-screen pt-24 font-sans"}>
+            <div className={`max-w-7xl mx-auto ${isEmbedded ? "" : "space-y-6"}`}>
 
-                {/* --- SYSTEM HEADER --- */}
-                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-12">
-                    <div>
-                        <div className="flex items-center gap-3 mb-4">
-                            <Activity size={20} className="text-indigo-600" />
-                            <span className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.4em]">Personnel Control</span>
+                {/* --- COMPONENT HEADER --- */}
+                {!isEmbedded && (
+                    <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-12">
+                        <div>
+                            <div className="flex items-center gap-3 mb-4">
+                                <Activity size={20} className="text-indigo-600" />
+                                <span className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.4em]">Personnel Control</span>
+                            </div>
+                            <h1 className="text-5xl font-black text-slate-900 uppercase italic tracking-tighter leading-none">
+                                Staff <span className="text-indigo-600">Registry</span>
+                            </h1>
+                            <p className="text-[11px] text-slate-400 font-black uppercase tracking-widest mt-4">
+                                Active Nodes: {filteredDoctors.length} / System Capacity: 100%
+                            </p>
                         </div>
-                        <h1 className="text-5xl font-black text-slate-900 uppercase italic tracking-tighter leading-none">
-                            Staff <span className="text-indigo-600">Registry</span>
-                        </h1>
-                        <p className="text-[11px] text-slate-400 font-black uppercase tracking-widest mt-4">
-                            Active Nodes: {filteredDoctors.length} / System Capacity: 100%
-                        </p>
-                    </div>
 
-                    <Link to="/doctor/register" className="flex items-center gap-3 bg-slate-900 text-white px-8 py-5 rounded-sm font-black text-[11px] uppercase tracking-[0.2em] shadow-xl shadow-slate-900/10 hover:bg-indigo-600 transition-all group">
-                        <Plus size={16} className="group-hover:rotate-90 transition-transform" /> Provision New Specialist
-                    </Link>
-                </div>
+                        <Link to="/doctor/register" className="flex items-center gap-3 bg-slate-900 text-white px-8 py-5 rounded-sm font-black text-[11px] uppercase tracking-[0.2em] shadow-xl shadow-slate-900/10 hover:bg-indigo-600 transition-all group">
+                            <Plus size={16} className="group-hover:rotate-90 transition-transform" /> Provision New Specialist
+                        </Link>
+                    </div>
+                )}
 
                 {/* --- COMMAND BAR --- */}
-                <div className="bg-white p-2 rounded-sm border border-slate-200 mb-10 flex flex-wrap items-center gap-2 shadow-sm">
-                    <div className="flex-1 relative min-w-75">
-                        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
-                        <input
-                            type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder="SEARCH BY IDENTIFIER, UNIT, OR ZONE..."
-                            className="w-full pl-14 pr-6 py-4 bg-slate-50 rounded-sm border border-transparent focus:border-indigo-600 focus:bg-white outline-none transition-all text-[11px] font-bold uppercase tracking-wider"
-                        />
+                {!isEmbedded && (
+                    <div className="bg-white p-2 rounded-sm border border-slate-200 mb-10 flex flex-wrap items-center gap-2 shadow-sm">
+                        <div className="flex-1 relative min-w-75">
+                            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
+                            <input
+                                type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+                                placeholder="SEARCH BY IDENTIFIER, UNIT, OR ZONE..."
+                                className="w-full pl-14 pr-6 py-4 bg-slate-50 rounded-sm border border-transparent focus:border-indigo-600 focus:bg-white outline-none transition-all text-[11px] font-bold uppercase tracking-wider"
+                            />
+                        </div>
+                        <div className="flex items-center gap-2 px-4 border-l border-slate-100">
+                            <Filter size={14} className="text-slate-400" />
+                            <select
+                                value={selectedDept} onChange={(e) => setSelectedDept(e.target.value)}
+                                className="py-4 bg-transparent outline-none font-black text-slate-900 text-[10px] uppercase tracking-widest cursor-pointer"
+                            >
+                                {departments.map(d => <option key={d} value={d}>{d}</option>)}
+                            </select>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2 px-4 border-l border-slate-100">
-                        <Filter size={14} className="text-slate-400" />
-                        <select
-                            value={selectedDept} onChange={(e) => setSelectedDept(e.target.value)}
-                            className="py-4 bg-transparent outline-none font-black text-slate-900 text-[10px] uppercase tracking-widest cursor-pointer"
-                        >
-                            {departments.map(d => <option key={d} value={d}>{d}</option>)}
-                        </select>
-                    </div>
-                </div>
+                )}
 
-                {/* --- REGISTRY ENTRIES --- */}
+                {/* --- DATA GRID --- */}
                 <div className="space-y-2">
                     {/* Table Header (Desktop Only) */}
                     <div className="hidden lg:grid lg:grid-cols-12 gap-4 px-8 py-4 bg-slate-100 border border-slate-200 rounded-sm mb-4">
@@ -100,7 +116,11 @@ const DoctorManage = () => {
                         </div>
                     ) : (
                         filteredDoctors.map((doc) => (
-                            <DoctorManagementRow key={doc._id} doc={doc} />
+                            <DoctorManagementRow
+                                key={doc._id}
+                                doc={doc}
+                                onBlock={() => handleBlockDoctor(doc._id, doc.isBlocked)}
+                            />
                         ))
                     )}
                 </div>
@@ -117,7 +137,7 @@ const DoctorManage = () => {
 };
 
 // --- THE DATA ROW COMPONENT ---
-const DoctorManagementRow = ({ doc }) => {
+const DoctorManagementRow = ({ doc, onBlock }) => {
     const optimizedImage = doc?.profile?.url
         ? doc.profile.url.replace("/upload/", "/upload/w_200,h_200,c_fill,q_auto,f_auto/")
         : "https://via.placeholder.com/200x200?text=BIO";
@@ -172,7 +192,11 @@ const DoctorManagementRow = ({ doc }) => {
                     <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-sm border border-slate-100">
                         <AdminActionButton icon={<Edit3 size={14} />} title="Edit" hover="hover:text-amber-500 hover:bg-amber-50" />
                         <AdminActionButton icon={<Calendar size={14} />} title="Roster" hover="hover:text-blue-500 hover:bg-blue-50" />
-                        <AdminActionButton icon={<Ban size={14} />} title="Block" hover="hover:text-red-500 hover:bg-red-50" />
+                        {doc.isBlocked ? (
+                            <AdminActionButton onClick={onBlock} icon={<ShieldCheck size={14} />} title="Unblock" hover="hover:text-emerald-500 hover:bg-emerald-50" />
+                        ) : (
+                            <AdminActionButton onClick={onBlock} icon={<Ban size={14} />} title="Block" hover="hover:text-red-500 hover:bg-red-50" />
+                        )}
                     </div>
                     <button className="p-3 bg-slate-900 text-white rounded-sm hover:bg-indigo-600 transition-all shadow-md group-hover:translate-x-1">
                         <ChevronRight size={16} strokeWidth={3} />
@@ -184,8 +208,8 @@ const DoctorManagementRow = ({ doc }) => {
     );
 };
 
-const AdminActionButton = ({ icon, title, hover }) => (
-    <button title={title} className={`p-2.5 bg-white text-slate-400 rounded-sm border border-slate-200 transition-all ${hover}`}>
+const AdminActionButton = ({ icon, title, hover, onClick }) => (
+    <button onClick={onClick} title={title} className={`p-2.5 bg-white text-slate-400 rounded-sm border border-slate-200 transition-all ${hover}`}>
         {icon}
     </button>
 );

@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
-import { getAllAppointments } from "../../redux/slices/appointment.slice";
+import { getAllAppointments, updateAppointmentStatus } from "../../redux/slices/appointment.slice";
 import { getAllDoctorsThunk } from "../../redux/slices/doctor.slice";
 
 // --- THEMED STAT CARD ---
@@ -35,7 +35,7 @@ const StatCard = ({ title, value, icon, isGradient }) => {
     );
 };
 
-const ShowAppointments = () => {
+const ShowAppointments = ({ isEmbedded }) => {
     const dispatch = useDispatch();
     const [searchTerm, setSearchTerm] = useState("");
     const { appointments = [], loading, error } = useSelector((state) => state.appointment);
@@ -64,6 +64,13 @@ const ShowAppointments = () => {
         });
     }, [appointments, doctors, searchTerm]);
 
+    const handleStatusUpdate = (id, newStatus) => {
+        dispatch(updateAppointmentStatus({ id, status: newStatus }))
+            .unwrap()
+            .then(() => toast.success(`Appointment marked as ${newStatus}`))
+            .catch(err => toast.error(err || "Failed to update status"));
+    };
+
     // Theme-specific Status Styling
     const getStatusStyle = (status) => {
         switch (status) {
@@ -75,41 +82,50 @@ const ShowAppointments = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#FDFDFF] pt-28 pb-20 px-4 md:px-8 font-sans">
-            <div className="max-w-6xl mx-auto">
+        <div className={isEmbedded ? "" : "p-6 md:p-10 bg-[#FBFBFF] min-h-screen pt-24 font-sans"}>
+            <div className={`max-w-7xl mx-auto ${isEmbedded ? "" : "space-y-6"}`}>
 
-                {/* --- HEADER WITH THEME ACCENT --- */}
-                <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-                    <div>
-                        <div className="flex items-center gap-3 mb-3">
-                            <div className="p-2 bg-linear-to-br from-indigo-600 to-purple-600 rounded-lg text-white shadow-md">
-                                <LayoutGrid size={18} />
+                {/* --- HEADER --- */}
+                {!isEmbedded && (
+                    <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                        <div>
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="p-2 bg-linear-to-br from-indigo-600 to-purple-600 rounded-lg text-white shadow-md">
+                                    <LayoutGrid size={18} />
+                                </div>
+                                <span className="text-[11px] font-black uppercase tracking-[0.3em] text-indigo-600/60">Registry Management</span>
                             </div>
-                            <span className="text-[11px] font-black uppercase tracking-[0.3em] text-indigo-600/60">Registry Management</span>
+                            <h1 className="text-4xl font-black text-slate-900 tracking-tight italic uppercase">
+                                Clinical <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-600 to-purple-600">Timeline</span>
+                            </h1>
                         </div>
-                        <h1 className="text-4xl font-black text-slate-900 tracking-tight italic uppercase">
-                            Clinical <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-600 to-purple-600">Timeline</span>
-                        </h1>
-                    </div>
 
-                    <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-400 group-focus-within:text-purple-500 transition-colors" size={18} />
-                        <input
-                            type="text"
-                            placeholder="Filter by physician or patient..."
-                            className="pl-12 pr-6 py-4 bg-white border border-slate-100 rounded-2xl text-sm font-bold shadow-xl shadow-indigo-900/5 focus:ring-4 focus:ring-purple-500/5 focus:border-purple-400 outline-none w-full md:w-80 transition-all"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </div>
-                </header>
+                        <div className="flex flex-col md:flex-row gap-4">
+                            <div className="relative group">
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-400 group-focus-within:text-purple-500 transition-colors" size={18} />
+                                <input
+                                    type="text"
+                                    placeholder="Filter by physician or patient..."
+                                    className="pl-12 pr-6 py-4 bg-white border border-slate-100 rounded-2xl text-sm font-bold shadow-xl shadow-indigo-900/5 focus:ring-4 focus:ring-purple-500/5 focus:border-purple-400 outline-none w-full md:w-80 transition-all"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
+                            </div>
+                            <button className="flex items-center gap-2 px-6 py-4 bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-colors text-sm font-bold">
+                                <CalendarPlus size={16} className="group-hover:rotate-90 transition-transform" /> Schedule New
+                            </button>
+                        </div>
+                    </header>
+                )}
 
-                {/* --- QUICK STATS (MIXING BOTH COLORS) --- */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                    <StatCard title="Total Appointments" value={appointments.length} icon={<Zap fill="currentColor" />} isGradient={true} />
-                    <StatCard title="Pending Review" value={appointments.filter(a => a.status === "Pending").length} icon={<Clock3 />} isGradient={false} />
-                    <StatCard title="Confirmed Sessions" value={appointments.filter(a => a.status === "Approved").length} icon={<CheckCircle2 />} isGradient={false} />
-                </div>
+                {/* --- COMMAND BAR --- */}
+                {!isEmbedded && (
+                    <div className="bg-white p-2 border border-slate-200 rounded-sm mb-10 flex flex-wrap items-center gap-2 shadow-sm relative z-20">
+                        <StatCard title="Total Appointments" value={appointments.length} icon={<Zap fill="currentColor" />} isGradient={true} />
+                        <StatCard title="Pending Review" value={appointments.filter(a => a.status === "Pending").length} icon={<Clock3 />} isGradient={false} />
+                        <StatCard title="Confirmed Sessions" value={appointments.filter(a => a.status === "Approved").length} icon={<CheckCircle2 />} isGradient={false} />
+                    </div>
+                )}
 
                 {/* --- APPOINTMENTS LIST --- */}
                 <div className="space-y-4">
@@ -167,13 +183,29 @@ const ShowAppointments = () => {
                                         </div>
 
                                         {/* Status & Deep Link */}
-                                        <div className="flex items-center justify-between lg:justify-end gap-5 border-t lg:border-t-0 pt-4 lg:pt-0">
+                                        <div className="flex flex-col lg:flex-row items-center justify-between lg:justify-end gap-3 border-t lg:border-t-0 pt-4 lg:pt-0">
                                             <div className={`px-4 py-2 rounded-full border text-[10px] font-black uppercase tracking-[0.15em] flex items-center gap-2 ${getStatusStyle(app.status)}`}>
                                                 {app.status || "Pending"}
                                             </div>
-                                            <button className="w-10 h-10 flex items-center justify-center bg-slate-50 text-slate-400 hover:bg-purple-600 hover:text-white rounded-xl transition-all group/btn">
-                                                <ArrowUpRight size={20} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
-                                            </button>
+
+                                            <div className="flex gap-2">
+                                                {app.status === "Pending" && (
+                                                    <button
+                                                        onClick={() => handleStatusUpdate(app._id, "Approved")}
+                                                        className="px-3 py-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded-lg text-[10px] font-bold uppercase transition-colors"
+                                                    >
+                                                        Approve
+                                                    </button>
+                                                )}
+                                                {app.status !== "Cancelled" && app.status !== "Completed" && (
+                                                    <button
+                                                        onClick={() => handleStatusUpdate(app._id, "Cancelled")}
+                                                        className="px-3 py-2 bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white rounded-lg text-[10px] font-bold uppercase transition-colors"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </motion.div>

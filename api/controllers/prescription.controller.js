@@ -3,10 +3,6 @@ import { Appointment } from "../models/Appointment.model.js";
 import { asyncHandler } from "../utils/asyncHandler.util.js";
 import ErrorHandler from "../utils/errorHandler.utils.js";
 
-
-// ===============================
-// 🔹 CREATE PRESCRIPTION (Doctor)
-// ===============================
 export const createPrescription = asyncHandler(async (req, res, next) => {
     const { appointmentId, diagnosis, medicines, advice } = req.body;
 
@@ -56,5 +52,21 @@ export const getPrescriptionById = asyncHandler(async (req, res, next) => {
     res.status(200).json({
         success: true,
         prescription
+    });
+});
+
+
+export const getPatientPrescriptions = asyncHandler(async (req, res, next) => {
+    const patientId = req.patient.id;
+
+    const prescriptions = await Prescription.find({ patientId })
+        .populate("doctorId", "firstName lastName profile")
+        .populate("appointmentId", "appointmentDate")
+        .sort({ createdAt: -1 });
+
+    res.status(200).json({
+        success: true,
+        count: prescriptions.length,
+        prescriptions
     });
 });

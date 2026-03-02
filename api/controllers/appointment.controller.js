@@ -128,9 +128,9 @@ export const getAppointmentById = asyncHandler(async (req, res, next) => {
     return next(new ErrorHandler("Invalid ID", 400));
 
   const appointment = await Appointment.findById(appointmentId)
-    // .populate("patientId")
-    // .populate("doctorId")
-    // .populate("prescriptionId");
+  // .populate("patientId")
+  // .populate("doctorId")
+  // .populate("prescriptionId");
 
   if (!appointment)
     return next(new ErrorHandler("Appointment not found", 404));
@@ -150,4 +150,106 @@ export const getPatientAppointments = asyncHandler(async (req, res) => {
     count: appointments.length,
     appointments
   });
+});
+
+export const getDoctorAppointments = asyncHandler(async (req, res) => {
+  const doctorId = req.doctor.id;
+
+  const appointments = await Appointment.find({ doctorId })
+    .populate("patientId")
+    .populate("prescriptionId")
+    .sort({ appointmentDate: -1 });
+
+  res.status(200).json({
+    success: true,
+    count: appointments.length,
+    appointments
+  });
+});
+
+export const updateAppointmentStatus = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const { status } = req.body; // e.g., 'completed', 'cancelled', 'approved'
+
+  const appointment = await Appointment.findById(id);
+  if (!appointment)
+    return next(new ErrorHandler("Appointment not found", 404));
+
+  appointment.status = status;
+  if (status === "completed") {
+    appointment.completedAt = new Date();
+  }
+
+  await appointment.save();
+
+  res.status(200).json({
+    success: true,
+    message: `Appointment status updated to ${status}`,
+    appointment
+  });
+});
+
+export const bookAppointmentOfSpecificDoctor = asyncHandler(async (req, res, next) => {
+  const { doctorId } = req.params;
+  const {
+    name,
+    email,
+    gender,
+    relation,
+    appointmentDate,
+    requestedTimeSlot,
+    paymentMode
+  } = req.body;
+
+  const patientId = req.patient?.id;
+
+  if (!patientId) {
+    return next(new ErrorHandler("Unauthorized", 401));
+  }
+
+  if (
+    !name ||
+    !email ||
+    !gender ||
+    !appointmentDate ||
+    !requestedTimeSlot ||
+    !paymentMode
+  ) {
+    return next(new ErrorHandler("All required fields must be provided", 400));
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(doctorId)) {
+    return next(new ErrorHandler("Invalid Doctor ID", 400));
+  }
+
+  const previousAppointment = await Appointment.findOne({
+    patientId,
+    doctorId
+  }).sort({ createdAt: -1 });
+
+  try {
+    const appointment = await Appointment.create({
+      patientId,
+      doctorId,
+      name,
+      email,
+      gender,
+      relation,
+      appointmentDate,
+      requestedTimeSlot,
+      paymentMode,
+      isVisit: !!previousAppointment,
+      previousAppointmentId:
+        previousAppointment?.appointmentId || null
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Appointment request sent. Waiting for approval.",
+      appointment
+    });
+
+  } catch (error) {
+    return next(error);
+  }
 });

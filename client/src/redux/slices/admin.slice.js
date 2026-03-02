@@ -48,9 +48,22 @@ export const adminLogoutThunk = createAsyncThunk(
         }
     }
 );
+
+export const getDashboardStatsThunk = createAsyncThunk(
+    "admin/stats",
+    async (_, { rejectWithValue }) => {
+        try {
+            const res = await api.get("/admin/stats");
+            return res.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Failed to fetch stats");
+        }
+    }
+);
 const initialState = {
     admin: null,
     profile: null,
+    stats: null,
     loading: false,
     error: null,
     success: false,
@@ -142,6 +155,18 @@ const adminSlice = createSlice({
                 state.error = action.payload;
                 state.isAdminAuthenticated = false;
                 state.admin = null;
+            })
+            // stats
+            .addCase(getDashboardStatsThunk.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(getDashboardStatsThunk.fulfilled, (state, action) => {
+                state.loading = false;
+                state.stats = action.payload?.data;
+            })
+            .addCase(getDashboardStatsThunk.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             });
     },
 });

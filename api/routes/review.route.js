@@ -1,4 +1,10 @@
-import express from 'express'
-const router = express.Router()
+import express from 'express';
+import { createReview, getDoctorReviews } from '../controllers/review.controller.js';
+import { isPatientAuth } from '../middlewares/auth.middleware.js';
 
-export default router
+const router = express.Router();
+
+router.post('/', isPatientAuth, createReview);
+router.get('/doctor/:doctorId', getDoctorReviews);
+
+export default router;
