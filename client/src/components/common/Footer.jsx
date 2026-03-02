@@ -8,36 +8,37 @@ import {
   Phone,
   MapPin,
   ArrowRight,
-  Activity,
-  ShieldCheck
+  ShieldCheck,
+  Building2,
+  Clock
 } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#FBFBFF] border-t border-slate-200 text-slate-600 font-sans">
+    <footer className="bg-white border-t border-slate-200 text-slate-600 font-sans">
       <div className="max-w-7xl mx-auto px-6 pt-24 pb-12">
 
-        {/* --- TACTICAL NEWSLETTER --- */}
-        <div className="bg-slate-900 p-10 md:p-14 rounded-sm flex flex-col lg:flex-row items-center justify-between gap-10 mb-24 shadow-2xl shadow-slate-900/10 relative overflow-hidden group">
-          <Activity size={180} className="absolute -right-10 -bottom-10 text-white/5 rotate-12 group-hover:scale-110 transition-transform duration-700" />
+        {/* --- NEWSLETTER SECTION --- */}
+        <div className="bg-indigo-600 p-10 md:p-14 rounded-sm flex flex-col lg:flex-row items-center justify-between gap-10 mb-24 relative overflow-hidden group shadow-lg shadow-indigo-100">
+          <Building2 size={180} className="absolute -right-10 -bottom-10 text-white/10 group-hover:scale-105 transition-transform duration-700" />
 
           <div className="text-center lg:text-left relative z-10">
-            <h3 className="text-3xl font-black text-white mb-3 uppercase italic tracking-tighter leading-none">
-              Stay <span className="text-indigo-400">Synchronized</span>
+            <h3 className="text-3xl font-extrabold text-white mb-3 uppercase tracking-tight leading-none">
+              Stay <span className="text-indigo-200">Informed</span>
             </h3>
-            <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em]">Receive high-priority clinical updates & wellness logs.</p>
+            <p className="text-indigo-100 text-[10px] font-bold uppercase tracking-[0.2em]">Subscribe to receive clinical updates and health wellness tips.</p>
           </div>
 
-          <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-0 relative z-10">
+          <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-0 relative z-10 shadow-xl">
             <input
               type="email"
-              placeholder="TERMINAL_ID@EMAIL.COM"
-              className="px-6 py-5 bg-white/5 border border-white/10 text-white placeholder:text-white/20 outline-none focus:bg-white/10 focus:border-indigo-400 w-full sm:w-80 transition-all text-[11px] font-black tracking-widest uppercase"
+              placeholder="YOUR.EMAIL@PROVIDER.COM"
+              className="px-6 py-5 bg-white border-none text-slate-900 placeholder:text-slate-400 outline-none w-full sm:w-80 transition-all text-[11px] font-bold tracking-widest uppercase rounded-l-sm"
             />
-            <button className="bg-indigo-600 text-white px-10 py-5 font-black text-[11px] uppercase tracking-[0.2em] hover:bg-white hover:text-slate-900 transition-all flex items-center justify-center gap-3">
-              Subscribe <ArrowRight size={16} />
+            <button className="bg-slate-900 text-white px-10 py-5 font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-black transition-all flex items-center justify-center gap-3 rounded-r-sm">
+              Join Registry <ArrowRight size={16} />
             </button>
           </div>
         </div>
@@ -49,12 +50,12 @@ const Footer = () => {
           <div className="space-y-8">
             <div className="flex items-center gap-3">
               <div className="w-1.5 h-8 bg-indigo-600" />
-              <span className="text-2xl font-black text-slate-900 tracking-tighter uppercase italic">New<span className="text-indigo-600">Care</span></span>
+              <span className="text-2xl font-extrabold text-slate-900 tracking-tighter uppercase">New<span className="text-indigo-600">Care</span></span>
             </div>
-            <p className="text-[11px] leading-loose font-black uppercase tracking-widest text-slate-400 opacity-80">
-              Operating at the intersection of digital precision and clinical empathy. Provisioning next-gen health protocols for a global patient registry.
+            <p className="text-[11px] leading-loose font-bold uppercase tracking-widest text-slate-400">
+              Leading the way in medical excellence and patient-centered care. Providing professional healthcare services across our global network of facilities.
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <SocialIcon icon={<Facebook size={16} />} />
               <SocialIcon icon={<Twitter size={16} />} />
               <SocialIcon icon={<Instagram size={16} />} />
@@ -62,56 +63,56 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Nav Nodes */}
-          <FooterColumn title="Operational Nodes" links={[
-            { name: "Global Home", href: "/" },
-            { name: "Organization", href: "/about" },
-            { name: "Staff Directory", href: "/doctors" },
-            { name: "Clinical Units", href: "/services" },
-            { name: "Session Booking", href: "/appointment" },
+          {/* Nav Links */}
+          <FooterColumn title="Quick Access" links={[
+            { name: "Patient Portal", href: "/" },
+            { name: "About Facility", href: "/about" },
+            { name: "Medical Staff", href: "/doctors" },
+            { name: "Our Services", href: "/services" },
+            { name: "Book Appointment", href: "/appointment" },
           ]} />
 
-          {/* Specializations */}
-          <FooterColumn title="Clinical Sectors" links={[
-            { name: "Cardiology", href: "#" },
-            { name: "Neurology", href: "#" },
-            { name: "Pediatrics", href: "#" },
-            { name: "Orthopedics", href: "#" },
-            { name: "Diagnostics Lab", href: "#" },
+          {/* Departments */}
+          <FooterColumn title="Departments" links={[
+            { name: "Cardiology Unit", href: "#" },
+            { name: "Neurology Center", href: "#" },
+            { name: "Pediatric Care", href: "#" },
+            { name: "Orthopedic Surgery", href: "#" },
+            { name: "Diagnostic Imaging", href: "#" },
           ]} />
 
-          {/* Contact Terminal */}
+          {/* Contact Information */}
           <div className="space-y-8">
-            <h4 className="text-slate-900 font-black uppercase tracking-[0.3em] text-[10px] flex items-center gap-2">
-              <div className="w-1 h-1 bg-indigo-600" /> Contact Terminal
+            <h4 className="text-slate-900 font-bold uppercase tracking-[0.2em] text-[10px] flex items-center gap-2">
+              <div className="w-1 h-1 bg-indigo-600" /> Contact Support
             </h4>
             <ul className="space-y-6">
-              <li className="flex items-start gap-4 text-[11px] font-black uppercase tracking-widest text-slate-400 group">
-                <MapPin size={18} className="text-indigo-600 shrink-0 group-hover:scale-110 transition-transform" />
-                <span>123 Medical Plaza, Node 04<br /><span className="text-slate-900">New York, NY 10019</span></span>
+              <li className="flex items-start gap-4 text-[11px] font-bold uppercase tracking-widest text-slate-500">
+                <MapPin size={18} className="text-indigo-600 shrink-0" />
+                <span>123 Medical Plaza, Suite 400<br /><span className="text-slate-900">New York, NY 10019</span></span>
               </li>
-              <li className="flex items-center gap-4 text-[11px] font-black uppercase tracking-widest text-slate-900">
+              <li className="flex items-center gap-4 text-[11px] font-bold uppercase tracking-widest text-slate-900">
                 <Phone size={18} className="text-indigo-600 shrink-0" />
                 <span>+1 (555) 000-1234</span>
               </li>
-              <li className="flex items-center gap-4 text-[11px] font-black uppercase tracking-widest text-indigo-600">
-                <Mail size={18} className="text-indigo-600 shrink-0" />
-                <span className="border-b border-indigo-100 hover:border-indigo-600 transition-all cursor-pointer">Support@NewCare.Systems</span>
+              <li className="flex items-center gap-4 text-[11px] font-bold uppercase tracking-widest text-indigo-600">
+                <Clock size={18} className="text-indigo-600 shrink-0" />
+                <span>Available 24/7 for Emergencies</span>
               </li>
             </ul>
           </div>
         </div>
 
         {/* --- SYSTEM FOOTER --- */}
-        <div className="pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6 text-[9px] font-black uppercase tracking-[0.4em] text-slate-400">
+        <div className="pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6 text-[9px] font-bold uppercase tracking-[0.3em] text-slate-400">
           <div className="flex items-center gap-3">
-            <ShieldCheck size={14} className="text-indigo-600" />
-            <p>© {currentYear} NewCare Medical Group // Core System v2.0.6</p>
+            <ShieldCheck size={14} className="text-emerald-500" />
+            <p>© {currentYear} NewCare Medical Group // Institutional Systems</p>
           </div>
-          <div className="flex gap-10">
-            <a href="#" className="hover:text-indigo-600 transition-colors">Privacy_Dossier</a>
-            <a href="#" className="hover:text-indigo-600 transition-colors">Term_Protocols</a>
-            <a href="#" className="hover:text-indigo-600 transition-colors">Cache_Settings</a>
+          <div className="flex gap-8">
+            <a href="#" className="hover:text-indigo-600 transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-indigo-600 transition-colors">Terms of Service</a>
+            <a href="#" className="hover:text-indigo-600 transition-colors">Accessibility</a>
           </div>
         </div>
       </div>
@@ -119,17 +120,17 @@ const Footer = () => {
   );
 };
 
-// --- TACTICAL HELPERS ---
+// --- HELPERS ---
 
 const FooterColumn = ({ title, links }) => (
   <div className="space-y-8">
-    <h4 className="text-slate-900 font-black uppercase tracking-[0.3em] text-[10px] flex items-center gap-2">
+    <h4 className="text-slate-900 font-bold uppercase tracking-[0.2em] text-[10px] flex items-center gap-2">
       <div className="w-1 h-1 bg-indigo-600" /> {title}
     </h4>
     <ul className="space-y-4">
       {links.map((link, i) => (
         <li key={i}>
-          <a href={link.href} className="text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-indigo-600 hover:translate-x-1 transition-all inline-block">
+          <a href={link.href} className="text-[11px] font-bold uppercase tracking-widest text-slate-400 hover:text-indigo-600 transition-all inline-block">
             {link.name}
           </a>
         </li>
@@ -139,7 +140,7 @@ const FooterColumn = ({ title, links }) => (
 );
 
 const SocialIcon = ({ icon }) => (
-  <a href="#" className="w-11 h-11 border border-slate-200 flex items-center justify-center hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all text-slate-400 rounded-sm shadow-sm bg-white">
+  <a href="#" className="w-10 h-10 border border-slate-200 flex items-center justify-center hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all text-slate-400 rounded-sm bg-white shadow-sm">
     {icon}
   </a>
 );

@@ -13,7 +13,8 @@ import {
     Thermometer,
     ChevronRight,
     ArrowUpRight,
-    Zap
+    Zap,
+    ShieldCheck
 } from "lucide-react";
 
 // --- Metrics Data ---
@@ -24,27 +25,28 @@ const RECENT_VISITS = [
 ];
 
 const HEALTH_STATS = [
-    { label: "Heart Rate", value: "72 bpm", icon: <Activity size={18} />, color: "text-rose-500", border: "border-rose-200" },
-    { label: "Glucose", value: "95 mg/dL", icon: <Droplets size={18} />, color: "text-indigo-500", border: "border-indigo-200" },
-    { label: "Body Temp", value: "36.6 °C", icon: <Thermometer size={18} />, color: "text-amber-500", border: "border-amber-200" },
+    { label: "Heart Rate", value: "72 bpm", icon: <Activity size={18} />, color: "text-rose-600", border: "border-rose-600" },
+    { label: "Glucose Level", value: "95 mg/dL", icon: <Droplets size={18} />, color: "text-indigo-600", border: "border-indigo-600" },
+    { label: "Body Temp", value: "36.6 °C", icon: <Thermometer size={18} />, color: "text-amber-600", border: "border-amber-600" },
 ];
 
 const Dashboard = () => {
     const [activeTab, setActiveTab] = useState("dashboard");
 
     return (
-        <div className="flex min-h-screen bg-[#FBFBFF] pt-16 font-sans">
+        <div className="flex min-h-screen bg-slate-50 pt-16 font-sans">
 
-            {/* --- SIDEBAR (ARCHITECTURAL RIGIDITY) --- */}
+            {/* --- SIDEBAR --- */}
             <aside className="w-72 bg-white border-r border-slate-200 hidden lg:flex flex-col p-8 sticky top-16 h-[calc(100vh-64px)]">
-                <div className="mb-10 px-4">
-                    <p className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em]">Patient Terminal v3</p>
+                <div className="mb-10 px-4 flex items-center gap-2">
+                    <ShieldCheck size={16} className="text-indigo-600" />
+                    <p className="text-[10px] font-bold text-slate-900 uppercase tracking-[0.2em]">Patient Portal v3.0</p>
                 </div>
 
                 <nav className="flex-1 space-y-1">
                     <SidebarItem
                         icon={<LayoutDashboard size={18} />}
-                        label="System Overview"
+                        label="Clinical Summary"
                         active={activeTab === "dashboard"}
                         onClick={() => setActiveTab("dashboard")}
                     />
@@ -54,12 +56,12 @@ const Dashboard = () => {
                         active={activeTab === "visits"}
                         onClick={() => setActiveTab("visits")}
                     />
-                    <SidebarItem icon={<FileText size={18} />} label="Health Records" />
-                    <SidebarItem icon={<Settings size={18} />} label="Settings" />
+                    <SidebarItem icon={<FileText size={18} />} label="Medical Records" />
+                    <SidebarItem icon={<Settings size={18} />} label="Account Settings" />
                 </nav>
 
-                <button className="flex items-center gap-3 px-6 py-4 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-sm transition-all mt-auto font-black text-[10px] uppercase tracking-widest border border-transparent hover:border-red-100">
-                    <LogOut size={16} /> Terminate Session
+                <button className="flex items-center gap-3 px-6 py-4 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-sm transition-all mt-auto font-bold text-[10px] uppercase tracking-widest border border-transparent hover:border-rose-100">
+                    <LogOut size={16} /> Sign Out
                 </button>
             </aside>
 
@@ -70,10 +72,10 @@ const Dashboard = () => {
                     <div>
                         <div className="flex items-center gap-2 mb-4">
                             <span className="w-10 h-1 bg-indigo-600 rounded-sm" />
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Biometric Data Log</p>
+                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Authenticated Health Profile</p>
                         </div>
-                        <h1 className="text-6xl font-black text-slate-900 tracking-tighter uppercase italic leading-none">
-                            Welcome, <span className="text-indigo-600 underline decoration-4 underline-offset-8">Alex</span>
+                        <h1 className="text-5xl font-extrabold text-slate-900 tracking-tight uppercase leading-none">
+                            Welcome, <span className="text-indigo-600">Alex</span>
                         </h1>
                     </div>
 
@@ -82,65 +84,65 @@ const Dashboard = () => {
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-600 transition-colors" size={18} />
                             <input
                                 type="text"
-                                placeholder="QUERY PATIENT RECORDS..."
+                                placeholder="SEARCH MEDICAL RECORDS..."
                                 className="w-full md:w-80 pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-sm shadow-sm focus:border-indigo-600 outline-none font-bold text-[10px] tracking-widest uppercase"
                             />
                         </div>
-                        <button className="p-4 bg-white border border-slate-200 rounded-sm text-slate-400 hover:text-indigo-600 hover:border-indigo-200 transition-all relative">
+                        <button className="p-4 bg-white border border-slate-200 rounded-sm text-slate-400 hover:text-indigo-600 transition-all relative">
                             <Bell size={20} />
-                            <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-indigo-600 rounded-sm border-2 border-white" />
+                            <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white" />
                         </button>
                     </div>
                 </header>
 
-                {/* Telemetry Stats Grid */}
+                {/* Vital Signs Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
                     {HEALTH_STATS.map((stat, i) => (
                         <motion.div
                             key={i}
                             whileHover={{ y: -2 }}
-                            className={`bg-white p-8 rounded-sm shadow-sm border-l-4 ${stat.border} flex flex-col gap-4 group hover:shadow-md transition-all`}
+                            className={`bg-white p-8 rounded-sm shadow-sm border-l-4 ${stat.border} flex flex-col gap-4 group transition-all`}
                         >
                             <div className={`${stat.color} flex justify-between items-start`}>
                                 {stat.icon}
-                                <ArrowUpRight size={14} className="opacity-20 group-hover:opacity-100 transition-opacity" />
+                                <ArrowUpRight size={14} className="text-slate-200 group-hover:text-indigo-600 transition-colors" />
                             </div>
                             <div>
-                                <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mb-1">{stat.label}</p>
-                                <p className="text-4xl font-black text-slate-900 tracking-tighter italic leading-none">{stat.value}</p>
+                                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em] mb-1">{stat.label}</p>
+                                <p className="text-4xl font-extrabold text-slate-900 tracking-tight leading-none">{stat.value}</p>
                             </div>
                         </motion.div>
                     ))}
                 </div>
 
                 <div className="grid lg:grid-cols-3 gap-10">
-                    {/* Visit Protocol Section */}
+                    {/* Visit Registry Section */}
                     <section className="lg:col-span-2 bg-white rounded-sm border border-slate-200 shadow-sm overflow-hidden">
-                        <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/30">
-                            <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.3em]">Visit Protocol Logs</h3>
-                            <button className="text-indigo-600 font-black text-[10px] uppercase tracking-widest hover:text-purple-700 flex items-center gap-2 group">
-                                View Registry <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                        <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                            <h3 className="text-[11px] font-bold text-slate-900 uppercase tracking-[0.2em]">Recent Consultations</h3>
+                            <button className="text-indigo-600 font-bold text-[10px] uppercase tracking-widest hover:text-indigo-800 flex items-center gap-2 group">
+                                Full History <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                             </button>
                         </div>
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
                                 <thead>
                                     <tr className="bg-white border-b border-slate-100">
-                                        <th className="px-8 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Medical Officer</th>
-                                        <th className="px-8 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Date Node</th>
-                                        <th className="px-8 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">Auth Status</th>
+                                        <th className="px-8 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Medical Professional</th>
+                                        <th className="px-8 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Date of Visit</th>
+                                        <th className="px-8 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest text-right">Status</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-slate-50">
+                                <tbody className="divide-y divide-slate-100">
                                     {RECENT_VISITS.map((visit) => (
-                                        <tr key={visit.id} className="hover:bg-indigo-50/20 transition-colors group">
+                                        <tr key={visit.id} className="hover:bg-slate-50 transition-colors group">
                                             <td className="px-8 py-6">
-                                                <p className="font-black text-slate-900 text-sm uppercase tracking-tight italic">{visit.doctor}</p>
-                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{visit.specialty}</p>
+                                                <p className="font-extrabold text-slate-900 text-sm uppercase tracking-tight">{visit.doctor}</p>
+                                                <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">{visit.specialty}</p>
                                             </td>
-                                            <td className="px-8 py-6 text-[10px] font-black text-slate-500 tracking-widest">{visit.date}</td>
+                                            <td className="px-8 py-6 text-[10px] font-bold text-slate-500 tracking-widest">{visit.date}</td>
                                             <td className="px-8 py-6 text-right">
-                                                <span className={`px-4 py-1.5 rounded-sm text-[9px] font-black uppercase tracking-[0.15em] border ${visit.status === 'Completed'
+                                                <span className={`px-4 py-1.5 rounded-sm text-[9px] font-bold uppercase tracking-widest border ${visit.status === 'Completed'
                                                     ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
                                                     : 'bg-indigo-50 text-indigo-700 border-indigo-100'
                                                     }`}>
@@ -154,30 +156,30 @@ const Dashboard = () => {
                         </div>
                     </section>
 
-                    {/* Action Hub */}
+                    {/* Quick Actions Hub */}
                     <section className="space-y-8">
-                        <div className="bg-slate-900 rounded-sm p-10 text-white relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                                <Zap size={100} strokeWidth={4} />
+                        <div className="bg-indigo-600 rounded-sm p-10 text-white relative overflow-hidden group shadow-lg shadow-indigo-100">
+                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+                                <Zap size={100} strokeWidth={3} />
                             </div>
                             <div className="relative z-10">
-                                <h4 className="text-3xl font-black italic uppercase tracking-tighter mb-2">Priority<br />Booking</h4>
-                                <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest leading-relaxed mb-8">Direct interface with verified specialists.</p>
-                                <button className="w-full bg-indigo-600 text-white py-5 rounded-sm font-black text-[11px] uppercase tracking-[0.2em] hover:bg-white hover:text-slate-900 transition-all">
-                                    Iniate Sync
+                                <h4 className="text-3xl font-extrabold uppercase tracking-tight mb-2">Request<br />Appointment</h4>
+                                <p className="text-indigo-100 text-[10px] font-bold uppercase tracking-widest leading-relaxed mb-8">Schedule a session with a certified specialist.</p>
+                                <button className="w-full bg-slate-900 text-white py-5 rounded-sm font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-white hover:text-slate-900 transition-all">
+                                    Book Now
                                 </button>
                             </div>
                         </div>
 
                         <div className="bg-white rounded-sm p-8 border border-slate-200 shadow-sm">
-                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6">Upcoming Event</h4>
+                            <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-6">Upcoming Appointment</h4>
                             <div className="flex gap-5 items-center p-6 bg-slate-50 rounded-sm border border-slate-100">
-                                <div className="bg-indigo-600 p-3 rounded-sm text-white shadow-lg shadow-indigo-200">
+                                <div className="bg-indigo-600 p-3 rounded-sm text-white shadow-md">
                                     <Calendar size={18} />
                                 </div>
                                 <div>
-                                    <p className="text-[11px] font-black text-slate-900 uppercase tracking-widest">Dr. Emily Blunt</p>
-                                    <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-tighter mt-0.5">24 OCT • 10:00 AM</p>
+                                    <p className="text-[11px] font-bold text-slate-900 uppercase tracking-widest">Dr. Emily Blunt</p>
+                                    <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider mt-0.5">Oct 24 • 10:00 AM</p>
                                 </div>
                             </div>
                         </div>
@@ -191,8 +193,8 @@ const Dashboard = () => {
 const SidebarItem = ({ icon, label, active, onClick }) => (
     <button
         onClick={onClick}
-        className={`w-full flex items-center gap-4 px-6 py-4 rounded-sm transition-all border-l-4 uppercase tracking-[0.2em] text-[10px] font-black ${active
-            ? "bg-indigo-50 text-indigo-600 border-indigo-600"
+        className={`w-full flex items-center gap-4 px-6 py-4 rounded-sm transition-all border-l-4 uppercase tracking-widest text-[10px] font-bold ${active
+            ? "bg-indigo-50 text-indigo-600 border-indigo-600 shadow-sm shadow-indigo-50"
             : "text-slate-400 border-transparent hover:bg-slate-50 hover:text-slate-900"
             }`}
     >
