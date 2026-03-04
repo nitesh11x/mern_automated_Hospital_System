@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Counter } from "./Counter.model.js";
 
 const appointmentSchema = new mongoose.Schema(
   {
@@ -48,8 +49,8 @@ const appointmentSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["pending", "approved", "completed", "cancelled"],
-      default: "pending"
+      enum: ["Pending", "Approved", "Completed", "Cancelled"],
+      default: "Pending"
     },
 
     approvedAt: Date,
@@ -73,7 +74,7 @@ const appointmentSchema = new mongoose.Schema(
 
     paymentStatus: {
       type: String,
-      enum: ["Pending", "Paid", "Failed"],
+      enum: ["Pending", "Paid", "Failed", "Canceld"],
       default: "Pending"
     },
 
@@ -81,16 +82,30 @@ const appointmentSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-appointmentSchema.pre("save", function (next) {
-  if (!this.appointmentId) {
-    this.appointmentId =
-      "apt-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
+
+appointmentSchema.pre("save", async function (next) {
+  try {
+    if (!this.appointmentId) {
+      const counter = await Counter.findOneAndUpdate(
+        { name: "appointment" },
+        { $inc: { seq: 1 } },
+        { new: true, upsert: true }
+      );
+
+      this.appointmentId = `apt-${counter.seq
+        .toString()
+        .padStart(4, "0")}`;
+    }
+
+  } catch (error) {
+    next(error);
   }
 });
 appointmentSchema.index(
   { doctorId: 1, appointmentDate: 1, requestedTimeSlot: 1 },
   { unique: true }
 );
+
 export const Appointment = mongoose.model(
   "Appointment",
   appointmentSchema
