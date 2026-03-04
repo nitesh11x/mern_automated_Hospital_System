@@ -74,7 +74,7 @@ function App() {
           {/* patient routes  */}
           <Route path='/patient/login' element={<Login />}></Route>
           <Route path='/patient/register' element={<Register />}></Route>
-          <Route path='/patient/dashboard' element={<Dashboard />}></Route>
+          <Route path='/patient/dashboard' element={<PatientRoute><Dashboard /></PatientRoute>}></Route>
           <Route path='/patient/me' element={<Profile />}></Route>
           <Route path='/patient/all' element={<Patients />}></Route>
           <Route path='/patient/manage' element={<AdminRoute><PatientManage /></AdminRoute>}></Route>

@@ -19,33 +19,53 @@ import {
     Zap,
     ShieldCheck
 } from "lucide-react";
+import { getAllDoctorsThunk } from "../../redux/slices/doctor.slice";
+import { Link } from "react-router-dom";
+import { patientLogoutThunk } from "../../redux/slices/patient.slice";
+import { toast } from "react-hot-toast";
 
-const RECENT_VISITS = [
-    { id: 1, doctor: "Dr. Sarah Johnson", specialty: "Cardiology", date: "OCT 12, 2026", status: "Completed" },
-    { id: 2, doctor: "Dr. Michael Chen", specialty: "General Medicine", date: "SEP 28, 2026", status: "Follow-up" },
-    { id: 3, doctor: "Dr. Emily Blunt", specialty: "Dermatology", date: "AUG 15, 2026", status: "Completed" },
-];
-
-const HEALTH_STATS = [
-    { label: "Heart Rate", value: "72 bpm", icon: <Activity size={18} />, color: "text-rose-600", border: "border-rose-600" },
-    { label: "Glucose Level", value: "95 mg/dL", icon: <Droplets size={18} />, color: "text-indigo-600", border: "border-indigo-600" },
-    { label: "Body Temp", value: "36.6 °C", icon: <Thermometer size={18} />, color: "text-amber-600", border: "border-amber-600" },
-];
 
 const Dashboard = () => {
     const [activeTab, setActiveTab] = useState("dashboard");
     const dispatch = useDispatch();
-
     const { patient } = useSelector(state => state.patient);
-    const { appointments } = useSelector(state => state.appointment);
+    const { appointments, patientAppointments } = useSelector(state => state.appointment);
+    const { doctors } = useSelector((state) => state.doctor)
     const { prescriptions } = useSelector(state => state.prescription);
 
     useEffect(() => {
         dispatch(getPatientAppointments());
         dispatch(getPatientPrescriptionsThunk());
+        dispatch(getAllDoctorsThunk())
     }, [dispatch]);
 
+    const doctorMap = React.useMemo(() => {
+        const map = {};
+        doctors?.forEach(doc => {
+            map[doc._id] = doc;
+        });
+        return map;
+    }, [doctors]);
+    const handleLogout = async (role) => {
+        try {
+            if (role === "admin") {
+                await dispatch(adminLogoutThunk()).unwrap();
+                toast.success("Admin Logged Out");
+            } else if (role === "doctor") {
+                await dispatch(doctorLogoutThunk()).unwrap();
+                toast.success("Doctor Logged Out");
+            } else {
+                await dispatch(patientLogoutThunk()).unwrap();
+                toast.success("Patient Logged Out");
+            }
 
+            setIsOpen(false);
+            navigate("/");
+            window.location.reload();
+        } catch (error) {
+            toast.error("Logout Failed");
+        }
+    };
     return (
         <div className="flex min-h-screen bg-slate-50 pt-16 font-sans">
 
@@ -78,7 +98,7 @@ const Dashboard = () => {
                     <SidebarItem icon={<Settings size={18} />} label="Account Settings" />
                 </nav>
 
-                <button className="flex items-center gap-3 px-6 py-4 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-sm transition-all mt-auto font-bold text-[10px] uppercase tracking-widest border border-transparent hover:border-rose-100">
+                <button onClick={handleLogout} className="flex items-center gap-3 px-6 py-4 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-sm transition-all mt-auto font-bold text-[10px] uppercase tracking-widest border border-transparent hover:border-rose-100">
                     <LogOut size={16} /> Sign Out
                 </button>
             </aside>
@@ -117,22 +137,7 @@ const Dashboard = () => {
                     <>
                         {/* Vital Signs Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
-                            {HEALTH_STATS.map((stat, i) => (
-                                <motion.div
-                                    key={i}
-                                    whileHover={{ y: -2 }}
-                                    className={`bg-white p-8 rounded-sm shadow-sm border-l-4 ${stat.border} flex flex-col gap-4 group transition-all`}
-                                >
-                                    <div className={`${stat.color} flex justify-between items-start`}>
-                                        {stat.icon}
-                                        <ArrowUpRight size={14} className="text-slate-200 group-hover:text-indigo-600 transition-colors" />
-                                    </div>
-                                    <div>
-                                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em] mb-1">{stat.label}</p>
-                                        <p className="text-4xl font-extrabold text-slate-900 tracking-tight leading-none">{stat.value}</p>
-                                    </div>
-                                </motion.div>
-                            ))}
+
                         </div>
 
                         <div className="grid lg:grid-cols-3 gap-10">
@@ -191,9 +196,9 @@ const Dashboard = () => {
                                     <div className="relative z-10">
                                         <h4 className="text-3xl font-extrabold uppercase tracking-tight mb-2">Request<br />Appointment</h4>
                                         <p className="text-indigo-100 text-[10px] font-bold uppercase tracking-widest leading-relaxed mb-8">Schedule a session with a certified specialist.</p>
-                                        <button className="w-full bg-slate-900 text-white py-5 rounded-sm font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-white hover:text-slate-900 transition-all">
+                                        <Link to={'/appointment/book'} className="w-full bg-slate-900 text-white py-5 rounded-sm font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-white hover:text-slate-900 transition-all">
                                             Book Now
-                                        </button>
+                                        </Link>
                                     </div>
                                 </div>
 
@@ -250,6 +255,130 @@ const Dashboard = () => {
                                 </div>
                             )) : (
                                 <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center py-10">No prescriptions found</p>
+                            )}
+                        </div>
+                    </section>
+                )}
+                {activeTab === "visits" && (
+                    <section className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div className="p-6 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
+                            <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-[0.2em]">
+                                Appointment Records
+                            </h3>
+                        </div>
+
+                        <div className="overflow-x-auto">
+                            {patientAppointments && patientAppointments.length > 0 ? (
+                                <table className="min-w-full text-sm text-left">
+
+                                    {/* Header */}
+                                    <thead className="bg-slate-50 text-[10px] uppercase tracking-widest text-slate-500 sticky top-0 z-10">
+                                        <tr>
+                                            <th className="px-6 py-4">ID</th>
+                                            <th className="px-6 py-4">Doctor</th>
+                                            <th className="px-6 py-4">Date</th>
+                                            <th className="px-6 py-4">Time</th>
+                                            <th className="px-6 py-4">Status</th>
+                                            <th className="px-6 py-4">Payment</th>
+                                            <th className="px-6 py-4">Prescription</th>
+                                            <th className="px-6 py-4">Reports</th>
+                                        </tr>
+                                    </thead>
+
+                                    {/* Body */}
+                                    <tbody className="divide-y divide-slate-100">
+                                        {patientAppointments.map((px) => {
+                                            const doctor = doctorMap[px.doctorId];
+
+                                            return (
+                                                <tr
+                                                    key={px._id}
+                                                    className="hover:bg-slate-50 transition-all duration-200"
+                                                >
+                                                    {/* Appointment ID */}
+                                                    <td className="px-6 py-5 font-semibold text-slate-800">
+                                                        {px.appointmentId}
+                                                    </td>
+
+                                                    {/* Doctor */}
+                                                    <td className="px-6 py-5">
+                                                        {doctor ? (
+                                                            <div className="flex flex-col">
+                                                                <span className="font-semibold text-slate-900">
+                                                                    Dr. {doctor.firstName} {doctor.lastName}
+                                                                </span>
+                                                                <span className="text-[11px] text-indigo-600 font-medium">
+                                                                    {doctor.specialization}
+                                                                </span>
+                                                            </div>
+                                                        ) : (
+                                                            "Loading..."
+                                                        )}
+                                                    </td>
+
+                                                    {/* Date */}
+                                                    <td className="px-6 py-5 text-slate-600">
+                                                        {new Date(px.appointmentDate).toLocaleDateString()}
+                                                    </td>
+
+                                                    {/* Time */}
+                                                    <td className="px-6 py-5 text-slate-600">
+                                                        {px.requestedTimeSlot}
+                                                    </td>
+
+                                                    {/* Status */}
+                                                    <td className="px-6 py-5">
+                                                        <span
+                                                            className={`px-3 py-1 text-xs font-bold uppercase tracking-widest rounded-full ${px.status === "approved"
+                                                                ? "bg-green-100 text-green-700"
+                                                                : px.status === "pending"
+                                                                    ? "bg-yellow-100 text-yellow-700"
+                                                                    : "bg-red-100 text-red-700"
+                                                                }`}
+                                                        >
+                                                            {px.status}
+                                                        </span>
+                                                    </td>
+
+                                                    {/* Payment */}
+                                                    <td className="px-6 py-5 text-sm">
+                                                        <div className="flex flex-col">
+                                                            <span className="text-slate-700 font-medium">
+                                                                {px.paymentMode}
+                                                            </span>
+                                                            <span
+                                                                className={`text-xs font-semibold ${px.paymentStatus === "Completed"
+                                                                    ? "text-green-600"
+                                                                    : "text-rose-500"
+                                                                    }`}
+                                                            >
+                                                                {px.paymentStatus}
+                                                            </span>
+                                                        </div>
+                                                    </td>
+
+                                                    {/* Prescription */}
+                                                    <td className="px-6 py-5">
+                                                        <button className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest rounded-md bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all">
+                                                            View
+                                                        </button>
+                                                    </td>
+
+                                                    {/* Reports */}
+                                                    <td className="px-6 py-5">
+                                                        <button className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest rounded-md bg-slate-100 text-slate-600 hover:bg-slate-800 hover:text-white transition-all">
+                                                            View
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <p className="text-center py-12 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                                    No Appointments Found
+                                </p>
                             )}
                         </div>
                     </section>

@@ -71,7 +71,7 @@ const Navbar = () => {
                         <Plus size={18} />
                     </div>
 
-                    <span className="text-xl font-bold text-slate-900">
+                    <span className="text-xl font-bold text-green-600">
                         New
                         <span className="bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                             Care
