@@ -127,7 +127,7 @@ const AdminDashboard = () => {
 
                                 {/* System & Analytics Group */}
                                 <ActionCard title="Facility Metrics" icon={<Activity />}>
-                                    <div className="h-[120px] w-full mt-2">
+                                    <div className="h-30 w-full mt-2">
                                         <ResponsiveContainer width="100%" height="100%">
                                             <BarChart data={weeklyActivity}>
                                                 <Bar dataKey="apps" fill="#CBD5E1" radius={[2, 2, 0, 0]} />
@@ -165,7 +165,7 @@ const AdminDashboard = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="h-[300px]">
+                                    <div className="h-75">
                                         <ResponsiveContainer width="100%" height="100%">
                                             <PieChart>
                                                 <Pie data={chartData} innerRadius={80} outerRadius={110} paddingAngle={8} dataKey="value">

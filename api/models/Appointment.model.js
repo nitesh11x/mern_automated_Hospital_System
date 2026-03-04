@@ -56,7 +56,7 @@ const appointmentSchema = new mongoose.Schema(
     approvedAt: Date,
     completedAt: Date,
 
-    isVisit: {
+    isVisited: {
       type: Boolean,
       default: false
     },
@@ -78,7 +78,13 @@ const appointmentSchema = new mongoose.Schema(
       default: "Pending"
     },
 
-    notes: String
+    notes: {
+      type: String, default: ""
+    },
+    qrCode: {
+      type: String,
+      default: null
+    }
   },
   { timestamps: true }
 );

@@ -2,6 +2,7 @@ import express from "express";
 import {
   bookAppointment,
   bookAppointmentOfSpecificDoctor,
+  generateAppointmentQR,
   getAllAppointments,
   getAppointmentById,
   getDoctorAppointments,
@@ -24,6 +25,7 @@ router.post("/book/:doctorId", isPatientAuth, bookAppointmentOfSpecificDoctor);
 router.get("/all", isAdminAuth, getAllAppointments);
 router.get("/me", isPatientAuth, getPatientAppointments);
 router.get("/doctor/me", isDoctorAuth, getDoctorAppointments);
+router.get("/qr/:appointmentId", generateAppointmentQR);
 router.get("/:appointmentId", isPatientAuth, getAppointmentById);
 
 router.put("/status/:id", isAdminAuth, updateAppointmentStatus);

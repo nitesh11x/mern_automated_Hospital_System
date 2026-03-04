@@ -43,9 +43,10 @@ const Home = () => {
                                 Book Appointment <ArrowRight size={16} />
                             </Link>
 
-                            <button className="border border-indigo-200 text-indigo-700 px-8 py-5 text-xs font-bold uppercase tracking-widest hover:bg-indigo-50 transition-all">
+                            <Link
+                                to={'/doctor/all'} className="border border-indigo-200 text-indigo-700 px-8 py-5 text-xs font-bold uppercase tracking-widest hover:bg-indigo-50 transition-all">
                                 View Specialists
-                            </button>
+                            </Link>
                         </div>
                     </motion.div>
 
@@ -127,18 +128,18 @@ const Home = () => {
                     {[1, 2, 3, 4, 5].map((i) => (
                         <div key={i} className="flex items-center gap-6 font-bold text-[10px] uppercase tracking-[0.4em]">
                             <Plus size={14} />
-                            <span>System Online</span>
+                            <span>100% digital </span>
                             <span>•</span>
-                            <span>Physicians Active</span>
+                            <span>Less Waiting Time</span>
                             <span>•</span>
-                            <span>Network Secured</span>
+                            <span>Scheduel At Home</span>
                         </div>
                     ))}
                 </motion.div>
             </div>
 
             {/* --- FOOTER CTA --- */}
-            <section className="py-24 px-6 text-center border-b border-slate-100 bg-white">
+            {/* <section className="py-24 px-6 text-center border-b border-slate-100 bg-white">
                 <h2 className="text-4xl font-bold tracking-tight mb-8">
                     Ready for a better healthcare experience?
                 </h2>
@@ -151,7 +152,7 @@ const Home = () => {
                         Contact Office
                     </button>
                 </div>
-            </section>
+            </section> */}
 
         </div>
     );

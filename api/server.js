@@ -7,7 +7,9 @@ import cloudinary from 'cloudinary'
 import { connectDb } from "./lib/db.js";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
 import fileUpload from "express-fileupload";
+import QRCode from "qrcode";
 const app = express()
+
 dotenv.config()
 
 app.use(cors({

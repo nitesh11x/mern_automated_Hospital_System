@@ -48,6 +48,7 @@ const BookAppointment = () => {
         appointmentDate: "",
         requestedTimeSlot: "",
         paymentMode: "Offline",
+        isVisited: "false",
     });
 
     const minDateValue = useMemo(() => {
@@ -83,6 +84,7 @@ const BookAppointment = () => {
                 appointmentDate: "",
                 requestedTimeSlot: "",
                 paymentMode: "Offline",
+                isVisited: "",
             });
             dispatch(resetBookingState());
         }
@@ -248,6 +250,12 @@ const BookAppointment = () => {
                                         <option value="Online">Online / Pre-pay</option>
                                     </select>
                                 </FormGroup>
+                                <FormGroup label="Is Visited" activeColor="focus:border-indigo-600">
+                                    <select name="is Visited" value={formData.isVisited} onChange={handleChange} className="text-indigo-700">
+                                        <option value="false">No </option>
+                                        <option value="true">Yes</option>
+                                    </select>
+                                </FormGroup>
                             </div>
                         </section>
 
@@ -279,6 +287,7 @@ const BookAppointment = () => {
                                     <SummaryItem label="Scheduled Session" value={formData.appointmentDate ? `${formData.appointmentDate} @ ${formatTo12Hr(formData.requestedTimeSlot) || 'TBD'}` : "Unscheduled"} />
                                     <SummaryItem label="Primary Patient" value={formData.name || "Awaiting Registry"} />
                                     <SummaryItem label="Billing Node" value={formData.paymentMode} />
+                                    <SummaryItem label="Visited Previously" value={formData.isVisited} />
                                 </div>
 
                                 <div className="mt-12 p-5 bg-white/5 border border-white/10 rounded-2xl">

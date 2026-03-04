@@ -106,6 +106,20 @@ export const reScheduelAppointmentByIdThunk = createAsyncThunk(
     }
 );
 
+export const generateAppointmentQRThunk = createAsyncThunk(
+    "appointment/generateQR",
+    async (appointmentId, { rejectWithValue }) => {
+        try {
+            const { data } = await api.get(`/appointment/qr/${appointmentId}`);
+            return data.qr;
+        } catch (error) {
+            return rejectWithValue(
+                error?.response?.data?.message || "Server failed to generate QR"
+            );
+        }
+    }
+);
+
 const initialState = {
     appointments: [],
     patientAppointments: null,
@@ -213,6 +227,11 @@ const appointmentSlice = createSlice({
                     state.appointments[index] = updated;
                 }
             })
+            // qr code 
+            .addCase(generateAppointmentQRThunk.fulfilled, (state, action) => {
+                state.qrCode = action.payload;
+                console.log(action.payload)
+            });
     },
 });
 
