@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { Appointment } from "../models/Appointment.model.js";
 import { asyncHandler } from "../utils/asyncHandler.util.js";
 import ErrorHandler from "../utils/errorHandler.utils.js";
+import QRCode from "qrcode";
 
 export const bookAppointment = asyncHandler(async (req, res, next) => {
   const {
@@ -312,5 +313,33 @@ export const deleteAppointmentById = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Appointment deleted successfully"
+  });
+});
+
+export const generateAppointmentQR = asyncHandler(async (req, res, next) => {
+  const { appointmentId } = req.params;
+
+  const appointment = await Appointment.findById(appointmentId);
+
+  if (!appointment) {
+    return next(new ErrorHandler("Appointment not found", 404));
+  }
+
+  const qrData = JSON.stringify({
+    id: appointment.appointmentId,
+    patient: appointment.name,
+    date: appointment.appointmentDate,
+    status: appointment.status
+  });
+
+  const qr = await QRCode.toDataURL(qrData);
+
+  // Save QR code in database
+  appointment.qrCode = qr;
+  await appointment.save();
+
+  res.status(200).json({
+    success: true,
+    qr
   });
 });

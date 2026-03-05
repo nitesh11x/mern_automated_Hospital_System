@@ -19,7 +19,16 @@ const otpSchema = new mongoose.Schema(
       default: 0,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const Otp = mongoose.model("Otp", otpSchema);
+
+const BypassOtpSchema = new mongoose.Schema(
+  {
+    isBypass: { type: Boolean, default: false },
+  },
+  { timestamps: true },
+);
+
+export const BypassOtp = mongoose.model("BypassOtp", BypassOtpSchema);
