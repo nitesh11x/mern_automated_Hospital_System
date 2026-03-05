@@ -316,7 +316,6 @@ export const deleteAppointmentById = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 export const generateAppointmentQR = asyncHandler(async (req, res, next) => {
   const { appointmentId } = req.params;
 

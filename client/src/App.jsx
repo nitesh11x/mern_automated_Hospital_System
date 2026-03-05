@@ -67,7 +67,7 @@ function App() {
           <Route path='/' element={<Hero />}></Route>
           <Route path='/about' element={<About />}></Route>
           <Route path='/contact' element={<Contact />}></Route>
-          <Route path='/login' element={<OtpForm />}></Route>
+          <Route path='/otp-form' element={<OtpForm />}></Route>
           <Route path='/management' element={<LoginDashboard />}></Route>
           <Route path='/services' element={<Services />}></Route>
 

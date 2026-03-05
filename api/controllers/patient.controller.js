@@ -3,7 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.util.js";
 import ErrorHandler from "../utils/errorHandler.utils.js";
 import { Patient } from "../models/Patient.model.js";
 import bcrypt from "bcryptjs";
-import cloudinary from 'cloudinary'
+import cloudinary from "cloudinary";
 
 export const registerPatient = asyncHandler(async (req, res, next) => {
   const {
@@ -17,7 +17,15 @@ export const registerPatient = asyncHandler(async (req, res, next) => {
     gender,
   } = req.body;
 
-  if (!firstName || !lastName || !email || !password || !phone || !dob || !gender) {
+  if (
+    !firstName ||
+    !lastName ||
+    !email ||
+    !password ||
+    !phone ||
+    !dob ||
+    !gender
+  ) {
     return next(new ErrorHandler("All fields are required", 400));
   }
 
@@ -31,7 +39,7 @@ export const registerPatient = asyncHandler(async (req, res, next) => {
   if (req.files?.profile) {
     const result = await cloudinary.v2.uploader.upload(
       req.files.profile.tempFilePath,
-      { folder: "hospital_System/patient/profile" }
+      { folder: "hospital_System/patient/profile" },
     );
 
     profileData = {
@@ -68,8 +76,7 @@ export const registerPatient = asyncHandler(async (req, res, next) => {
   return res.status(201).json({
     success: true,
     message: "User registered successfully",
-    patient
-
+    patient,
   });
 });
 
@@ -89,33 +96,36 @@ export const loginPatientWithPassword = asyncHandler(async (req, res, next) => {
   const token = jwt.sign(
     { id: patient._id, role: "Patient" },
     process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN }
+    { expiresIn: process.env.JWT_EXPIRES_IN },
   );
   res.cookie("patientToken", token, {
     httpOnly: true,
     secure: true,
     sameSite: "none",
-    maxAge: process.env.MAX_AGE
+    maxAge: process.env.MAX_AGE,
   });
   const safePatient = await Patient.findById(patient._id).select("-password");
   return res.status(200).json({
     success: true,
     message: "Login successful",
     patient: safePatient,
-    patientToken: token
+    patientToken: token,
   });
 });
 
 export const logoutPatient = asyncHandler(async (req, res) => {
-  res.cookie("patientToken", "", {
-    httpOnly: true,
-    expires: new Date(0), // Set to past date to delete
-    secure: true,        // Must match how it was created
-    sameSite: "none",    // Must match how it was created
-  }).status(200).json({
-    success: true,
-    message: "Logged out successfully"
-  });
+  res
+    .cookie("patientToken", "", {
+      httpOnly: true,
+      expires: new Date(0), // Set to past date to delete
+      secure: true, // Must match how it was created
+      sameSite: "none", // Must match how it was created
+    })
+    .status(200)
+    .json({
+      success: true,
+      message: "Logged out successfully",
+    });
 });
 
 export const patientProfile = asyncHandler(async (req, res, next) => {
@@ -143,7 +153,9 @@ export const getPatientById = asyncHandler(async (req, res, next) => {
 });
 
 export const getAllPatient = asyncHandler(async (req, res, next) => {
-  const patients = await Patient.find().select("-password").sort({ createdAt: -1 });
+  const patients = await Patient.find()
+    .select("-password")
+    .sort({ createdAt: -1 });
   res.status(200).json({
     success: true,
     patients,
@@ -151,22 +163,27 @@ export const getAllPatient = asyncHandler(async (req, res, next) => {
 });
 
 export const deletePatientById = asyncHandler(async (req, res, next) => {
-  const patientId = req.params
-  if (!patientId) return next(new ErrorHandler('patient id not found ', 400))
-  const patient = await Patient.findByIdAndDelete(patientId)
-  if (!patient) return next(new ErrorHandler("patient not found ", 404))
-  res.status(200).json({ success: true, message: "patient Deleted Successfully" })
-})
+  const patientId = req.params;
+  if (!patientId) return next(new ErrorHandler("patient id not found ", 400));
+  const patient = await Patient.findByIdAndDelete(patientId);
+  if (!patient) return next(new ErrorHandler("patient not found ", 404));
+  res
+    .status(200)
+    .json({ success: true, message: "patient Deleted Successfully" });
+});
 
 export const updatePatientById = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const patient = await Patient.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
+  const patient = await Patient.findByIdAndUpdate(id, req.body, {
+    new: true,
+    runValidators: true,
+  });
   if (!patient) return next(new ErrorHandler("Patient not found", 404));
 
   res.status(200).json({
     success: true,
     message: "Patient updated successfully",
-    patient
+    patient,
   });
 });
 
@@ -185,7 +202,17 @@ export const updatePatientStatusById = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Patient status updated successfully",
-    patient
+    patient,
   });
 });
 
+export const getPatientId = asyncHandler(async (req, res, next) => {
+  const totalPatients = await Patient.countDocuments();
+  const nextNumber = totalPatients + 1;
+  const patientId = `PAT${String(nextNumber).padStart(4, "0")}`;
+  res.status(200).json({
+    success: true,
+    patientId
+  });
+
+});

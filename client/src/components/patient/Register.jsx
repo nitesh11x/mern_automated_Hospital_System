@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getAllPatientThunk,
   patientRegisterThunk,
+  getNextPatientIdThunk,
 } from "../../redux/slices/patient.slice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
@@ -22,9 +22,8 @@ const Register = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { loading, error, patients } = useSelector(
-    (state) => state.patient
-  );
+  // now includes patientId from slice
+  const { loading, error, patientId } = useSelector((state) => state.patient);
   const { isOtpVerified } = useSelector((state) => state.otp);
 
   const [profilePreview, setProfilePreview] = useState(null);
@@ -41,38 +40,27 @@ const Register = () => {
     gender: "",
   });
 
+  // OTP verification check — keep same behavior as before
   useEffect(() => {
     if (!isOtpVerified) {
-      navigate("/login");
+      navigate("/otp-form");
     }
   }, [isOtpVerified, navigate]);
 
+  // fetch next patient id via redux thunk (no axios in component)
   useEffect(() => {
-    dispatch(getAllPatientThunk());
+    dispatch(getNextPatientIdThunk());
   }, [dispatch]);
 
-  // 🔹 Generate next patientId automatically
+  // when patientId arrives in redux, set it to form
   useEffect(() => {
-    if (patients && patients.length > 0) {
-      const numbers = patients.map((p) => {
-        const match = p.patientId?.match(/\d+/);
-        return match ? parseInt(match[0], 10) : 0;
-      });
-
-      const maxNumber = Math.max(...numbers);
-      const nextId = `new${maxNumber + 1}`;
-
+    if (patientId) {
       setFormData((prev) => ({
         ...prev,
-        patientId: nextId,
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        patientId: "new01",
+        patientId,
       }));
     }
-  }, [patients]);
+  }, [patientId]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -97,11 +85,12 @@ const Register = () => {
         patientRegisterThunk({
           ...formData,
           profile: profileFile,
-        })
+        }),
       ).unwrap();
 
       toast.success("Account created successfully 🎉");
 
+      // reset local form state (keeps design and previous behavior)
       setFormData({
         patientId: "",
         firstName: "",
@@ -115,8 +104,8 @@ const Register = () => {
 
       setProfileFile(null);
       setProfilePreview(null);
-      navigate("/patient/login");
 
+      navigate("/patient/login");
     } catch (err) {
       toast.error(err || "Registration failed");
     }
@@ -262,7 +251,10 @@ const Register = () => {
                 className="w-full bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-4 rounded-sm font-black uppercase tracking-[0.2em] text-xs flex items-center justify-center gap-3 shadow-lg shadow-indigo-100 transition-all disabled:opacity-70 group"
               >
                 {loading ? "Creating..." : "Complete Registration"}
-                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                <ArrowRight
+                  size={18}
+                  className="group-hover:translate-x-1 transition-transform"
+                />
               </button>
             </form>
           </div>
@@ -296,9 +288,10 @@ const InputField = ({
         readOnly={readOnly}
         onChange={onChange}
         className={`w-full pl-12 pr-4 py-3 border rounded-sm outline-none transition-all text-sm font-medium
-          ${readOnly
-            ? "bg-gray-100 border-gray-200 text-gray-500 cursor-not-allowed"
-            : "bg-gray-50 border-gray-200 focus:border-purple-600 focus:bg-white"
+          ${
+            readOnly
+              ? "bg-gray-100 border-gray-200 text-gray-500 cursor-not-allowed"
+              : "bg-gray-50 border-gray-200 focus:border-purple-600 focus:bg-white"
           }`}
       />
     </div>

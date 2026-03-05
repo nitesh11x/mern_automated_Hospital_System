@@ -106,7 +106,7 @@ const Login = () => {
               <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">
                 New Patient?
                 <Link
-                  to="/login"
+                  to="/otp-form"
                   className="text-indigo-600 ml-2 hover:underline transition-all"
                 >
                   Create Account

@@ -5,25 +5,25 @@ const appointmentSchema = new mongoose.Schema(
   {
     appointmentId: {
       type: String,
-      unique: true
+      unique: true,
     },
 
     patientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Patient",
-      required: true
+      required: true,
     },
 
     doctorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Doctor",
-      required: true
+      required: true,
     },
 
     prescriptionId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Prescription",
-      default: null
+      default: null,
     },
 
     // Snapshot Info
@@ -34,23 +34,23 @@ const appointmentSchema = new mongoose.Schema(
 
     appointmentDate: {
       type: Date,
-      required: true
+      required: true,
     },
 
     requestedTimeSlot: {
       type: String,
-      required: true
+      required: true,
     },
 
     approvedTimeSlot: {
       type: String,
-      default: null
+      default: null,
     },
 
     status: {
       type: String,
       enum: ["Pending", "Approved", "Completed", "Cancelled"],
-      default: "Pending"
+      default: "Pending",
     },
 
     approvedAt: Date,
@@ -58,35 +58,36 @@ const appointmentSchema = new mongoose.Schema(
 
     isVisited: {
       type: Boolean,
-      default: false
+      default: false,
     },
 
     previousAppointmentId: {
       type: String,
-      default: null
+      default: null,
     },
 
     paymentMode: {
       type: String,
       enum: ["Online", "Offline"],
-      required: true
+      required: true,
     },
 
     paymentStatus: {
       type: String,
       enum: ["Pending", "Paid", "Failed", "Canceld"],
-      default: "Pending"
+      default: "Pending",
     },
 
     notes: {
-      type: String, default: ""
+      type: String,
+      default: "",
     },
     qrCode: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 appointmentSchema.pre("save", async function (next) {
@@ -95,24 +96,18 @@ appointmentSchema.pre("save", async function (next) {
       const counter = await Counter.findOneAndUpdate(
         { name: "appointment" },
         { $inc: { seq: 1 } },
-        { new: true, upsert: true }
+        { returnDocument: "after", upsert: true },
       );
 
-      this.appointmentId = `apt-${counter.seq
-        .toString()
-        .padStart(4, "0")}`;
+      this.appointmentId = `apt-${counter.seq.toString().padStart(4, "0")}`;
     }
-
   } catch (error) {
     next(error);
   }
 });
 appointmentSchema.index(
   { doctorId: 1, appointmentDate: 1, requestedTimeSlot: 1 },
-  { unique: true }
+  { unique: true },
 );
 
-export const Appointment = mongoose.model(
-  "Appointment",
-  appointmentSchema
-);
+export const Appointment = mongoose.model("Appointment", appointmentSchema);
