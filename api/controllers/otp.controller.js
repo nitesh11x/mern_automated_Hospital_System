@@ -3,75 +3,100 @@ import { asyncHandler } from "../utils/asyncHandler.util.js";
 import ErrorHandler from "../utils/errorHandler.utils.js";
 import { generateOtp } from "../utils/generateOtp.util.js";
 import { sendMail } from "../utils/sendOtp.util.js";
-import { Otp } from "../models/Otp.model.js";
+import { BypassOtp, Otp } from "../models/Otp.model.js";
 
 export const sendOtp = asyncHandler(async (req, res, next) => {
-    const { email } = req.body;
+  const { email } = req.body;
 
-    if (!email) {
-        return next(new ErrorHandler("Email is required", 400));
-    }
+  if (!email) {
+    return next(new ErrorHandler("Email is required", 400));
+  }
 
-    const otp = generateOtp();
+  const otp = generateOtp();
 
-    // delete old OTP
-    await Otp.deleteMany({ email });
+  // delete old OTP
+  await Otp.deleteMany({ email });
 
-    await Otp.create({
-        email,
-        otp, // store plain OTP
-        expiresAt: Date.now() + 5 * 60 * 1000, // 5 minutes
-    });
+  await Otp.create({
+    email,
+    otp, // store plain OTP
+    expiresAt: Date.now() + 5 * 60 * 1000, // 5 minutes
+  });
 
-    await sendMail(email, otp);
+  await sendMail(email, otp);
 
-    res.status(200).json({
-        success: true,
-        message: "OTP sent successfully",
-    });
+  res.status(200).json({
+    success: true,
+    message: "OTP sent successfully",
+  });
 });
 
 export const verifyOtp = asyncHandler(async (req, res, next) => {
-    const { email, otp } = req.body;
+  const { email, otp } = req.body;
 
-    if (!email || !otp) {
-        return next(new ErrorHandler("Email and OTP required", 400));
-    }
+  if (!email || !otp) {
+    return next(new ErrorHandler("Email and OTP required", 400));
+  }
 
-    const existingOtp = await Otp.findOne({ email });
+  const existingOtp = await Otp.findOne({ email });
 
-    if (!existingOtp) {
-        return next(new ErrorHandler("OTP not found", 400));
-    }
+  if (!existingOtp) {
+    return next(new ErrorHandler("OTP not found", 400));
+  }
 
-    if (existingOtp.expiresAt < Date.now()) {
-        await Otp.deleteOne({ email });
-        return next(new ErrorHandler("OTP expired", 400));
-    }
-
-    if (existingOtp.otp !== otp) {
-        existingOtp.attempts += 1;
-        await existingOtp.save();
-
-        if (existingOtp.attempts >= 5) {
-            await Otp.deleteOne({ email });
-            return next(new ErrorHandler("Too many attempts. Try again.", 400));
-        }
-
-        return next(new ErrorHandler("Invalid OTP", 400));
-    }
-
+  if (existingOtp.expiresAt < Date.now()) {
     await Otp.deleteOne({ email });
+    return next(new ErrorHandler("OTP expired", 400));
+  }
 
-    const token = jwt.sign(
-        { email },
-        process.env.JWT_SECRET,
-        { expiresIn: "7d" }
-    );
+  if (existingOtp.otp !== otp) {
+    existingOtp.attempts += 1;
+    await existingOtp.save();
 
-    res.status(200).json({
-        success: true,
-        message: "Successfully verified",
-        token,
-    });
+    if (existingOtp.attempts >= 5) {
+      await Otp.deleteOne({ email });
+      return next(new ErrorHandler("Too many attempts. Try again.", 400));
+    }
+
+    return next(new ErrorHandler("Invalid OTP", 400));
+  }
+
+  await Otp.deleteOne({ email });
+
+  const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+    expiresIn: "7d",
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Successfully verified",
+    token,
+  });
+});
+
+export const bypassOtpFlagChanger = asyncHandler(async (req, res, next) => {
+  const { isBypass } = req.body;
+  const bypass = await BypassOtp.findOneAndUpdate(
+    {},
+    { isBypass: isBypass },
+    {
+      returnDocument: "after",
+      upsert: true,
+    }
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Bypass OTP flag updated successfully",
+    data: bypass,
+  });
+});
+
+
+export const getBypassOtpFlag = asyncHandler(async (req, res, next) => {
+  const bypass = await BypassOtp.findOne();
+  res.status(200).json({
+    success: true,
+    data: bypass,
+  });
 });
