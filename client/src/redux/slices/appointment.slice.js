@@ -46,10 +46,10 @@ export const getPatientAppointments = createAsyncThunk(
     }
 );
 export const getDoctorAppointments = createAsyncThunk(
-    "appointment/doctor/me",
+    "appointment/doctor/appointments",
     async (_, { rejectWithValue }) => {
         try {
-            const { data } = await api.get("/appointment/doctor/me");
+            const { data } = await api.get("/appointment/doctor/appointments");
             return data?.appointments || data;
         } catch (error) {
             return rejectWithValue(

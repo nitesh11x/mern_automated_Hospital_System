@@ -24,7 +24,7 @@ router.post("/book/:doctorId", isPatientAuth, bookAppointmentOfSpecificDoctor);
 
 router.get("/all", isAdminAuth, getAllAppointments);
 router.get("/me", isPatientAuth, getPatientAppointments);
-router.get("/doctor/me", isDoctorAuth, getDoctorAppointments);
+router.get("/doctor/appointments", isDoctorAuth, getDoctorAppointments);
 router.get("/qr/:appointmentId", generateAppointmentQR);
 router.get("/:appointmentId", isPatientAuth, getAppointmentById);
 
