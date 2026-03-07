@@ -7,7 +7,7 @@ import {
     MapPin,
     ShieldCheck,
     User,
-    CreditCard,
+    CreditCard, Info
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -102,16 +102,21 @@ const DoctorCard = React.memo(({ doc }) => {
                 {/* Action Buttons */}
                 <div className="flex gap-2 pt-2">
                     <Link
-                        to={`/appointment/book/${doc?._id}`}   
+                        to={`/appointment/book/${doc?._id}`}
                         className="flex-1 bg-indigo-600 text-white py-4 rounded-sm font-bold text-[10px] uppercase tracking-widest hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 shadow-md shadow-indigo-100"
                     >
                         <Calendar size={14} />
                         Book Appointment
                     </Link>
 
-                    <button className="px-5 border border-slate-200 rounded-sm text-slate-400 hover:text-indigo-600 hover:border-indigo-600 transition-all bg-white">
+                    <button className="px-5 border cursor-pointer border-slate-200 rounded-sm text-slate-400 hover:text-indigo-600 hover:border-indigo-600 transition-all bg-white">
                         <MessageCircle size={18} />
                     </button>
+                    <Link
+                        to={doc._id}
+                        className="px-5 pt-4 border cursor-pointer border-slate-200 rounded-sm text-slate-400 hover:text-indigo-600 hover:border-indigo-600 transition-all bg-white">
+                        <Info size={18} />
+                    </Link>
                 </div>
             </div>
         </div>

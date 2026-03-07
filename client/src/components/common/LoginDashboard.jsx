@@ -17,7 +17,7 @@ const LoginDashboard = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center px-6 py-12 relative overflow-hidden font-sans">
+        <div className="min-h-screen bg-[#F8FAFC] pt-20 flex items-center justify-center px-6 py-12 relative overflow-hidden font-sans">
             {/* Subtle Medical Grid Pattern */}
             <div className="absolute inset-0 opacity-[0.05] pointer-events-none"
                 style={{
@@ -101,14 +101,14 @@ const SelectionCard = ({ title, desc, icon, onClick, type }) => {
             whileHover={{ y: -5 }}
             whileTap={{ scale: 0.98 }}
             onClick={onClick}
-            className="group relative bg-white border border-slate-200 p-10 rounded-2xl cursor-pointer transition-all duration-300 shadow-sm hover:shadow-xl hover:border-indigo-200 overflow-hidden"
+            className="group relative bg-white border border-slate-200 p-10 rounded-sm cursor-pointer transition-all duration-300 shadow-sm hover:shadow-xl hover:border-indigo-200 overflow-hidden"
         >
             {/* Soft Gradient Background on Hover */}
             <div className="absolute inset-0 bg-linear-to-br from-indigo-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
             <div className="relative z-10">
                 {/* Icon Container */}
-                <div className={`w-16 h-16 rounded-xl flex items-center justify-center mb-8 border transition-all duration-500 shadow-sm
+                <div className={`w-16 h-16 rounded-sm flex items-center justify-center mb-8 border transition-all duration-500 shadow-sm
                     ${type === 'admin'
                         ? 'bg-purple-50 border-purple-100 text-purple-600 group-hover:bg-white/20 group-hover:border-white/30 group-hover:text-white'
                         : 'bg-indigo-50 border-indigo-100 text-indigo-600 group-hover:bg-white/20 group-hover:border-white/30 group-hover:text-white'
