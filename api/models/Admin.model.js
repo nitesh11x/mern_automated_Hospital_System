@@ -6,43 +6,43 @@ const adminSchema = new mongoose.Schema(
     firstName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     lastName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     email: {
       type: String,
       required: true,
       unique: true,
-      lowercase: true
+      lowercase: true,
     },
     password: {
       type: String,
       required: true,
-      select: false
+      select: false,
     },
     phone: {
       type: String,
-      required: true
+      required: true,
     },
     profile: {
       url: String,
-      public_id: String
+      public_id: String,
     },
     role: {
       type: String,
-      default: "Admin"
+      default: "Admin",
     },
     status: {
       type: String,
       enum: ["Active", "Suspended"],
-      default: "Active"
-    }
+      default: "Active",
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Hash password before save

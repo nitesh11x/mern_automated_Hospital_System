@@ -50,7 +50,7 @@ const COLORS = {
   danger: "#EF4444",
 };
 
-const PIE_COLORS = [COLORS.success, COLORS.warning, COLORS.danger];
+const PIE_COLORS = [COLORS.success, COLORS.warning, COLORS.primary, COLORS.danger];
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -72,7 +72,6 @@ const AdminDashboard = () => {
     }
   }, [dispatch, isAdminAuthenticated]);
 
-  // --- DUMMY DATA FOR CHARTS ---
   const weeklyActivity = [
     { day: "Mon", apps: 40 },
     { day: "Tue", apps: 55 },
@@ -82,21 +81,24 @@ const AdminDashboard = () => {
     { day: "Sat", apps: 30 },
     { day: "Sun", apps: 15 },
   ];
-
   const chartData = useMemo(
     () => [
       {
-        name: "Accepted",
+        name: "Approved",
         value:
-          appointments?.filter((r) => r.status === "Accepted").length || 12,
+          appointments?.filter((r) => r.status === "Approved").length || 0,
       },
       {
         name: "Pending",
-        value: appointments?.filter((r) => r.status === "Pending").length || 7,
+        value: appointments?.filter((r) => r.status === "Pending").length || 0,
       },
       {
-        name: "Rejected",
-        value: appointments?.filter((r) => r.status === "Rejected").length || 3,
+        name: "Completed",
+        value: appointments?.filter((r) => r.status === "Completed").length || 0,
+      },
+      {
+        name: "Cancelled",
+        value: appointments?.filter((r) => r.status === "Cancelled").length || 0,
       },
     ],
     [appointments],
@@ -480,11 +482,10 @@ const GridBtn = ({ icon, label, to, onClick, color }) => {
 const SidebarBtn = ({ icon, label, active = false, onClick }) => (
   <button
     onClick={onClick}
-    className={`w-full flex items-center gap-4 px-4 py-3 rounded transition-all text-xs font-bold uppercase tracking-widest ${
-      active
-        ? "bg-indigo-600 text-white shadow-lg shadow-indigo-900/20"
-        : "hover:bg-slate-800 hover:text-white"
-    }`}
+    className={`w-full flex items-center gap-4 px-4 py-3 rounded transition-all text-xs font-bold uppercase tracking-widest ${active
+      ? "bg-indigo-600 text-white shadow-lg shadow-indigo-900/20"
+      : "hover:bg-slate-800 hover:text-white"
+      }`}
   >
     {icon}
     <span className="hidden lg:inline">{label}</span>

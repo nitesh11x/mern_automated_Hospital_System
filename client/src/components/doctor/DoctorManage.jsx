@@ -71,7 +71,7 @@ const DoctorManage = ({ isEmbedded }) => {
 
                 {/* SLIM FILTER BAR */}
                 <div className="bg-white border border-slate-200 rounded-sm p-3 mb-6 flex flex-wrap gap-3 items-center shadow-sm">
-                    <div className="relative flex-1 min-w-[300px]">
+                    <div className="relative flex-1 min-w-75">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
                         <input
                             type="text"
