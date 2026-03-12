@@ -203,9 +203,8 @@ const AdminDashboard = () => {
           {activeTab === "dashboard" && (
             <>
               {/* QUICK ACTION BUTTON GRID */}
-              <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-10">
-                {/* Admin Management Group */}
-                <ActionCard title="Administrative Control" icon={<Lock />}>
+              <div className="grid grid-cols-1 xl:grid-cols-4 w-full gap-6 mb-10">
+                <ActionCard title="Admin Control" icon={<Lock />}>
                   <div className="grid grid-cols-2 gap-2 mt-4">
                     <GridBtn
                       icon={<UserPlus />}
@@ -263,9 +262,65 @@ const AdminDashboard = () => {
                     />
                   </div>
                 </ActionCard>
+                <ActionCard title="Patient Operations" icon={<Users />}>
+                  <div className="grid grid-cols-2 gap-2 mt-4">
+                    <GridBtn
+                      icon={<PlusCircleIcon />}
+                      label="New Admission"
+                      to="/patient/register"
+                      color="bg-emerald-600"
+                    />
+                    <GridBtn
+                      icon={<ClipboardList />}
+                      label="Manage All"
+                      onClick={() => setActiveTab("patients")}
+                      color="bg-slate-700"
+                    />
+                    <GridBtn
+                      icon={<UserCheck />}
+                      label="Triage Status"
+                      onClick={() => setActiveTab("appointments")}
+                      color="bg-slate-700"
+                    />
+                    <GridBtn
+                      icon={<FileEdit />}
+                      label="Clinical Records"
+                      to="/patient/records"
+                      color="bg-slate-700"
+                    />
+                  </div>
+                </ActionCard>
+                <ActionCard title="Patient Operations" icon={<Users />}>
+                  <div className="grid grid-cols-2 gap-2 mt-4">
+                    <GridBtn
+                      icon={<PlusCircleIcon />}
+                      label="New Admission"
+                      to="/patient/register"
+                      color="bg-emerald-600"
+                    />
+                    <GridBtn
+                      icon={<ClipboardList />}
+                      label="Manage All"
+                      onClick={() => setActiveTab("patients")}
+                      color="bg-slate-700"
+                    />
+                    <GridBtn
+                      icon={<UserCheck />}
+                      label="Triage Status"
+                      onClick={() => setActiveTab("appointments")}
+                      color="bg-slate-700"
+                    />
+                    <GridBtn
+                      icon={<FileEdit />}
+                      label="Clinical Records"
+                      to="/patient/records"
+                      color="bg-slate-700"
+                    />
+                  </div>
+                </ActionCard>
 
                 {/* System & Analytics Group */}
-                <ActionCard title="Facility Metrics" icon={<Activity />}>
+                {/* <ActionCard title="Facility Metrics" icon={<Activity />}>
                   <div className="h-30 w-full mt-2">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={weeklyActivity}>
@@ -283,7 +338,7 @@ const AdminDashboard = () => {
                   >
                     <Star size={14} /> Manage Reviews & Feedback
                   </button>
-                </ActionCard>
+                </ActionCard> */}
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
