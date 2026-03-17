@@ -4,10 +4,10 @@ export const sendMail = async (to, otp) => {
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
-    secure: true, // Use SSL
+    secure: true, 
     auth: {
       user: process.env.EMAIL,
-      pass: process.env.PASSWORD, // MUST be an App Password
+      pass: process.env.PASSWORD,
     },
     // Add TLS settings to prevent certificate blocking in production
     tls: {
