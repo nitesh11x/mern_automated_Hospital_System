@@ -33,7 +33,7 @@ const ShowAppointments = () => {
 
   const [editingApp, setEditingApp] = useState(null);
   const [payingApp, setPayingApp] = useState(null);
-  const [qrCode, setQrCode] = useState(null); // <-- added state for QR image (base64)
+  const [qrCode, setQrCode] = useState(null); //
 
   useEffect(() => {
     dispatch(getAllAppointments());
@@ -246,11 +246,10 @@ const ShowAppointments = () => {
                     <td className="p-4">
                       <button
                         onClick={() => setPayingApp(app)}
-                        className={`px-3 py-1 text-xs font-bold rounded border transition-colors ${
-                          app.paymentStatus === "Paid"
+                        className={`px-3 py-1 text-xs font-bold rounded border transition-colors ${app.paymentStatus === "Paid"
                             ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
                             : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
-                        }`}
+                          }`}
                       >
                         {app.paymentStatus || "Pending"}
                       </button>
@@ -280,11 +279,10 @@ const ShowAppointments = () => {
                             });
                         }}
                         className={`px-3 py-1 text-xs rounded transition-colors
-                                                           ${
-                                                             app.qrCode
-                                                               ? "bg-green-600 text-white hover:bg-green-700"
-                                                               : "bg-indigo-600 text-white hover:bg-indigo-700"
-                                                           }`}
+                                                           ${app.qrCode
+                            ? "bg-green-600 text-white hover:bg-green-700"
+                            : "bg-indigo-600 text-white hover:bg-indigo-700"
+                          }`}
                       >
                         {app.qrCode ? "View QR" : "Generate QR"}
                       </button>
@@ -461,7 +459,7 @@ const ShowAppointments = () => {
                         .then(() => {
                           toast.success("QR data copied to clipboard");
                         })
-                        .catch(() => {});
+                        .catch(() => { });
                     }}
                     className="flex-1 py-2 text-sm font-medium border border-slate-200 rounded hover:bg-slate-50"
                   >

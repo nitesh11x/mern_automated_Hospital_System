@@ -8,7 +8,7 @@ import { isDoctorAuth, isPatientAuth } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.post("/", isDoctorAuth, createPrescription);
+router.post("/create", isDoctorAuth, createPrescription);
 router.get("/patient/me", isPatientAuth, getPatientPrescriptions);
 router.get("/:id", getPrescriptionById);
 

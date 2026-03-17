@@ -18,11 +18,11 @@ const router = express.Router();
 
 router.post("/register", isAdminAuth, registerAdmin);
 router.post("/login", loginAdmin);
+router.post("/logout", isAdminAuth, logoutAdmin);
 
 router.get("/all", isAdminAuth, getAllAdmin);
 router.get("/stats", isAdminAuth, getDashboardStats);
 router.get("/me", isAdminAuth, getAdminProfile);
-router.post("/logout", isAdminAuth, logoutAdmin);
 
 router.put("/:id", isAdminAuth, updateAdminById);
 router.delete("/:id", isAdminAuth, deleteAdminById);
