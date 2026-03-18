@@ -20,6 +20,7 @@ import {
   generateAppointmentQRThunk,
 } from "../../redux/slices/appointment.slice";
 import { getAllDoctorsThunk } from "../../redux/slices/doctor.slice";
+import { notifyPatientAppointmentThunk } from "../../redux/slices/notification.slice";
 
 const ShowAppointments = () => {
   const dispatch = useDispatch();
@@ -68,6 +69,12 @@ const ShowAppointments = () => {
       .unwrap()
       .then(() => toast.success(`Status updated to ${newStatus}`))
       .catch(() => toast.error("Update failed"));
+  };
+  const handleNotifyPatientAppointment = (id) => {
+    dispatch(notifyPatientAppointmentThunk(id))
+      .unwrap()
+      .then(() => toast.success(`Notification send successfully}`))
+      .catch(() => toast.error("sending failed"));
   };
 
   const handlePaymentUpdate = (id, paymentStatus) => {
@@ -232,9 +239,9 @@ const ShowAppointments = () => {
                     <td className="p-4">
                       <select
                         value={app.status}
-                        onChange={(e) =>
+                        onChange={(e) => {
                           handleStatusUpdate(app._id, e.target.value)
-                        }
+                        }}
                         className={`px-2 py-1 text-xs font-bold rounded border cursor-pointer outline-none ${getStatusStyles(app.status)}`}
                       >
                         <option value="Pending">Pending</option>
@@ -247,8 +254,8 @@ const ShowAppointments = () => {
                       <button
                         onClick={() => setPayingApp(app)}
                         className={`px-3 py-1 text-xs font-bold rounded border transition-colors ${app.paymentStatus === "Paid"
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
-                            : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                          : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
                           }`}
                       >
                         {app.paymentStatus || "Pending"}
@@ -258,7 +265,7 @@ const ShowAppointments = () => {
                       <button
                         onClick={() => {
                           if (app.qrCode) {
-                            setQrCode(app.qrCode); // show stored QR
+                            setQrCode(app.qrCode);
                             return;
                           }
 
@@ -268,6 +275,10 @@ const ShowAppointments = () => {
                               if (qr) {
                                 setQrCode(qr);
                                 toast.success("QR generated");
+
+                                // otify AFTER QR success
+                                handleNotifyPatientAppointment(app._id)
+
                                 dispatch(getAllAppointments());
                               } else {
                                 toast.error("No QR returned from server");
@@ -279,7 +290,7 @@ const ShowAppointments = () => {
                             });
                         }}
                         className={`px-3 py-1 text-xs rounded transition-colors
-                                                           ${app.qrCode
+                          ${app.qrCode
                             ? "bg-green-600 text-white hover:bg-green-700"
                             : "bg-indigo-600 text-white hover:bg-indigo-700"
                           }`}
