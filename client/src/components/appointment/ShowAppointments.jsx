@@ -31,10 +31,9 @@ const ShowAppointments = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
-
   const [editingApp, setEditingApp] = useState(null);
   const [payingApp, setPayingApp] = useState(null);
-  const [qrCode, setQrCode] = useState(null); //
+  const [qrCode, setQrCode] = useState(null); 
 
   useEffect(() => {
     dispatch(getAllAppointments());
@@ -276,7 +275,7 @@ const ShowAppointments = () => {
                                 setQrCode(qr);
                                 toast.success("QR generated");
 
-                                // otify AFTER QR success
+                                // Notify AFTER QR success
                                 handleNotifyPatientAppointment(app._id)
 
                                 dispatch(getAllAppointments());

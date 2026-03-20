@@ -24,6 +24,7 @@ import {
     bookAppointment,
     resetBookingState,
 } from "../../redux/slices/appointment.slice";
+import { notifyProcessingAppointmentThunk } from "../../redux/slices/notification.slice";
 
 const BookAppointment = () => {
     const dispatch = useDispatch();
@@ -74,6 +75,13 @@ const BookAppointment = () => {
     useEffect(() => {
         if (bookingSuccess) {
             toast.success("Schedule Synchronized");
+            dispatch(
+                notifyProcessingAppointmentThunk({
+                    email: formData.email,
+                    name: formData.name,
+                })
+            );
+
             setFormData({
                 doctorId: "",
                 selectedDocName: "Assign Specialist",
@@ -86,8 +94,10 @@ const BookAppointment = () => {
                 paymentMode: "Offline",
                 isVisited: "",
             });
+
             dispatch(resetBookingState());
         }
+
         if (error) {
             toast.error(error);
         }

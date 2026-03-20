@@ -71,7 +71,6 @@ const sendAppointmentMail = async (appointment) => {
 
   return await transporter.sendMail(mailOptions);
 };
-
 export const sendAppointmentNotification = asyncHandler(
   async (req, res, next) => {
     const { appointmentId } = req.params;
@@ -100,4 +99,55 @@ export const sendAppointmentNotification = asyncHandler(
       message: "Appointment confirmation email sent with QR",
     });
   },
+);
+
+const sendProcessingMail = async (email, name) => {
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: `"NewCare Hospital" <${process.env.EMAIL}>`,
+    to: email,
+    subject: "Reviewing Your Request - NewCare",
+    html: `
+      <div style="font-family: Arial; max-width:600px; margin:auto; border:1px solid #ddd; border-radius:10px;">
+        <div style="background:#1a73e8; padding:20px; text-align:center;">
+          <h2 style="color:white;">Reviewing Appointment</h2>
+        </div>
+
+        <div style="padding:30px;">
+          <p>Hi ${name},</p>
+
+          <p>Your appointment request is under review.</p>
+          <p>We will send a confirmation shortly.</p>
+
+          <p style="margin-top:20px;">Thanks for choosing NewCare ❤️</p>
+        </div>
+      </div>
+    `,
+  };
+
+  return await transporter.sendMail(mailOptions);
+};
+export const sendProcessingMailNotification = asyncHandler(
+  async (req, res, next) => {
+
+    const { email, name } = req.body;
+
+    if (!email) {
+      return next(new ErrorHandler("Email is required", 400));
+    }
+
+    await sendProcessingMail(email, name);
+
+    res.status(200).json({
+      success: true,
+      message: "Processing mail sent",
+    });
+  }
 );

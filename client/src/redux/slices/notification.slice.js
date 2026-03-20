@@ -12,6 +12,17 @@ export const notifyPatientAppointmentThunk = createAsyncThunk(
     }
   },
 );
+export const notifyProcessingAppointmentThunk = createAsyncThunk(
+  "notification/processing",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const { data } = await api.post(`/notification/processing`, payload);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.data?.message || "Notify failed");
+    }
+  },
+);
 
 const notificationSlice = createSlice({
   name: "notification",
@@ -45,6 +56,23 @@ const notificationSlice = createSlice({
         state.loading = false;
         state.success = false;
         state.error = action.payload;
+      })
+
+      .addCase(notifyProcessingAppointmentThunk.pending, (state) => {
+        state.loading = true;
+        state.success = false;
+        state.error = null;
+      })
+      .addCase(notifyProcessingAppointmentThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        // state.message = action.payload.message;
+        console.log(action.payload);
+      })
+      .addCase(notifyProcessingAppointmentThunk.rejected, (state, action) => {
+        state.loading = true;
+        state.success = false;
+        state.error = null;
       });
   },
 });
