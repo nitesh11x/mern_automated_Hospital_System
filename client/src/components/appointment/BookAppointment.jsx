@@ -2,20 +2,17 @@ import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Calendar,
-    Clock,
     User,
-    Mail,
     ChevronRight,
-    ShieldCheck,
     Check,
     ChevronDown,
     Search,
     Stethoscope,
-    Users,
-    CreditCard,
-    FileText,
     Activity,
-    Zap
+    Zap,
+    ShieldCheck,
+    CreditCard,
+    RefreshCw
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
@@ -49,12 +46,12 @@ const BookAppointment = () => {
         appointmentDate: "",
         requestedTimeSlot: "",
         paymentMode: "Offline",
-        isVisited: "false",
+        isVisited: false, // Boolean logic fixed
     });
 
     const minDateValue = useMemo(() => {
         const date = new Date();
-        date.setDate(date.getDate() + 2);
+        date.setDate(date.getDate() + 1);
         return date.toISOString().split("T")[0];
     }, []);
 
@@ -75,13 +72,9 @@ const BookAppointment = () => {
     useEffect(() => {
         if (bookingSuccess) {
             toast.success("Schedule Synchronized");
-            dispatch(
-                notifyProcessingAppointmentThunk({
-                    email: formData.email,
-                    name: formData.name,
-                })
-            );
+            dispatch(notifyProcessingAppointmentThunk({ email: formData.email, name: formData.name }));
 
+            // Reset Form
             setFormData({
                 doctorId: "",
                 selectedDocName: "Assign Specialist",
@@ -92,16 +85,15 @@ const BookAppointment = () => {
                 appointmentDate: "",
                 requestedTimeSlot: "",
                 paymentMode: "Offline",
-                isVisited: "",
+                isVisited: false,
             });
-
             dispatch(resetBookingState());
         }
-
         if (error) {
             toast.error(error);
+            dispatch(resetBookingState());
         }
-    }, [bookingSuccess, error, dispatch]);
+    }, [bookingSuccess, error, dispatch, formData.email, formData.name]);
 
     const filteredDoctors = useMemo(() => {
         if (!doctors) return [];
@@ -121,11 +113,16 @@ const BookAppointment = () => {
     };
 
     const handleChange = (e) => {
-        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+        const { name, value } = e.target;
+        // Logic to convert string value from select to actual boolean
+        const finalValue = name === "isVisited" ? value === "true" : value;
+        setFormData((prev) => ({ ...prev, [name]: finalValue }));
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (!formData.doctorId) return toast.error("Please assign a specialist");
+
         const submissionData = {
             ...formData,
             requestedTimeSlot: formatTo12Hr(formData.requestedTimeSlot)
@@ -134,78 +131,76 @@ const BookAppointment = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#FDFDFF] pt-24 pb-20 px-4 md:px-8 font-sans selection:bg-indigo-100">
+        <div className="min-h-screen bg-[#FDFDFF] pt-24 pb-20 px-4 md:px-8 selection:bg-indigo-100">
             <div className="max-w-6xl mx-auto">
 
-                {/* --- HEADER WITH GRADIENT ACCENT --- */}
-                <header className="mb-14 relative">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="p-2 bg-linear-to-br from-indigo-600 to-purple-600 rounded-lg text-white shadow-lg shadow-indigo-200">
-                            <Zap size={20} fill="currentColor" />
-                        </div>
-                        <span className="text-[11px] font-black uppercase tracking-[0.3em] text-indigo-600/60">NewCare / Priority Intake</span>
+                {/* --- HEADER --- */}
+                <header className="mb-14 border-l-4 border-indigo-600 pl-6">
+                    <div className="flex items-center gap-3 mb-2">
+                        <Zap size={16} className="text-indigo-600 fill-indigo-600" />
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Intake Protocol / 2026.4</span>
                     </div>
-                    <h1 className="text-5xl font-black text-slate-900 tracking-tight leading-none uppercase italic">
-                        Book <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-600 to-purple-600">Consultation</span>
+                    <h1 className="text-4xl font-black text-slate-900 tracking-tight uppercase italic">
+                        Book <span className="text-indigo-600">Consultation</span>
                     </h1>
                 </header>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
 
-                    {/* --- MAIN FORM (LIGHT MODE CONTENT) --- */}
+                    {/* --- MAIN FORM --- */}
                     <form onSubmit={handleSubmit} className="lg:col-span-8 space-y-8">
 
-                        {/* 01. SPECIALIST PICKER */}
-                        <section className="bg-white border-l-4 border-indigo-600 shadow-xl shadow-indigo-900/5 p-8 rounded-r-2xl">
-                            <h3 className="text-[10px] font-black uppercase text-slate-400 mb-6 flex items-center gap-2 tracking-widest">
-                                <Stethoscope size={16} className="text-purple-600" /> Specialist Unit
+                        {/* 01. SPECIALIST SELECTION */}
+                        <section className="bg-white border border-slate-200 rounded-sm shadow-sm p-8 transition-all hover:shadow-md">
+                            <h3 className="text-[10px] font-black uppercase text-slate-400 mb-6 flex items-center gap-2 tracking-[0.2em]">
+                                <Stethoscope size={14} className="text-indigo-600" /> 01. Specialist Assignment
                             </h3>
 
                             <div className="relative z-50">
                                 <button
                                     type="button"
                                     onClick={() => setIsOpen(!isOpen)}
-                                    className="w-full flex items-center justify-between px-6 py-5 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate-800 hover:bg-white hover:border-purple-300 transition-all focus:ring-4 focus:ring-indigo-500/5 outline-none"
+                                    className={`w-full flex items-center justify-between px-6 py-4 bg-slate-50 border rounded-sm text-sm font-bold transition-all outline-none ${isOpen ? 'border-indigo-600 bg-white shadow-sm' : 'border-slate-200 text-slate-800'}`}
                                 >
                                     <span>{formData.selectedDocName}</span>
-                                    <ChevronDown size={20} className={`text-indigo-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                                    <ChevronDown size={18} className={`text-indigo-600 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
                                 </button>
 
                                 <AnimatePresence>
                                     {isOpen && (
                                         <motion.div
-                                            initial={{ opacity: 0, y: 10 }}
+                                            initial={{ opacity: 0, y: 5 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: 10 }}
-                                            className="absolute top-full left-0 right-0 mt-3 bg-white border border-slate-100 shadow-2xl rounded-2xl overflow-hidden"
+                                            exit={{ opacity: 0, y: 5 }}
+                                            className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 shadow-2xl rounded-sm overflow-hidden"
                                         >
-                                            <div className="p-4 bg-indigo-50/30">
+                                            <div className="p-4 border-b border-slate-100 bg-slate-50/50">
                                                 <div className="relative">
-                                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-400" size={16} />
+                                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
                                                     <input
                                                         type="text"
-                                                        placeholder="Search department or name..."
-                                                        className="w-full pl-10 pr-4 py-3 bg-white border border-slate-100 rounded-xl text-sm focus:border-purple-500 outline-none"
+                                                        placeholder="FILTER BY SPECIALTY OR NAME..."
+                                                        className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-sm text-[11px] font-bold uppercase tracking-widest outline-none focus:border-indigo-600"
                                                         value={docSearch}
                                                         onChange={(e) => setDocSearch(e.target.value)}
                                                     />
                                                 </div>
                                             </div>
-                                            <div className="max-h-64 overflow-y-auto p-2">
-                                                {filteredDoctors.map((doc) => (
+                                            <div className="max-h-60 overflow-y-auto">
+                                                {filteredDoctors.length > 0 ? filteredDoctors.map((doc) => (
                                                     <button
                                                         key={doc._id}
                                                         type="button"
                                                         onClick={() => handleSelectDoctor(doc)}
-                                                        className="w-full flex items-center justify-between p-4 hover:bg-linear-to-r hover:from-indigo-50 hover:to-purple-50 rounded-xl transition-all group"
+                                                        className="w-full flex items-center justify-between p-4 hover:bg-indigo-600 hover:text-white transition-all text-left group"
                                                     >
-                                                        <div className="text-left">
-                                                            <p className="text-sm font-bold text-slate-800 group-hover:text-indigo-700">Dr. {doc.firstName} {doc.lastName}</p>
-                                                            <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">{doc.specialization}</p>
+                                                        <div>
+                                                            <p className="text-xs font-black uppercase tracking-tight">Dr. {doc.firstName} {doc.lastName}</p>
+                                                            <p className="text-[9px] font-bold uppercase tracking-widest opacity-60 group-hover:opacity-100">{doc.specialization}</p>
                                                         </div>
-                                                        {formData.doctorId === doc._id && <Check size={18} className="text-purple-600" />}
+                                                        {formData.doctorId === doc._id && <Check size={16} />}
                                                     </button>
-                                                ))}
+                                                )) : <div className="p-4 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">No Results Found</div>}
                                             </div>
                                         </motion.div>
                                     )}
@@ -214,56 +209,58 @@ const BookAppointment = () => {
                         </section>
 
                         {/* 02. PATIENT DATA */}
-                        <section className="bg-white border border-slate-100 shadow-lg p-8 rounded-2xl">
-                            <h3 className="text-[10px] font-black uppercase text-slate-400 mb-8 flex items-center gap-2 tracking-widest">
-                                <User size={16} className="text-indigo-600" /> Patient Dossier
+                        <section className="bg-white border border-slate-200 rounded-sm shadow-sm p-8">
+                            <h3 className="text-[10px] font-black uppercase text-slate-400 mb-8 flex items-center gap-2 tracking-[0.2em]">
+                                <User size={14} className="text-indigo-600" /> 02. Patient Dossier
                             </h3>
                             <div className="grid md:grid-cols-2 gap-8">
-                                <FormGroup label="Full Name" activeColor="focus:border-indigo-600">
-                                    <input name="name" placeholder="John Doe" value={formData.name} onChange={handleChange} />
+                                <FormGroup label="Full Name">
+                                    <input name="name" placeholder="E.G. JOHN DOE" value={formData.name} onChange={handleChange} required />
                                 </FormGroup>
-                                <FormGroup label="Email ID" activeColor="focus:border-purple-600">
-                                    <input name="email" type="email" placeholder="j.doe@network.com" value={formData.email} onChange={handleChange} />
+                                <FormGroup label="Secure Email">
+                                    <input name="email" type="email" placeholder="EMAIL@NETWORK.COM" value={formData.email} onChange={handleChange} required />
                                 </FormGroup>
-                                <FormGroup label="Assigned Gender" activeColor="focus:border-indigo-600">
-                                    <select name="gender" value={formData.gender} onChange={handleChange}>
-                                        <option value="">Select Option</option>
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
+                                <FormGroup label="Gender">
+                                    <select name="gender" value={formData.gender} onChange={handleChange} required>
+                                        <option value="">SELECT GENDER</option>
+                                        <option value="Male">MALE</option>
+                                        <option value="Female">FEMALE</option>
+                                        <option value="Other">OTHER</option>
                                     </select>
                                 </FormGroup>
-                                <FormGroup label="Patient Relation" activeColor="focus:border-purple-600">
+                                <FormGroup label="Relation">
                                     <select name="relation" value={formData.relation} onChange={handleChange}>
-                                        <option value="Self">Self / Primary</option>
-                                        <option value="Parent">Parent / Dependent</option>
-                                        <option value="Other">Other</option>
+                                        <option value="Self">SELF / PRIMARY</option>
+                                        <option value="Parent">PARENT</option>
+                                        <option value="Spouse">SPOUSE</option>
+                                        <option value="Other">OTHER</option>
                                     </select>
                                 </FormGroup>
                             </div>
                         </section>
 
-                        {/* 03. LOGISTICS */}
-                        <section className="bg-white border border-slate-100 shadow-lg p-8 rounded-2xl">
-                            <h3 className="text-[10px] font-black uppercase text-slate-400 mb-8 flex items-center gap-2 tracking-widest">
-                                <Calendar size={16} className="text-purple-600" /> Scheduling & Billing
+                        {/* 03. LOGISTICS & IS VISITED */}
+                        <section className="bg-white border border-slate-200 rounded-sm shadow-sm p-8">
+                            <h3 className="text-[10px] font-black uppercase text-slate-400 mb-8 flex items-center gap-2 tracking-[0.2em]">
+                                <Calendar size={14} className="text-indigo-600" /> 03. Scheduling & Case Type
                             </h3>
-                            <div className="grid md:grid-cols-3 gap-6">
-                                <FormGroup label="Visit Date" activeColor="focus:border-indigo-600">
-                                    <input type="date" name="appointmentDate" min={minDateValue} value={formData.appointmentDate} onChange={handleChange} />
+                            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                <FormGroup label="Visit Date">
+                                    <input type="date" name="appointmentDate" min={minDateValue} value={formData.appointmentDate} onChange={handleChange} required />
                                 </FormGroup>
-                                <FormGroup label="Preferred Time" activeColor="focus:border-purple-600">
-                                    <input type="time" name="requestedTimeSlot" value={formData.requestedTimeSlot} onChange={handleChange} />
+                                <FormGroup label="Preferred Time">
+                                    <input type="time" name="requestedTimeSlot" value={formData.requestedTimeSlot} onChange={handleChange} required />
                                 </FormGroup>
-                                <FormGroup label="Payment Mode" activeColor="focus:border-indigo-600">
-                                    <select name="paymentMode" value={formData.paymentMode} onChange={handleChange} className="text-indigo-700">
-                                        <option value="Offline">Offline / On-site</option>
-                                        <option value="Online">Online / Pre-pay</option>
+                                <FormGroup label="Payment">
+                                    <select name="paymentMode" value={formData.paymentMode} onChange={handleChange}>
+                                        <option value="Offline">OFFLINE</option>
+                                        <option value="Online">ONLINE</option>
                                     </select>
                                 </FormGroup>
-                                <FormGroup label="Is Visited" activeColor="focus:border-indigo-600">
-                                    <select name="is Visited" value={formData.isVisited} onChange={handleChange} className="text-indigo-700">
-                                        <option value="false">No </option>
-                                        <option value="true">Yes</option>
+                                <FormGroup label="Follow-up Case?">
+                                    <select name="isVisited" value={formData.isVisited} onChange={handleChange} className={formData.isVisited ? "text-indigo-600" : ""}>
+                                        <option value="false">NO (NEW CASE)</option>
+                                        <option value="true">YES (FOLLOW-UP)</option>
                                     </select>
                                 </FormGroup>
                             </div>
@@ -272,41 +269,43 @@ const BookAppointment = () => {
                         <button
                             type="submit"
                             disabled={bookingLoading}
-                            className="w-full bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-6 rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-xl shadow-indigo-200 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+                            className="w-full bg-slate-900 text-white py-6 rounded-sm font-black text-[11px] uppercase tracking-[0.4em] hover:bg-indigo-600 transition-all shadow-lg active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-3 group"
                         >
-                            {bookingLoading ? "Initializing Node..." : "Secure Appointment"}
-                            {!bookingLoading && <ChevronRight size={20} />}
+                            {bookingLoading ? "ENCRYPTING DATA..." : "Finalize Appointment"}
+                            {!bookingLoading && <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />}
                         </button>
                     </form>
 
-                    {/* --- SIDEBAR SUMMARY (THEME ACCENT) --- */}
+                    {/* --- SIDEBAR --- */}
                     <aside className="lg:col-span-4">
-                        <div className="bg-slate-900 rounded-3xl p-8 sticky top-28 overflow-hidden">
-                            {/* Visual Polish */}
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-600/20 blur-[60px]" />
-                            <div className="absolute bottom-0 left-0 w-32 h-32 bg-indigo-600/20 blur-[60px]" />
-
+                        <div className="bg-slate-900 rounded-sm p-8 sticky top-28 border border-slate-800 shadow-2xl">
                             <div className="relative z-10">
-                                <div className="mb-10 flex items-center justify-between">
-                                    <h3 className="text-xl font-bold text-white tracking-tight italic">Visit <span className="text-indigo-400">Ledger</span></h3>
-                                    <Activity size={20} className="text-purple-500" />
+                                <div className="flex justify-between items-center mb-8 pb-4 border-b border-slate-800">
+                                    <h3 className="text-[11px] font-black text-white uppercase tracking-[0.3em]">Visit Ledger</h3>
+                                    <Activity size={14} className="text-indigo-400" />
                                 </div>
 
                                 <div className="space-y-8">
-                                    <SummaryItem label="Assigned Specialist" value={formData.selectedDocName} />
-                                    <SummaryItem label="Scheduled Session" value={formData.appointmentDate ? `${formData.appointmentDate} @ ${formatTo12Hr(formData.requestedTimeSlot) || 'TBD'}` : "Unscheduled"} />
-                                    <SummaryItem label="Primary Patient" value={formData.name || "Awaiting Registry"} />
-                                    <SummaryItem label="Billing Node" value={formData.paymentMode} />
-                                    <SummaryItem label="Visited Previously" value={formData.isVisited} />
+                                    <SummaryItem label="Expert" value={formData.selectedDocName} />
+                                    <SummaryItem label="Timeline" value={formData.appointmentDate ? `${formData.appointmentDate} @ ${formatTo12Hr(formData.requestedTimeSlot) || 'TBD'}` : "NOT SCHEDULED"} />
+                                    <SummaryItem label="Patient" value={formData.name || "UNREGISTERED"} />
+
+                                    {/* Is Visited Badge in Sidebar */}
+                                    <div>
+                                        <p className="text-[8px] font-black uppercase text-slate-500 tracking-[0.2em] mb-2">/ Case Type</p>
+                                        <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-sm border text-[9px] font-black uppercase tracking-widest ${formData.isVisited ? 'bg-indigo-500/10 border-indigo-500/50 text-indigo-400' : 'bg-slate-800 border-slate-700 text-slate-400'}`}>
+                                            {formData.isVisited ? <><RefreshCw size={10} /> Follow-up Visit</> : "First-time Case"}
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="mt-12 p-5 bg-white/5 border border-white/10 rounded-2xl">
-                                    <div className="flex items-center gap-3 text-indigo-400 mb-2">
-                                        <ShieldCheck size={18} />
-                                        <span className="text-[10px] font-black uppercase tracking-widest">Encrypted Data</span>
+                                <div className="mt-12 p-6 bg-slate-800/50 border border-slate-700 rounded-sm">
+                                    <div className="flex items-center gap-2 text-indigo-400 mb-3">
+                                        <ShieldCheck size={16} />
+                                        <span className="text-[9px] font-black uppercase tracking-widest">Secure HIPAA Node</span>
                                     </div>
-                                    <p className="text-[10px] text-slate-400 leading-relaxed font-bold uppercase tracking-tighter">
-                                        All clinical data is processed via AES-256 protocols and stored in compliance with local health regulations.
+                                    <p className="text-[9px] text-slate-500 leading-relaxed font-bold uppercase tracking-tight">
+                                        Clinical data is transmitted via end-to-end encrypted tunnels to ensure patient confidentiality.
                                     </p>
                                 </div>
                             </div>
@@ -318,18 +317,18 @@ const BookAppointment = () => {
     );
 };
 
-// --- CUSTOM THEMED HELPERS ---
+// --- HELPERS ---
 
-const FormGroup = ({ label, children, activeColor }) => {
+const FormGroup = ({ label, children }) => {
     const child = React.Children.only(children);
     return (
-        <div className="flex flex-col gap-2.5">
-            <label className="text-[10px] font-black uppercase text-indigo-400/70 ml-1 tracking-widest">
+        <div className="flex flex-col gap-2 group">
+            <label className="text-[9px] font-black uppercase text-slate-400 ml-1 tracking-widest group-focus-within:text-indigo-600 transition-colors">
                 {label}
             </label>
             <div className="relative">
                 {React.cloneElement(child, {
-                    className: `w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-xl text-[14px] font-bold text-slate-900 outline-none transition-all focus:bg-white focus:ring-8 focus:ring-indigo-500/5 ${activeColor} placeholder:text-slate-300 ${child.props.className || ""}`
+                    className: `w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-sm text-[12px] font-black text-slate-900 uppercase tracking-tight outline-none transition-all focus:bg-white focus:border-indigo-600 focus:shadow-[0_0_0_4px_rgba(79,70,229,0.05)] placeholder:text-slate-300 ${child.props.className || ""}`
                 })}
             </div>
         </div>
@@ -337,9 +336,9 @@ const FormGroup = ({ label, children, activeColor }) => {
 };
 
 const SummaryItem = ({ label, value }) => (
-    <div className="group">
-        <p className="text-[9px] font-black uppercase text-slate-500 tracking-[0.2em] mb-1">/ {label}</p>
-        <p className="text-[15px] font-bold text-white group-hover:text-indigo-400 transition-colors">{value}</p>
+    <div>
+        <p className="text-[8px] font-black uppercase text-slate-500 tracking-[0.2em] mb-1">/ {label}</p>
+        <p className="text-xs font-black text-white uppercase tracking-wider truncate">{value}</p>
     </div>
 );
 

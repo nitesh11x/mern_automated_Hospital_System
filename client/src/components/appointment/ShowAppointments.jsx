@@ -33,7 +33,7 @@ const ShowAppointments = () => {
   const [statusFilter, setStatusFilter] = useState("All");
   const [editingApp, setEditingApp] = useState(null);
   const [payingApp, setPayingApp] = useState(null);
-  const [qrCode, setQrCode] = useState(null); 
+  const [qrCode, setQrCode] = useState(null);
 
   useEffect(() => {
     dispatch(getAllAppointments());
@@ -231,8 +231,14 @@ const ShowAppointments = () => {
                       <div className="text-xs">
                         Req: {app.requestedTimeSlot}
                       </div>
-                      <div className="text-xs font-medium text-indigo-600">
+                      <div className="text-xs font-medium flex gap-2 justify-center items-center text-indigo-600">
                         Appr: {app.approvedTimeSlot || "N/A"}
+                        <button
+                          onClick={() => setEditingApp(app)}
+                          className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-all"
+                        >
+                          <Pencil size={12} />
+                        </button>
                       </div>
                     </td>
                     <td className="p-4">
@@ -263,21 +269,32 @@ const ShowAppointments = () => {
                     <td className="p-4">
                       <button
                         onClick={() => {
+                          // 1. Check if already has a QR (View mode)
                           if (app.qrCode) {
                             setQrCode(app.qrCode);
                             return;
                           }
-
+                          if (app.status !== "Approved") {
+                            toast.error("Please approve the appointment to generate QR", {
+                              icon: '⚠️',
+                              style: {
+                                borderRadius: '2px',
+                                background: '#333',
+                                color: '#fff',
+                                fontSize: '11px',
+                                fontWeight: 'bold',
+                                textTransform: 'uppercase'
+                              }
+                            });
+                            return;
+                          }
                           dispatch(generateAppointmentQRThunk(app._id))
                             .unwrap()
                             .then((qr) => {
                               if (qr) {
                                 setQrCode(qr);
                                 toast.success("QR generated");
-
-                                // Notify AFTER QR success
-                                handleNotifyPatientAppointment(app._id)
-
+                                handleNotifyPatientAppointment(app._id);
                                 dispatch(getAllAppointments());
                               } else {
                                 toast.error("No QR returned from server");
@@ -288,23 +305,20 @@ const ShowAppointments = () => {
                               toast.error(msg);
                             });
                         }}
-                        className={`px-3 py-1 text-xs rounded transition-colors
+                        className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-sm transition-all
                           ${app.qrCode
-                            ? "bg-green-600 text-white hover:bg-green-700"
-                            : "bg-indigo-600 text-white hover:bg-indigo-700"
+                            ? "bg-emerald-600 text-white hover:bg-slate-900"
+                            : app.status === "Approved"
+                              ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-100"
+                              : "bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200"
                           }`}
                       >
-                        {app.qrCode ? "View QR" : "Generate QR"}
+                        {app.qrCode ? "View QR" : app.status === "Approved" ? "Generate QR" : "Approve First"}
                       </button>
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex justify-end gap-2">
-                        <button
-                          onClick={() => setEditingApp(app)}
-                          className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-all"
-                        >
-                          <Pencil size={16} />
-                        </button>
+
                         <button className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-all">
                           <FileText size={16} />
                         </button>
