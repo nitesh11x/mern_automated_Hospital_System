@@ -1,7 +1,5 @@
 # 🏥 Automated Hospital Management System
 **Tech Fest 2k26 Project | MERN Stack**
-
-An automated solution for hospital appointment booking, featuring dynamic slot management (70 slots per doctor/day) and real-time availability tracking.
 ---
 ## 🚀 Getting Started
 
