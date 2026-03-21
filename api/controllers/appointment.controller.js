@@ -13,7 +13,7 @@ export const bookAppointment = asyncHandler(async (req, res, next) => {
     relation,
     appointmentDate,
     requestedTimeSlot,
-    paymentMode
+    paymentMode,
   } = req.body;
 
   const patientId = req.patient?.id;
@@ -42,7 +42,7 @@ export const bookAppointment = asyncHandler(async (req, res, next) => {
   // 🔹 Check previous appointment with same doctor
   const previousAppointment = await Appointment.findOne({
     patientId,
-    doctorId
+    doctorId,
   }).sort({ createdAt: -1 });
 
   try {
@@ -57,63 +57,23 @@ export const bookAppointment = asyncHandler(async (req, res, next) => {
       requestedTimeSlot,
       paymentMode,
       isVisit: !!previousAppointment,
-      previousAppointmentId:
-        previousAppointment?.appointmentId || null
+      previousAppointmentId: previousAppointment?.appointmentId || null,
     });
 
     res.status(201).json({
       success: true,
       message: "Appointment request sent. Waiting for approval.",
-      appointment
+      appointment,
     });
-
   } catch (error) {
     return next(error);
   }
 });
 
-export const bookAppointmentOfSpecificDoctor = asyncHandler(async (req, res, next) => {
-  const { doctorId } = req.params;
-  const {
-    name,
-    email,
-    gender,
-    relation,
-    appointmentDate,
-    requestedTimeSlot,
-    paymentMode
-  } = req.body;
-
-  const patientId = req.patient?.id;
-
-  if (!patientId) {
-    return next(new ErrorHandler("Unauthorized", 401));
-  }
-
-  if (
-    !name ||
-    !email ||
-    !gender ||
-    !appointmentDate ||
-    !requestedTimeSlot ||
-    !paymentMode
-  ) {
-    return next(new ErrorHandler("All required fields must be provided", 400));
-  }
-
-  if (!mongoose.Types.ObjectId.isValid(doctorId)) {
-    return next(new ErrorHandler("Invalid Doctor ID", 400));
-  }
-
-  const previousAppointment = await Appointment.findOne({
-    patientId,
-    doctorId
-  }).sort({ createdAt: -1 });
-
-  try {
-    const appointment = await Appointment.create({
-      patientId,
-      doctorId,
+export const bookAppointmentOfSpecificDoctor = asyncHandler(
+  async (req, res, next) => {
+    const { doctorId } = req.params;
+    const {
       name,
       email,
       gender,
@@ -121,32 +81,73 @@ export const bookAppointmentOfSpecificDoctor = asyncHandler(async (req, res, nex
       appointmentDate,
       requestedTimeSlot,
       paymentMode,
-      isVisit: !!previousAppointment,
-      previousAppointmentId:
-        previousAppointment?.appointmentId || null
-    });
+    } = req.body;
 
-    res.status(201).json({
-      success: true,
-      message: "Appointment request sent. Waiting for approval.",
-      appointment
-    });
+    const patientId = req.patient?.id;
 
-  } catch (error) {
-    return next(error);
-  }
-});
+    if (!patientId) {
+      return next(new ErrorHandler("Unauthorized", 401));
+    }
+
+    if (
+      !name ||
+      !email ||
+      !gender ||
+      !appointmentDate ||
+      !requestedTimeSlot ||
+      !paymentMode
+    ) {
+      return next(
+        new ErrorHandler("All required fields must be provided", 400),
+      );
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(doctorId)) {
+      return next(new ErrorHandler("Invalid Doctor ID", 400));
+    }
+
+    const previousAppointment = await Appointment.findOne({
+      patientId,
+      doctorId,
+    }).sort({ createdAt: -1 });
+
+    try {
+      const appointment = await Appointment.create({
+        patientId,
+        doctorId,
+        name,
+        email,
+        gender,
+        relation,
+        appointmentDate,
+        requestedTimeSlot,
+        paymentMode,
+        isVisit: !!previousAppointment,
+        previousAppointmentId: previousAppointment?.appointmentId || null,
+      });
+
+      res.status(201).json({
+        success: true,
+        message: "Appointment request sent. Waiting for approval.",
+        appointment,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  },
+);
 
 export const approveAppointment = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const { approvedTimeSlot } = req.body;
 
   const appointment = await Appointment.findById(id);
-  if (!appointment)
-    return next(new ErrorHandler("Appointment not found", 404));
+  if (!appointment) return next(new ErrorHandler("Appointment not found", 404));
 
   if (appointment.status !== "pending")
-    return next(new ErrorHandler("Only pending appointments can be approved", 400));
+    return next(
+      new ErrorHandler("Only pending appointments can be approved", 400),
+    );
 
   appointment.status = "approved";
   appointment.approvedTimeSlot = approvedTimeSlot;
@@ -157,7 +158,7 @@ export const approveAppointment = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Appointment approved successfully",
-    appointment
+    appointment,
   });
 });
 
@@ -165,26 +166,25 @@ export const cancelAppointmentById = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
   const appointment = await Appointment.findById(id);
-  if (!appointment)
-    return next(new ErrorHandler("Appointment not found", 404));
+  if (!appointment) return next(new ErrorHandler("Appointment not found", 404));
 
   appointment.status = "cancelled";
   await appointment.save();
 
   res.status(200).json({
     success: true,
-    message: "Appointment cancelled successfully"
+    message: "Appointment cancelled successfully",
   });
 });
 
 export const getAllAppointments = asyncHandler(async (req, res) => {
   const appointments = await Appointment.find().sort({ createdAt: -1 });
-  if (!appointments) next(new ErrorHandler("not found", 500))
+  if (!appointments) next(new ErrorHandler("not found", 500));
 
   res.status(200).json({
     success: true,
     count: appointments.length,
-    appointments
+    appointments,
   });
 });
 
@@ -193,13 +193,12 @@ export const getAppointmentById = asyncHandler(async (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(appointmentId))
     return next(new ErrorHandler("Invalid ID", 400));
 
-  const appointment = await Appointment.findById(appointmentId)
+  const appointment = await Appointment.findById(appointmentId);
   // .populate("patientId")
   // .populate("doctorId")
   // .populate("prescriptionId");
 
-  if (!appointment)
-    return next(new ErrorHandler("Appointment not found", 404));
+  if (!appointment) return next(new ErrorHandler("Appointment not found", 404));
 
   res.status(200).json({ success: true, appointment });
 });
@@ -214,7 +213,7 @@ export const getPatientAppointments = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     count: appointments.length,
-    appointments
+    appointments,
   });
 });
 
@@ -229,7 +228,7 @@ export const getDoctorAppointments = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     count: appointments.length,
-    appointments
+    appointments,
   });
 });
 
@@ -238,8 +237,7 @@ export const updateAppointmentStatus = asyncHandler(async (req, res, next) => {
   const { status } = req.body; // e.g., 'completed', 'cancelled', 'approved'
 
   const appointment = await Appointment.findById(id);
-  if (!appointment)
-    return next(new ErrorHandler("Appointment not found", 404));
+  if (!appointment) return next(new ErrorHandler("Appointment not found", 404));
 
   appointment.status = status;
   if (status === "completed") {
@@ -251,68 +249,70 @@ export const updateAppointmentStatus = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: `Appointment status updated to ${status}`,
-    appointment
-  });
-});
-
-export const updateAppointmentPaymentStatus = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-  const { paymentStatus } = req.body; // Use 'paymentStatus' to match your schema/frontend
-
-  if (!paymentStatus) {
-    return next(new ErrorHandler("Payment status is required", 400));
-  }
-  const appointment = await Appointment.findByIdAndUpdate(
-    id,
-    { paymentStatus: paymentStatus },
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
-  if (!appointment) {
-    return next(new ErrorHandler("Appointment not found", 404));
-  }
-  res.status(200).json({
-    success: true,
-    message: `Payment status updated to ${paymentStatus}`,
-    appointment
-  });
-});
-
-export const reScheduelAppointmentById = asyncHandler(async (req, res, next) => {
-  const { appointmentId } = req.params;
-  const { approvedTimeSlot, appointmentDate } = req.body;
-
-  const appointment = await Appointment.findById(appointmentId);
-
-  if (!appointment) {
-    return next(new ErrorHandler("Appointment not found", 404));
-  }
-
-  appointment.approvedTimeSlot = approvedTimeSlot;
-  appointment.appointmentDate = appointmentDate;
-
-  await appointment.save();
-
-  res.status(200).json({
-    success: true,
     appointment,
-    message: "Appointment rescheduled successfully"
   });
 });
+
+export const updateAppointmentPaymentStatus = asyncHandler(
+  async (req, res, next) => {
+    const { id } = req.params;
+    const { paymentStatus } = req.body; // Use 'paymentStatus' to match your schema/frontend
+
+    if (!paymentStatus) {
+      return next(new ErrorHandler("Payment status is required", 400));
+    }
+    const appointment = await Appointment.findByIdAndUpdate(
+      id,
+      { paymentStatus: paymentStatus },
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+    if (!appointment) {
+      return next(new ErrorHandler("Appointment not found", 404));
+    }
+    res.status(200).json({
+      success: true,
+      message: `Payment status updated to ${paymentStatus}`,
+      appointment,
+    });
+  },
+);
+
+export const reScheduelAppointmentById = asyncHandler(
+  async (req, res, next) => {
+    const { appointmentId } = req.params;
+    const { approvedTimeSlot, appointmentDate } = req.body;
+
+    const appointment = await Appointment.findById(appointmentId);
+
+    if (!appointment) {
+      return next(new ErrorHandler("Appointment not found", 404));
+    }
+
+    appointment.approvedTimeSlot = approvedTimeSlot;
+    appointment.appointmentDate = appointmentDate;
+
+    await appointment.save();
+
+    res.status(200).json({
+      success: true,
+      appointment,
+      message: "Appointment rescheduled successfully",
+    });
+  },
+);
 
 export const deleteAppointmentById = asyncHandler(async (req, res, next) => {
   const { appointmentId } = req.params;
-
-  let appointment = await Appointment.findById(appointmentId);
-  if (!appointment)
+  const appointment = await Appointment.findByIdAndDelete(appointmentId);
+  if (!appointment) {
     return next(new ErrorHandler("Appointment not found", 404));
-  appointment = await Appointment.findByIdAndDelete(appointmentId);
-
+  }
   res.status(200).json({
     success: true,
-    message: "Appointment deleted successfully"
+    message: "Appointment deleted successfully",
   });
 });
 
@@ -329,7 +329,10 @@ export const generateAppointmentQR = asyncHandler(async (req, res, next) => {
     id: appointment.appointmentId,
     patient: appointment.name,
     date: appointment.appointmentDate,
-    status: appointment.status
+    status: appointment.status,
+    slot: appointment.approvedTimeSlot,
+    isVisited: appointment.previousAppointmentId,
+    payment: appointment.paymentStatus,
   });
 
   const qr = await QRCode.toDataURL(qrData);
@@ -340,6 +343,6 @@ export const generateAppointmentQR = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    qr
+    qr,
   });
 });

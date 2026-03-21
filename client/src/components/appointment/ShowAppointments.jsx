@@ -18,6 +18,7 @@ import {
   updateAppointmentStatus,
   reScheduelAppointmentByIdThunk,
   generateAppointmentQRThunk,
+  deleteAppointmentByIdThunk,
 } from "../../redux/slices/appointment.slice";
 import { getAllDoctorsThunk } from "../../redux/slices/doctor.slice";
 import { notifyPatientAppointmentThunk } from "../../redux/slices/notification.slice";
@@ -322,7 +323,17 @@ const ShowAppointments = () => {
                         <button className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-all">
                           <FileText size={16} />
                         </button>
-                        <button className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-all">
+                        <button
+                          onClick={() => {
+                            const confirmDelete = window.confirm(
+                              "Are you sure you want to delete this appointment?"
+                            );
+                            if (!confirmDelete) return;
+                            dispatch(deleteAppointmentByIdThunk(app._id));
+                            toast.success("Deleted successfully ✅");
+                          }}
+                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-all"
+                        >
                           <Trash2 size={16} />
                         </button>
                       </div>

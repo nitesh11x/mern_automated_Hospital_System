@@ -25,8 +25,13 @@ const appointmentSchema = new mongoose.Schema(
       ref: "Prescription",
       default: null,
     },
+    reportId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Prescription",
+      default: null,
+    },
 
-    // Snapshot Info
+
     name: { type: String, required: true },
     email: { type: String, required: true },
     gender: { type: String, required: true },

@@ -2,6 +2,7 @@ import express from "express";
 import {
   bookAppointment,
   bookAppointmentOfSpecificDoctor,
+  deleteAppointmentById,
   generateAppointmentQR,
   getAllAppointments,
   getAppointmentById,
@@ -32,6 +33,6 @@ router.put("/status/:id", isAdminAuth, updateAppointmentStatus);
 router.put("/status/payment/:id", isAdminAuth, updateAppointmentPaymentStatus);
 router.put("/rescheduel/:appointmentId", isAdminAuth, reScheduelAppointmentById);
 
-router.delete("/:appointmentId", isAdminAuth, getAppointmentById);
+router.delete("/delete/:appointmentId", isAdminAuth, deleteAppointmentById);
 
 export default router;
