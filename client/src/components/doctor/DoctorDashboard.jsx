@@ -5,7 +5,9 @@ import { createPrescriptionThunk, resetPrescriptionState } from "../../redux/sli
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard, CalendarCheck, Users, FileText, Settings,
-  LogOut, Bell, Search, X, CheckCircle2, Clock, AlertCircle, Plus, Trash2, MapPin
+  LogOut, Bell, Search, X, CheckCircle2, Clock, AlertCircle, Plus, Trash2, MapPin,
+  Stethoscope, Heart, Activity, Calendar, ChevronRight, Download, Eye,
+  Pill, Award, TrendingUp, User, Phone, Mail, CalendarDays, Clock as ClockIcon
 } from "lucide-react";
 
 const DoctorDashboard = () => {
@@ -26,7 +28,6 @@ const DoctorDashboard = () => {
     dispatch(getDoctorAppointments());
   }, [dispatch]);
 
-  // Sync Form when opening Modal (Auto-fill if prescription exists)
   useEffect(() => {
     if (prescriptionApptId) {
       const apt = appointments?.find(a => a._id === prescriptionApptId);
@@ -86,150 +87,402 @@ const DoctorDashboard = () => {
     }));
   };
 
+  const stats = {
+    totalPatients: appointments?.length || 0,
+    completed: appointments?.filter(a => a.status === "Completed").length || 0,
+    pending: appointments?.filter(a => a.status === "Pending").length || 0,
+    approved: appointments?.filter(a => a.status === "Approved").length || 0,
+    paid: appointments?.filter(a => a.paymentStatus === "Paid").length || 0,
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 flex font-sans">
-      {/* Sidebar - Same as before */}
-      <aside className="w-72 bg-indigo-800 hidden lg:flex flex-col sticky top-0 h-screen shadow-xl z-20">
-        <div className="p-8 border-b border-indigo-700">
-          <h2 className="text-xl font-bold text-white tracking-tighter">DR. {doctor?.lastName?.toUpperCase()}</h2>
-          <p className="text-[10px] font-bold text-indigo-300 uppercase">{doctor?.specialization}</p>
+    <div className="min-h-screen bg-linear-to-br from-purple-50 via-white to-violet-50 flex font-sans">
+      {/* Sidebar */}
+      <aside className="w-72 bg-linear-to-b from-purple-900 via-purple-800 to-violet-900 hidden lg:flex flex-col sticky top-0 h-screen shadow-2xl z-20">
+        <div className="p-6 border-b border-purple-700/50">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="h-12 w-12 rounded-xl bg-linear-to-br from-purple-500 to-violet-500 flex items-center justify-center shadow-lg">
+              <Stethoscope size={24} className="text-white" />
+            </div>
+            <div>
+              <h2 className="text-lg font-black text-white tracking-tight">DR. {doctor?.lastName?.toUpperCase() || "SPECIALIST"}</h2>
+              <p className="text-[9px] font-bold text-purple-300 uppercase tracking-wider">{doctor?.specialization || "General Medicine"}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-purple-700/30">
+            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+            <p className="text-[8px] font-bold text-purple-300 uppercase">Online • Available for Consultations</p>
+          </div>
         </div>
-        <nav className="flex-1 p-4 space-y-2">
+
+        <nav className="flex-1 p-4 space-y-1">
           <NavBtn icon={<LayoutDashboard size={18} />} label="Dashboard" active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} />
           <NavBtn icon={<CalendarCheck size={18} />} label="Appointments" active={activeTab === 'appointments'} onClick={() => setActiveTab('appointments')} />
+          <NavBtn icon={<Users size={18} />} label="Patients" active={activeTab === 'patients'} onClick={() => setActiveTab('patients')} />
+          <NavBtn icon={<Settings size={18} />} label="Settings" active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} />
         </nav>
+
+        <div className="p-4 mt-6 border-t border-purple-700/50">
+          <button className="flex items-center gap-3 px-4 py-3 w-full text-purple-300 hover:text-white hover:bg-purple-800/50 rounded-xl transition-all text-[10px] font-bold uppercase tracking-widest group">
+            <LogOut size={16} className="group-hover:text-purple-300" />
+            Sign Out
+          </button>
+        </div>
       </aside>
 
+      {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0">
-        <header className="h-20 bg-white border-b border-slate-200 px-8 flex items-center justify-between sticky top-0 z-10">
-          <h1 className="text-xl font-black text-indigo-900 uppercase tracking-widest">{activeTab}</h1>
+        <header className="h-20 bg-white/80 backdrop-blur-sm border-b border-purple-100 px-6 md:px-10 flex items-center justify-between sticky top-0 z-10 shadow-sm">
+          <div>
+            <h1 className="text-xl font-black bg-linear-to-r from-purple-700 to-violet-600 bg-clip-text text-transparent uppercase tracking-wider">
+              {activeTab === 'dashboard' ? "Clinical Dashboard" : activeTab === 'appointments' ? "Appointment Manager" : activeTab === 'patients' ? "Patient Registry" : "Practice Settings"}
+            </h1>
+            <p className="text-[9px] text-purple-400 mt-0.5">Welcome back, Dr. {doctor?.firstName || "Specialist"}</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-purple-400" />
+              <input
+                type="text"
+                placeholder="Search..."
+                className="pl-10 pr-4 py-2 bg-purple-50 border border-purple-200 rounded-xl text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none w-64"
+              />
+            </div>
+            <button className="p-2 bg-purple-100 rounded-xl hover:bg-purple-200 transition-colors relative">
+              <Bell size={18} className="text-purple-600" />
+              <span className="absolute top-0 right-0 w-2 h-2 bg-rose-500 rounded-full"></span>
+            </button>
+          </div>
         </header>
 
-        <div className="p-8 max-w-7xl mx-auto w-full">
+        <div className="p-6 md:p-10 max-w-7xl mx-auto w-full">
           {activeTab === 'appointments' ? (
-            <div className="bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-slate-50 border-b border-slate-200">
-                    <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Patient Details</th>
-                    <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Apt ID & Schedule</th>
-                    <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Prescription Info</th>
-                    <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {appointments?.map((apt) => (
-                    <tr key={apt._id} className="hover:bg-slate-50/50 transition-colors">
-                      {/* Patient Details */}
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <img src={apt.patientId?.profileUrl?.url} alt="" className="w-10 h-10 rounded-full object-cover border border-slate-200 shadow-sm" />
-                          <div>
-                            <p className="text-sm font-bold text-slate-900">{apt.name}</p>
-                            <p className="text-[10px] text-slate-500 uppercase font-black">{apt.gender} • {apt.relation}</p>
-                          </div>
-                        </div>
-                      </td>
+            <div className="space-y-6">
+              {/* Stats Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+                <StatCard label="Total Appointments" value={stats.totalPatients} icon={<Calendar size={20} />} color="purple" trend="+12%" />
+                <StatCard label="Pending Review" value={stats.pending} icon={<Clock size={20} />} color="amber" trend="3 awaiting" />
+                <StatCard label="Approved" value={stats.approved} icon={<CheckCircle2 size={20} />} color="emerald" trend="ready" />
+                <StatCard label="Completed" value={stats.completed} icon={<Award size={20} />} color="blue" trend="+8 this week" />
+              </div>
 
-                      {/* Apt ID & Schedule */}
-                      <td className="px-6 py-4">
-                        <p className="text-[10px] font-black text-indigo-600 mb-1">{apt.appointmentId || 'PENDING'}</p>
-                        <p className="text-xs font-bold text-slate-700">{new Date(apt.appointmentDate).toLocaleDateString()}</p>
-                        <p className="text-[10px] text-slate-500">{apt.requestedTimeSlot}</p>
-                      </td>
+              {/* Appointments Table */}
+              <div className="bg-white rounded-2xl border border-purple-100 shadow-xl overflow-hidden">
+                <div className="p-5 border-b border-purple-100 bg-linear-to-r from-purple-50/30 to-white">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h3 className="text-sm font-black text-slate-800 flex items-center gap-2">
+                        <div className="w-1 h-5 bg-linear-to-b from-purple-600 to-violet-600 rounded-full"></div>
+                        Scheduled Consultations
+                      </h3>
+                      <p className="text-[9px] text-purple-500 mt-1">Manage patient appointments and medical records</p>
+                    </div>
+                    <span className="text-[10px] bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-bold">
+                      {appointments?.length || 0} Total
+                    </span>
+                  </div>
+                </div>
 
-                      {/* Prescription Info - Highlights multi-medicines */}
-                      <td className="px-6 py-4">
-                        {apt.prescriptionId ? (
-                          <div className="max-w-50">
-                            <p className="text-[10px] font-bold text-green-600 uppercase flex items-center gap-1"><CheckCircle2 size={10} /> Prescribed</p>
-                            <p className="text-[10px] text-slate-600 truncate italic">"{apt.prescriptionId.diagnosis}"</p>
-                            <p className="text-[9px] text-indigo-400 font-bold mt-1">
-                              {apt.prescriptionId.medicines?.length} Medicines Added
-                            </p>
-                          </div>
-                        ) : (
-                          <span className="text-[10px] font-bold text-slate-300 uppercase italic">No Rx Found</span>
-                        )}
-                      </td>
-
-                      <td className="px-6 py-4 text-right">
-                        <ActionButtons apt={apt} handleStatusUpdate={handleStatusUpdate} setPrescriptionApptId={setPrescriptionApptId} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left">
+                    <thead className="bg-purple-50/50 border-b border-purple-100">
+                      <tr>
+                        <th className="px-5 py-4 text-[10px] font-black text-purple-600 uppercase tracking-wider">Patient</th>
+                        <th className="px-5 py-4 text-[10px] font-black text-purple-600 uppercase tracking-wider">Appointment Details</th>
+                        <th className="px-5 py-4 text-[10px] font-black text-purple-600 uppercase tracking-wider">Prescription</th>
+                        <th className="px-5 py-4 text-[10px] font-black text-purple-600 uppercase tracking-wider text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-purple-50">
+                      {appointments?.map((apt, idx) => (
+                        <tr key={apt._id} className="hover:bg-purple-50/30 transition-colors group">
+                          <td className="px-5 py-4">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-xl bg-linear-to-br from-purple-500 to-violet-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                                {apt.name?.charAt(0) || "P"}
+                              </div>
+                              <div>
+                                <p className="text-sm font-bold text-slate-800 group-hover:text-purple-700 transition-colors">{apt.name}</p>
+                                <div className="flex items-center gap-2 mt-0.5">
+                                  <Phone size={10} className="text-purple-400" />
+                                  <span className="text-[9px] text-slate-500">{apt.phone || "N/A"}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-5 py-4">
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-1">
+                                <CalendarDays size={12} className="text-purple-500" />
+                                <span className="text-xs font-semibold text-slate-700">
+                                  {apt.appointmentDate ? new Date(apt.appointmentDate).toLocaleDateString() : "TBD"}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <ClockIcon size={12} className="text-purple-400" />
+                                <span className="text-[10px] text-slate-500">{apt.approvedTimeSlot || apt.requestedTimeSlot || "Time TBD"}</span>
+                              </div>
+                              <span className={`inline-block text-[8px] font-black px-2 py-0.5 rounded-full ${apt.status === "Approved" ? "bg-emerald-100 text-emerald-700" :
+                                apt.status === "Pending" ? "bg-amber-100 text-amber-700" :
+                                  apt.status === "Completed" ? "bg-blue-100 text-blue-700" :
+                                    "bg-rose-100 text-rose-700"
+                                }`}>
+                                {apt.status || "Pending"}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-5 py-4">
+                            {apt.prescriptionId ? (
+                              <div className="flex items-center gap-2">
+                                <div className="p-1.5 bg-emerald-100 rounded-lg">
+                                  <FileText size={12} className="text-emerald-600" />
+                                </div>
+                                <div>
+                                  <p className="text-[10px] font-bold text-emerald-600">Prescribed</p>
+                                  <p className="text-[9px] text-slate-500">{apt.prescriptionId.medicines?.length || 0} medications</p>
+                                </div>
+                              </div>
+                            ) : (
+                              <span className="text-[10px] text-purple-400 italic">No prescription yet</span>
+                            )}
+                          </td>
+                          <td className="px-5 py-4 text-right">
+                            <ActionButtons
+                              apt={apt}
+                              handleStatusUpdate={handleStatusUpdate}
+                              setPrescriptionApptId={setPrescriptionApptId}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           ) : (
-            /* Dashboard View - Quick Stats */
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <StatCard label="Total Patients" value={appointments?.length} color="indigo" />
-              <StatCard label="Today's Paid" value={appointments?.filter(a => a.paymentStatus === "Paid").length} color="green" />
-              <StatCard label="Pending Approval" value={appointments?.filter(a => a.status === "Pending").length} color="amber" />
-              {/* QR Preview Widget */}
-              <div className="bg-white p-4 border border-slate-200 rounded-sm flex items-center justify-between">
-                <div>
-                  <p className="text-[10px] font-black text-slate-400 uppercase">Recent QR</p>
-                  <p className="text-sm font-bold">{appointments?.[0]?.appointmentId || 'N/A'}</p>
+            /* Dashboard View */
+            <div className="space-y-8">
+              {/* Welcome Card */}
+              <div className="bg-linear-to-r from-purple-600 to-violet-600 rounded-2xl p-8 text-white shadow-xl">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center">
+                        <Activity size={16} className="text-white" />
+                      </div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider">Clinical Overview</span>
+                    </div>
+                    <h2 className="text-3xl font-black mb-2">Welcome, Dr. {doctor?.firstName || "Specialist"}</h2>
+                    <p className="text-purple-100 text-sm">You have {stats.pending} pending appointments awaiting your review</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
+                      <Stethoscope size={32} className="text-white" />
+                    </div>
+                  </div>
                 </div>
-                {appointments?.[0]?.qrCode && <img src={appointments[0].qrCode} className="w-10 h-10 opacity-50 hover:opacity-100 transition-opacity" alt="QR" />}
+              </div>
+
+              {/* Stats Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <StatCard label="Total Patients" value={stats.totalPatients} icon={<Users size={20} />} color="purple" trend="+12% vs last month" />
+                <StatCard label="Completed Visits" value={stats.completed} icon={<CheckCircle2 size={20} />} color="emerald" trend="+8 this week" />
+                <StatCard label="Pending Approvals" value={stats.pending} icon={<Clock size={20} />} color="amber" trend="Requires attention" />
+                <StatCard label="Revenue Generated" value={`₹${(stats.completed * 500).toLocaleString()}`} icon={<TrendingUp size={20} />} color="blue" trend="+22% YoY" />
+              </div>
+
+              {/* Recent Activity */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Recent Appointments */}
+                <div className="bg-white rounded-2xl border border-purple-100 shadow-lg p-6">
+                  <div className="flex justify-between items-center mb-5">
+                    <h3 className="text-xs font-black text-purple-700 uppercase tracking-wider flex items-center gap-2">
+                      <Calendar size={14} /> Recent Appointments
+                    </h3>
+                    <button
+                      onClick={() => setActiveTab('appointments')}
+                      className="text-[9px] font-bold text-purple-500 hover:text-purple-700 flex items-center gap-1"
+                    >
+                      View All <ChevronRight size={10} />
+                    </button>
+                  </div>
+                  <div className="space-y-3">
+                    {appointments?.slice(0, 5).map((apt) => (
+                      <div key={apt._id} className="flex items-center justify-between p-3 bg-purple-50/30 rounded-xl hover:bg-purple-50 transition-all">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-linear-to-br from-purple-500 to-violet-500 flex items-center justify-center text-white font-bold text-xs">
+                            {apt.name?.charAt(0)}
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold text-slate-800">{apt.name}</p>
+                            <p className="text-[9px] text-purple-500">{apt.appointmentDate ? new Date(apt.appointmentDate).toLocaleDateString() : "TBD"}</p>
+                          </div>
+                        </div>
+                        <span className={`text-[8px] font-black px-2 py-1 rounded-full ${apt.status === "Completed" ? "bg-emerald-100 text-emerald-700" :
+                          apt.status === "Approved" ? "bg-blue-100 text-blue-700" :
+                            "bg-amber-100 text-amber-700"
+                          }`}>
+                          {apt.status || "Pending"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Quick Stats */}
+                <div className="bg-white rounded-2xl border border-purple-100 shadow-lg p-6">
+                  <h3 className="text-xs font-black text-purple-700 uppercase tracking-wider mb-5 flex items-center gap-2">
+                    <Award size={14} /> Practice Insights
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center p-3 bg-purple-50 rounded-xl">
+                      <span className="text-xs font-bold text-slate-700">Consultation Completion Rate</span>
+                      <span className="text-lg font-black text-purple-600">{stats.totalPatients ? Math.round((stats.completed / stats.totalPatients) * 100) : 0}%</span>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-purple-50 rounded-xl">
+                      <span className="text-xs font-bold text-slate-700">Patient Satisfaction</span>
+                      <div className="flex items-center gap-1">
+                        <div className="flex gap-0.5">
+                          {[1, 2, 3, 4, 5].map(i => (
+                            <Heart key={i} size={12} className="fill-amber-400 text-amber-400" />
+                          ))}
+                        </div>
+                        <span className="text-sm font-bold text-amber-600">4.8</span>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-purple-50 rounded-xl">
+                      <span className="text-xs font-bold text-slate-700">Prescriptions Issued</span>
+                      <span className="text-lg font-black text-purple-600">{appointments?.filter(a => a.prescriptionId).length || 0}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}
         </div>
       </main>
 
-      {/* Prescription Modal - Handles Multiple Medicines */}
+      {/* Prescription Modal */}
       <AnimatePresence>
         {prescriptionApptId && (
-          <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-white w-full max-w-3xl rounded-sm shadow-2xl flex flex-col max-h-[90vh]"
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="bg-white w-full max-w-3xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-purple-100"
             >
-              <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-indigo-50/50">
+              <div className="p-6 border-b border-purple-100 bg-linear-to-r from-purple-50 to-violet-50 rounded-t-2xl flex justify-between items-center">
                 <div>
-                  <h3 className="text-lg font-black text-indigo-900 uppercase tracking-tighter">Medical Prescription</h3>
-                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Apt ID: {appointments?.find(a => a._id === prescriptionApptId)?.appointmentId}</p>
+                  <div className="flex items-center gap-2 mb-1">
+                    <Pill size={18} className="text-purple-600" />
+                    <h3 className="text-lg font-black text-purple-700 uppercase tracking-tight">Medical Prescription</h3>
+                  </div>
+                  <p className="text-[9px] text-purple-500 font-bold uppercase tracking-wider">
+                    Patient: {appointments?.find(a => a._id === prescriptionApptId)?.name}
+                  </p>
                 </div>
-                <button onClick={() => setPrescriptionApptId(null)} className="p-2 hover:bg-white rounded-full transition-colors text-slate-400"><X size={20} /></button>
+                <button
+                  onClick={() => setPrescriptionApptId(null)}
+                  className="p-2 hover:bg-white rounded-full transition-colors text-purple-400"
+                >
+                  <X size={20} />
+                </button>
               </div>
 
-              <form onSubmit={submitPrescription} className="flex-1 overflow-y-auto p-8 space-y-8">
-                <Input label="Primary Diagnosis / Findings" required value={prescriptionForm.diagnosis} onChange={(e) => setPrescriptionForm({ ...prescriptionForm, diagnosis: e.target.value })} />
+              <form onSubmit={submitPrescription} className="flex-1 overflow-y-auto p-6 space-y-6">
+                {/* Diagnosis */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-purple-600 uppercase tracking-wider flex items-center gap-2">
+                    <Stethoscope size={12} /> Primary Diagnosis / Findings
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    className="w-full px-4 py-3 border border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none bg-purple-50/30"
+                    placeholder="e.g., Acute Upper Respiratory Infection"
+                    value={prescriptionForm.diagnosis}
+                    onChange={(e) => setPrescriptionForm({ ...prescriptionForm, diagnosis: e.target.value })}
+                  />
+                </div>
 
+                {/* Medicines Section */}
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center border-b border-slate-100 pb-2">
-                    <h4 className="text-[10px] font-black text-indigo-900 uppercase">Medicines & Dosage</h4>
-                    <button type="button" onClick={addMedicineRow} className="flex items-center gap-1 text-[10px] font-black text-white bg-indigo-600 px-3 py-1.5 rounded-sm hover:bg-indigo-700 transition-all uppercase"><Plus size={12} /> Add</button>
+                  <div className="flex justify-between items-center border-b border-purple-100 pb-2">
+                    <label className="text-[10px] font-black text-purple-600 uppercase tracking-wider flex items-center gap-2">
+                      <Pill size={12} /> Medications & Dosage
+                    </label>
+                    <button
+                      type="button"
+                      onClick={addMedicineRow}
+                      className="flex items-center gap-1 text-[9px] font-black text-white bg-linear-to-r from-purple-600 to-violet-600 px-3 py-1.5 rounded-lg hover:shadow-md transition-all"
+                    >
+                      <Plus size={12} /> Add Medicine
+                    </button>
                   </div>
 
                   {prescriptionForm.medicines.map((med, idx) => (
-                    <div key={idx} className="grid grid-cols-12 gap-3 items-end group animate-in slide-in-from-right-2">
+                    <div key={idx} className="grid grid-cols-12 gap-3 items-end bg-purple-50/30 p-3 rounded-xl border border-purple-100">
                       <div className="col-span-5">
-                        <Input label="Medication Name" placeholder="e.g. Paracetamol" value={med.name} onChange={(e) => handleMedicineChange(idx, 'name', e.target.value)} />
+                        <label className="text-[8px] font-bold text-purple-500 uppercase block mb-1">Medication Name</label>
+                        <input
+                          placeholder="e.g., Paracetamol"
+                          className="w-full px-3 py-2 border border-purple-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-white"
+                          value={med.name}
+                          onChange={(e) => handleMedicineChange(idx, 'name', e.target.value)}
+                        />
                       </div>
                       <div className="col-span-3">
-                        <Input label="Dosage" placeholder="e.g. 500mg" value={med.dosage} onChange={(e) => handleMedicineChange(idx, 'dosage', e.target.value)} />
+                        <label className="text-[8px] font-bold text-purple-500 uppercase block mb-1">Dosage</label>
+                        <input
+                          placeholder="e.g., 500mg"
+                          className="w-full px-3 py-2 border border-purple-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-white"
+                          value={med.dosage}
+                          onChange={(e) => handleMedicineChange(idx, 'dosage', e.target.value)}
+                        />
                       </div>
                       <div className="col-span-3">
-                        <Input label="Duration" placeholder="e.g. 5 Days" value={med.duration} onChange={(e) => handleMedicineChange(idx, 'duration', e.target.value)} />
+                        <label className="text-[8px] font-bold text-purple-500 uppercase block mb-1">Duration</label>
+                        <input
+                          placeholder="e.g., 5 Days"
+                          className="w-full px-3 py-2 border border-purple-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-white"
+                          value={med.duration}
+                          onChange={(e) => handleMedicineChange(idx, 'duration', e.target.value)}
+                        />
                       </div>
-                      <div className="col-span-1 pb-2">
+                      <div className="col-span-1 pb-1">
                         {prescriptionForm.medicines.length > 1 && (
-                          <button type="button" onClick={() => removeMedicineRow(idx)} className="text-slate-300 hover:text-red-500 transition-colors"><Trash2 size={18} /></button>
+                          <button
+                            type="button"
+                            onClick={() => removeMedicineRow(idx)}
+                            className="p-1.5 text-purple-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                          >
+                            <Trash2 size={16} />
+                          </button>
                         )}
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <div className="bg-slate-50 p-4 rounded-sm border border-slate-100">
-                  <label className="text-[10px] font-black text-slate-400 uppercase mb-2 block">General Advice</label>
-                  <textarea className="w-full h-24 bg-white border border-slate-200 rounded-sm p-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" value={prescriptionForm.advice} onChange={(e) => setPrescriptionForm({ ...prescriptionForm, advice: e.target.value })} placeholder="Dietary restrictions, rest instructions, etc." />
+                {/* Advice */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-purple-600 uppercase tracking-wider flex items-center gap-2">
+                    <FileText size={12} /> General Advice
+                  </label>
+                  <textarea
+                    className="w-full h-28 px-4 py-3 border border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none bg-purple-50/30 resize-none"
+                    placeholder="Dietary restrictions, rest instructions, follow-up recommendations..."
+                    value={prescriptionForm.advice}
+                    onChange={(e) => setPrescriptionForm({ ...prescriptionForm, advice: e.target.value })}
+                  />
                 </div>
 
-                <button type="submit" className="w-full bg-indigo-900 text-white font-black py-4 rounded-sm hover:bg-indigo-800 transition-all uppercase text-xs tracking-[0.2em] shadow-xl shadow-indigo-100">
+                <button
+                  type="submit"
+                  className="w-full bg-linear-to-r from-purple-600 to-violet-600 text-white font-black py-4 rounded-xl hover:shadow-lg transition-all uppercase text-xs tracking-wider"
+                >
                   Authorize & Save Prescription
                 </button>
               </form>
@@ -241,26 +494,57 @@ const DoctorDashboard = () => {
   );
 };
 
-// --- HELPERS ---
-const StatCard = ({ label, value, color }) => (
-  <div className="bg-white p-6 border border-slate-200 rounded-sm shadow-sm">
-    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{label}</p>
-    <p className={`text-3xl font-black text-${color}-600`}>{value || 0}</p>
-  </div>
-);
+// Helper Components
+const StatCard = ({ label, value, icon, color, trend }) => {
+  const colorClasses = {
+    purple: "from-purple-500 to-violet-500",
+    emerald: "from-emerald-500 to-emerald-600",
+    amber: "from-amber-500 to-amber-600",
+    blue: "from-blue-500 to-blue-600"
+  };
+
+  return (
+    <div className="bg-white rounded-2xl p-5 border border-purple-100 shadow-lg hover:shadow-xl transition-all duration-300 group">
+      <div className="flex justify-between items-start">
+        <div>
+          <p className="text-[9px] font-black text-purple-500 uppercase tracking-wider mb-1">{label}</p>
+          <p className="text-2xl font-black text-slate-800">{value}</p>
+          {trend && <p className="text-[8px] text-emerald-600 mt-1 font-bold">{trend}</p>}
+        </div>
+        <div className={`h-10 w-10 rounded-xl bg-linear-to-br ${colorClasses[color]} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+          {icon}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ActionButtons = ({ apt, handleStatusUpdate, setPrescriptionApptId }) => {
-  const s = apt.status?.toLowerCase();
+  const status = apt.status?.toLowerCase();
+
   return (
     <div className="flex justify-end gap-2">
-      {s === 'pending' && (
-        <button onClick={() => handleStatusUpdate(apt._id, 'Approved')} className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-sm"><CheckCircle2 size={18} /></button>
+      {status === 'pending' && (
+        <button
+          onClick={() => handleStatusUpdate(apt._id, 'Approved')}
+          className="px-4 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-[10px] font-bold uppercase hover:bg-emerald-600 hover:text-white transition-all flex items-center gap-1"
+        >
+          <CheckCircle2 size={12} /> Approve
+        </button>
       )}
-      {s === 'approved' && (
-        <button onClick={() => handleStatusUpdate(apt._id, 'Completed')} className="text-[10px] font-black bg-indigo-600 text-white px-4 py-2 rounded-sm uppercase tracking-widest">Finish Visit</button>
+      {status === 'approved' && (
+        <button
+          onClick={() => handleStatusUpdate(apt._id, 'Completed')}
+          className="px-4 py-2 bg-purple-600 text-white rounded-lg text-[10px] font-bold uppercase hover:bg-purple-700 transition-all"
+        >
+          Complete Visit
+        </button>
       )}
-      {s === 'completed' && (
-        <button onClick={() => setPrescriptionApptId(apt._id)} className="flex items-center gap-1 text-[10px] font-black border-2 border-indigo-900 text-indigo-900 px-4 py-2 rounded-sm hover:bg-indigo-900 hover:text-white transition-all uppercase tracking-widest">
+      {status === 'completed' && (
+        <button
+          onClick={() => setPrescriptionApptId(apt._id)}
+          className="px-4 py-2 border-2 border-purple-600 text-purple-600 rounded-lg text-[10px] font-bold uppercase hover:bg-purple-600 hover:text-white transition-all flex items-center gap-1"
+        >
           <FileText size={12} /> {apt.prescriptionId ? 'Modify Rx' : 'Prescribe'}
         </button>
       )}
@@ -269,16 +553,18 @@ const ActionButtons = ({ apt, handleStatusUpdate, setPrescriptionApptId }) => {
 };
 
 const NavBtn = ({ icon, label, active, onClick }) => (
-  <button onClick={onClick} className={`w-full flex items-center gap-3 px-4 py-3 rounded-sm text-sm font-bold transition-all ${active ? "bg-indigo-700 text-white shadow-lg" : "text-indigo-200 hover:bg-indigo-700/50"}`}>
-    {icon} <span>{label}</span>
+  <button
+    onClick={onClick}
+    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-[10px] font-bold uppercase tracking-wider ${active
+      ? "bg-linear-to-r from-purple-600 to-violet-600 text-white shadow-lg"
+      : "text-purple-300 hover:bg-purple-800/50 hover:text-white"
+      }`}
+  >
+    <span className={active ? "text-white" : "text-purple-400"}>
+      {React.cloneElement(icon, { size: 16 })}
+    </span>
+    <span>{label}</span>
   </button>
-);
-
-const Input = ({ label, ...props }) => (
-  <div className="w-full">
-    <label className="text-[10px] font-black text-slate-400 uppercase mb-1 block">{label}</label>
-    <input {...props} className="w-full border-b-2 border-slate-200 bg-transparent py-2 text-sm focus:border-indigo-600 outline-none transition-all font-bold text-slate-800" />
-  </div>
 );
 
 export default DoctorDashboard;
