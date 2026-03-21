@@ -61,15 +61,13 @@ export const getAllDoctorsThunk = createAsyncThunk(
 export const deleteDoctorThunk = createAsyncThunk(
     "doctor/delete",
     async (doctorId, { rejectWithValue }) => {
-        try {
-            await api.delete(`/doctor/delete/${doctorId}`);
-            return doctorId;
-        } catch (error) {
-            return rejectWithValue(
-                error.response?.data?.message || "Failed to delete doctor"
-            );
-        }
+    try {
+      await api.delete(`/doctor/delete/${doctorId}`);
+      return doctorId;
+    } catch (error) {
+      return rejectWithValue(error?.response?.data?.message || "Delete failed");
     }
+  },
 );
 
 export const doctorLogoutThunk = createAsyncThunk(
@@ -190,6 +188,7 @@ const doctorSlice = createSlice({
                 state.doctors = state.doctors.filter(
                     (doc) => doc._id !== action.payload
                 );
+                console.log(action.payload)
             })
     },
 })

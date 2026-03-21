@@ -3,15 +3,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     Edit3, Ban, ShieldCheck, Plus, Search,
     Building2, Briefcase, MapPin,
-    Calendar, ChevronRight, Filter,
+    Calendar, ChevronRight, Filter, Trash,
     RefreshCcw, Loader2,
     IndianRupee, Star, Award, Clock, UserCheck, UserX,
     Eye, MoreVertical, CheckCircle, XCircle, Mail, Phone
 } from 'lucide-react';
-import { getAllDoctorsThunk } from "../../redux/slices/doctor.slice";
+import { deleteDoctorThunk, getAllDoctorsThunk } from "../../redux/slices/doctor.slice";
 import { Link } from 'react-router-dom';
 import { api } from "../../utils/axios";
 import { toast } from "react-hot-toast";
+import { deleteAppointmentByIdThunk } from '../../redux/slices/appointment.slice';
+
 
 const DoctorManage = ({ isEmbedded }) => {
     const dispatch = useDispatch();
@@ -370,10 +372,19 @@ const DoctorManage = ({ isEmbedded }) => {
                                                             {doc.isBlocked ? <UserCheck size={14} /> : <UserX size={14} />}
                                                         </button>
                                                         <button
-                                                            title="More Options"
+                                                            title="Delete"
                                                             className="p-1.5 text-purple-400 hover:text-purple-600 hover:bg-purple-50 rounded-sm transition-all"
+                                                            onClick={() => {
+                                                                const confirmDelete = window.confirm("Are you sure you want to delete this doctor?");
+
+                                                                if (confirmDelete) {
+                                                                    dispatch(deleteDoctorThunk(doc._id));
+                                                                    console.log(doc._id);
+                                                                    toast.success("Doctor deleted successfully");
+                                                                }
+                                                            }}
                                                         >
-                                                            <MoreVertical size={14} />
+                                                            <Trash size={14} />
                                                         </button>
                                                     </div>
                                                 </td>
