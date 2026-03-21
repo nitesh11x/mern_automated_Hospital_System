@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, ArrowRight, LayoutDashboard, User, Plus } from "lucide-react";
+import { Menu, X, ArrowRight, LayoutDashboard, User, Plus, LogOut, Calendar, Home, Info, Stethoscope, Mail } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,82 +32,126 @@ const Navbar = () => {
     try {
       if (role === "admin") {
         await dispatch(adminLogoutThunk()).unwrap();
-        toast.success("Admin Logged Out");
+        toast.success("Admin Logged Out Successfully");
       } else if (role === "doctor") {
         await dispatch(doctorLogoutThunk()).unwrap();
-        toast.success("Doctor Logged Out");
+        toast.success("Doctor Logged Out Successfully");
       } else {
         await dispatch(patientLogoutThunk()).unwrap();
-        toast.success("Patient Logged Out");
+        toast.success("Patient Logged Out Successfully");
       }
 
       setIsOpen(false);
       navigate("/");
       window.location.reload();
     } catch (error) {
-      toast.error("Logout Failed");
+      toast.error("Logout Failed. Please try again.");
     }
   };
 
   const navLinks = [
-    { name: "Home", to: "/" },
-    { name: "About", to: "/about" },
-    { name: "Doctors", to: "/doctor/all" },
-    { name: "Contact", to: "/contact" },
+    { name: "Home", to: "/", icon: Home },
+    { name: "About", to: "/about", icon: Info },
+    { name: "Doctors", to: "/doctor/all", icon: Stethoscope },
+    { name: "Contact", to: "/contact", icon: Mail },
   ];
+
+  // Get dashboard route based on authentication
+  const getDashboardRoute = () => {
+    if (isAdminAuthenticated) return "/admin/dashboard";
+    if (isDoctorAuthenticated) return "/doctor/dashboard";
+    if (isPatientAuthenticated) return "/patient/dashboard";
+    return "/";
+  };
+
+  // Get current user role for logout
+  const getCurrentRole = () => {
+    if (isAdminAuthenticated) return "admin";
+    if (isDoctorAuthenticated) return "doctor";
+    if (isPatientAuthenticated) return "patient";
+    return null;
+  };
+
+  // Animation variants
+  const mobileMenuVariants = {
+    hidden: { opacity: 0, height: 0, transition: { duration: 0.3, ease: "easeInOut" } },
+    visible: { opacity: 1, height: "auto", transition: { duration: 0.4, ease: "easeOut" } },
+    exit: { opacity: 0, height: 0, transition: { duration: 0.3, ease: "easeIn" } }
+  };
+
+  const navItemVariants = {
+    hidden: { opacity: 0, y: -10 },
+    visible: (i) => ({
+      opacity: 1,
+      y: 0,
+      transition: { delay: i * 0.05, duration: 0.3 }
+    })
+  };
 
   return (
     <nav
-      className={`fixed w-full z-50 transition-all duration-500 ${
-        scrolled
-          ? "bg-white/80 backdrop-blur-xl shadow-sm border-b border-slate-200 py-3"
-          : "bg-transparent py-6"
-      }`}
+      className={`fixed w-full z-50 transition-all duration-500 ${scrolled
+        ? "bg-white/90 backdrop-blur-xl shadow-lg border-b border-slate-200/50 py-3"
+        : "bg-white/70 backdrop-blur-md py-5"
+        }`}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-10 flex justify-between items-center">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 bg-indigo-600 text-white flex items-center justify-center rounded-sm shadow-md group-hover:bg-purple-600 transition-all">
-            <Plus size={18} />
+        <Link
+          to="/"
+          className="flex items-center gap-3 group relative"
+        >
+          <div className="relative">
+            <div className="absolute inset-0 bg-linear-to-r from-indigo-600 to-purple-600 rounded-sm blur-md opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
+            <div className="w-11 h-11 bg-linear-to-br from-indigo-600 to-purple-600 text-white flex items-center justify-center rounded-sm shadow-lg group-hover:shadow-2xl group-hover:scale-105 transition-all duration-300 relative">
+              <Plus size={20} strokeWidth={2.5} />
+            </div>
           </div>
-
-          <span className="text-xl font-bold text-blue">
-            New
-            <span className="bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              Care
+          <div className="flex flex-col">
+            <span className="text-xl font-extrabold tracking-tight">
+              <span className="text-slate-800">New</span>
+              <span className="bg-linear-to-r from-indigo-600 via-purple-600 to-purple-700 bg-clip-text text-transparent">
+                Care
+              </span>
             </span>
-          </span>
+            <span className="text-[10px] font-medium text-slate-400 tracking-wider -mt-1">
+              HEALTHCARE EXCELLENCE
+            </span>
+          </div>
         </Link>
 
         {/* Desktop Menu */}
         <div className="hidden lg:flex items-center gap-10">
-          <div className="flex gap-8">
-            {navLinks.map((link) => (
+          <div className="flex gap-7">
+            {navLinks.map((link, idx) => (
               <Link
                 key={link.name}
                 to={link.to}
-                className="text-sm font-semibold text-slate-600 hover:text-purple-600 transition relative group"
+                className="group relative text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors duration-300 py-2"
               >
-                {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-linear-to-r from-indigo-600 to-purple-600 transition-all group-hover:w-full" />
+                <span className="flex items-center gap-1.5">
+                  <link.icon size={16} className="opacity-0 group-hover:opacity-100 transition-all duration-300 -ml-4 group-hover:ml-0" />
+                  {link.name}
+                </span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-linear-to-r from-indigo-600 to-purple-600 transition-all duration-300 group-hover:w-full rounded-sm" />
               </Link>
             ))}
           </div>
 
-          <div className="flex items-center gap-6 border-l pl-6 border-slate-200">
+          <div className="flex items-center gap-5 border-l pl-6 border-slate-200">
             {!isAnyAuth ? (
               <>
                 <Link
                   to="/patient/login"
-                  className="text-sm font-semibold text-slate-700 hover:text-purple-600 flex items-center gap-2 transition"
+                  className="group text-sm font-semibold text-slate-700 hover:text-indigo-600 flex items-center gap-2 transition-all duration-300 px-3 py-2 rounded-sm hover:bg-indigo-50"
                 >
-                  <User size={16} className="text-indigo-600" />
-                  Login
+                  <User size={16} className="text-indigo-500 group-hover:scale-110 transition-transform" />
+                  <span>Login</span>
                 </Link>
 
                 <Link
                   to="/management"
-                  className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition"
+                  className="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-all duration-300 px-3 py-2 rounded-sm hover:bg-slate-100"
                 >
                   Portal
                 </Link>
@@ -115,51 +159,66 @@ const Navbar = () => {
             ) : (
               <>
                 <Link
-                  to={
-                    isAdminAuthenticated
-                      ? "/admin/dashboard"
-                      : isDoctorAuthenticated
-                        ? "/doctor/dashboard"
-                        : "/patient/dashboard"
-                  }
-                  className="text-sm font-semibold text-slate-900 hover:text-purple-600 flex items-center gap-2 transition"
+                  to={getDashboardRoute()}
+                  className="group text-sm font-semibold text-slate-800 hover:text-indigo-600 flex items-center gap-2 transition-all duration-300 px-3 py-2 rounded-sm hover:bg-indigo-50"
                 >
-                  <LayoutDashboard size={16} className="text-indigo-600" />
-                  Dashboard
+                  <LayoutDashboard size={16} className="text-indigo-500 group-hover:scale-110 transition-transform" />
+                  <span>Dashboard</span>
                 </Link>
 
                 <button
-                  onClick={() =>
-                    handleLogout(
-                      isAdminAuthenticated
-                        ? "admin"
-                        : isDoctorAuthenticated
-                          ? "doctor"
-                          : "patient",
-                    )
-                  }
-                  className="text-sm font-semibold text-rose-600 hover:bg-rose-50 px-3 py-1 rounded transition"
+                  onClick={() => handleLogout(getCurrentRole())}
+                  className="group text-sm font-semibold text-rose-600 hover:text-rose-700 flex items-center gap-2 transition-all duration-300 px-3 py-2 rounded-sm hover:bg-rose-50"
                 >
-                  Logout
+                  <LogOut size={16} className="group-hover:rotate-180 transition-transform duration-300" />
+                  <span>Logout</span>
                 </button>
               </>
             )}
 
             <Link
               to="/appointment/book"
-              className="bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-3 rounded-sm text-sm font-semibold shadow-lg transition flex items-center gap-2"
+              className="group bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-2.5 rounded-sm text-sm font-semibold shadow-md hover:shadow-xl transition-all duration-300 flex items-center gap-2 relative overflow-hidden"
             >
-              Book Now <ArrowRight size={14} />
+              <span className="relative z-10 flex items-center gap-2">
+                <Calendar size={16} />
+                Book Now
+                <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform duration-300" />
+              </span>
+              <div className="absolute inset-0 bg-linear-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </Link>
           </div>
         </div>
 
-        {/* Mobile Toggle */}
+        {/* Mobile Toggle Button */}
         <button
-          className="lg:hidden text-slate-900"
+          className="lg:hidden relative w-10 h-10 flex items-center justify-center rounded-sm bg-white/80 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 z-20"
           onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle menu"
         >
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
+          <AnimatePresence mode="wait">
+            {isOpen ? (
+              <motion.div
+                key="close"
+                initial={{ rotate: -90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 90, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <X size={22} className="text-slate-700" />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="menu"
+                initial={{ rotate: 90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: -90, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Menu size={22} className="text-slate-700" />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </button>
       </div>
 
@@ -167,32 +226,91 @@ const Navbar = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="absolute top-full left-0 w-full bg-white border-b border-slate-200 shadow-lg lg:hidden"
+            variants={mobileMenuVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl border-b border-slate-200 shadow-2xl lg:hidden overflow-hidden"
           >
-            <div className="flex flex-col p-6 space-y-6">
-              {navLinks.map((link) => (
-                <Link
+            <div className="flex flex-col p-6 space-y-4">
+              {navLinks.map((link, idx) => (
+                <motion.div
                   key={link.name}
-                  to={link.to}
-                  className="text-xl font-bold text-slate-900 hover:text-purple-600"
-                  onClick={() => setIsOpen(false)}
+                  custom={idx}
+                  variants={navItemVariants}
+                  initial="hidden"
+                  animate="visible"
                 >
-                  {link.name}
-                </Link>
+                  <Link
+                    to={link.to}
+                    className="flex items-center gap-3 text-lg font-semibold text-slate-800 hover:text-indigo-600 py-3 px-4 rounded-sm hover:bg-indigo-50 transition-all duration-200"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <link.icon size={20} className="text-indigo-500" />
+                    {link.name}
+                  </Link>
+                </motion.div>
               ))}
 
-              {!isAnyAuth && (
+              <motion.div
+                variants={navItemVariants}
+                custom={navLinks.length}
+                initial="hidden"
+                animate="visible"
+                className="pt-4 border-t border-slate-200 mt-2"
+              >
+                {!isAnyAuth ? (
+                  <>
+                    <Link
+                      to="/patient/login"
+                      className="flex items-center gap-3 text-lg font-semibold text-slate-800 hover:text-indigo-600 py-3 px-4 rounded-sm hover:bg-indigo-50 transition-all duration-200"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <User size={20} className="text-indigo-500" />
+                      Login
+                    </Link>
+                    <Link
+                      to="/management"
+                      className="flex items-center gap-3 text-lg font-semibold text-slate-600 hover:text-slate-800 py-3 px-4 rounded-sm hover:bg-slate-50 transition-all duration-200"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <LayoutDashboard size={20} className="text-slate-500" />
+                      Portal
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to={getDashboardRoute()}
+                      className="flex items-center gap-3 text-lg font-semibold text-slate-800 hover:text-indigo-600 py-3 px-4 rounded-sm hover:bg-indigo-50 transition-all duration-200"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <LayoutDashboard size={20} className="text-indigo-500" />
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={() => {
+                        handleLogout(getCurrentRole());
+                        setIsOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 text-lg font-semibold text-rose-600 hover:text-rose-700 py-3 px-4 rounded-sm hover:bg-rose-50 transition-all duration-200"
+                    >
+                      <LogOut size={20} />
+                      Logout
+                    </button>
+                  </>
+                )}
+
                 <Link
-                  to="/patient/login"
-                  className="bg-linear-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-sm text-center font-semibold"
+                  to="/appointment/book"
+                  className="mt-4 w-full flex items-center justify-center gap-2 bg-linear-to-r from-indigo-600 to-purple-600 text-white py-3.5 rounded-sm font-bold shadow-md hover:shadow-lg transition-all duration-300"
                   onClick={() => setIsOpen(false)}
                 >
-                  Login
+                  <Calendar size={18} />
+                  Book Now
+                  <ArrowRight size={16} />
                 </Link>
-              )}
+              </motion.div>
             </div>
           </motion.div>
         )}
