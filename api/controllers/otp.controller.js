@@ -92,7 +92,6 @@ export const bypassOtpFlagChanger = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 export const getBypassOtpFlag = asyncHandler(async (req, res, next) => {
   const bypass = await BypassOtp.findOne();
   res.status(200).json({

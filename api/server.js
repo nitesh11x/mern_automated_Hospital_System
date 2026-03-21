@@ -1,5 +1,7 @@
-import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
+
+import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
@@ -7,9 +9,8 @@ import cloudinary from "cloudinary";
 import { connectDb } from "./lib/db.js";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
 import fileUpload from "express-fileupload";
-const app = express();
 
-dotenv.config();
+const app = express();
 
 app.use(
   cors({
@@ -38,6 +39,7 @@ app.get("/", (req, res) => {
     message: "welcome to AI Powerd Hospital System backend api",
   });
 });
+
 import userRouter from "./routes/patient.route.js";
 import otpRouter from "./routes/otp.route.js";
 import doctorRouter from "./routes/doctor.route.js";
@@ -45,6 +47,7 @@ import adminRouter from "./routes/admin.route.js";
 import appointmentRouter from "./routes/appointment.route.js";
 import reviewRouter from "./routes/review.route.js";
 import prescriptionRouter from "./routes/prescription.route.js";
+import notificationRouter from './routes/notification.route.js'
 
 app.use("/api/patient", userRouter);
 app.use("/api/otp", otpRouter);
@@ -53,8 +56,10 @@ app.use("/api/doctor", doctorRouter);
 app.use("/api/review", reviewRouter);
 app.use("/api/appointment", appointmentRouter);
 app.use("/api/prescription", prescriptionRouter);
+app.use("/api/notification", notificationRouter);
 
 app.use(errorMiddleware);
 await connectDb();
+
 const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`server is live on ${PORT}`));

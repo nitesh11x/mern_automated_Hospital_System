@@ -17,7 +17,8 @@ import {
   Menu,
   X,
   Pill,
-  Stethoscope
+  Stethoscope,
+  ArrowRight
 } from "lucide-react";
 
 import { getPatientAppointments } from "../../redux/slices/appointment.slice";
@@ -34,7 +35,6 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Redux State - Added fallback empty objects/arrays to prevent crashes
   const { patient } = useSelector((state) => state.patient || {});
   const { appointments = [], patientAppointments = [] } = useSelector(
     (state) => state.appointment || {}
@@ -127,22 +127,22 @@ const Dashboard = () => {
     );
   };
 
-  const renderPaymentBadge = (paymentStatus) => {
-    const s = (paymentStatus || "").toLowerCase();
-    if (s === "paid") {
-      return (
-        <span className="px-3 py-1 text-xs font-bold rounded-sm bg-emerald-50 text-emerald-700 border border-emerald-100 uppercase">
-          Paid
-        </span>
-      );
-    }
-    const label = paymentStatus ? paymentStatus : "Not Paid";
-    return (
-      <span className="px-3 py-1 text-xs font-bold rounded-sm bg-rose-50 text-rose-700 border border-rose-100 uppercase">
-        {label}
-      </span>
-    );
-  };
+  // const renderPaymentBadge = (paymentStatus) => {
+  //   const s = (paymentStatus || "").toLowerCase();
+  //   if (s === "paid") {
+  //     return (
+  //       <span className="px-3 py-1 text-xs font-bold rounded-sm bg-emerald-50 text-emerald-700 border border-emerald-100 uppercase">
+  //         Paid
+  //       </span>
+  //     );
+  //   }
+  //   const label = paymentStatus ? paymentStatus : "Not Paid";
+  //   return (
+  //     <span className="px-3 py-1 text-xs font-bold rounded-sm bg-rose-50 text-rose-700 border border-rose-100 uppercase">
+  //       {label}
+  //     </span>
+  //   );
+  // };
 
   return (
     <div className="flex min-h-screen bg-slate-50 font-sans pt-16 lg:pt-0">
@@ -240,48 +240,76 @@ const Dashboard = () => {
 
         {/* --- DASHBOARD TAB --- */}
         {activeTab === "dashboard" && (
-          <div className="grid lg:grid-cols-3 gap-10">
-            {/* Left Side - Recent Consultations */}
-            <section className="lg:col-span-2 bg-white rounded-sm border border-slate-200 shadow-sm overflow-hidden">
-              <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                <h3 className="text-[11px] font-extrabold text-slate-900 uppercase tracking-[0.2em]">
-                  Recent Consultations
-                </h3>
-                <button onClick={() => setActiveTab("visits")} className="text-indigo-600 font-bold text-[10px] uppercase tracking-widest hover:text-indigo-800 flex items-center gap-2 group">
-                  Full History <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          <div className="grid lg:grid-cols-3 gap-8 animate-in fade-in duration-500">
+
+            {/* LEFT SIDE - RECENT CONSULTATIONS */}
+            <section className="lg:col-span-2 bg-white rounded-sm border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+              <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-white">
+                <div>
+                  <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.2em] mb-1">
+                    Recent Consultations
+                  </h3>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Your latest medical interactions</p>
+                </div>
+                <button
+                  onClick={() => setActiveTab("visits")}
+                  className="px-4 py-2 bg-slate-50 text-indigo-600 font-black text-[10px] uppercase tracking-widest rounded-sm hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-2 group shadow-sm"
+                >
+                  View All <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
+
               <div className="overflow-x-auto">
                 <table className="w-full text-left min-w-125">
                   <thead>
-                    <tr className="bg-white border-b border-slate-100">
-                      <th className="px-8 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Medical Professional</th>
-                      <th className="px-8 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest text-right">Status</th>
+                    <tr className="bg-slate-50/50">
+                      <th className="px-8 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Medical Professional</th>
+                      <th className="px-8 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-slate-50">
                     {patientAppointments && patientAppointments.length > 0 ? (
                       patientAppointments.slice(0, 5).map((visit) => {
                         const docObj = typeof visit.doctorId === "object" ? visit.doctorId : doctorMap[visit.doctorId];
+
+                        // Dynamic Status Styles
+                        const getStatusColor = (status) => {
+                          const s = status?.toLowerCase();
+                          if (s === 'approved' || s === 'completed') return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+                          if (s === 'cancelled' || s === 'rejected') return 'bg-rose-100 text-rose-700 border-rose-200';
+                          return 'bg-amber-100 text-amber-700 border-amber-200';
+                        };
+
                         return (
-                          <tr key={visit._id} className="hover:bg-slate-50 transition-colors group">
-                            <td className="px-8 py-6">
-                              <p className="font-extrabold text-slate-900 text-sm uppercase tracking-tight">
-                                {docObj ? `${docObj.firstName} ${docObj.lastName}` : visit.name || "—"}
-                              </p>
-                              <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">
-                                {docObj?.specialization || "General"}
-                              </p>
+                          <tr key={visit._id} className="hover:bg-indigo-50/20 transition-colors group">
+                            <td className="px-8 py-5">
+                              <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-full bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-black text-xs shadow-md">
+                                  {docObj?.firstName?.[0] || visit.name?.[0] || 'D'}
+                                </div>
+                                <div>
+                                  <p className="font-bold text-slate-900 text-sm tracking-tight">
+                                    {docObj ? `Dr. ${docObj.firstName} ${docObj.lastName}` : visit.name || "Unknown Specialist"}
+                                  </p>
+                                  <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">
+                                    {docObj?.specialization || "General Medicine"}
+                                  </p>
+                                </div>
+                              </div>
                             </td>
-                            <td className="px-8 py-6 text-[10px] font-bold text-slate-500 tracking-widest text-right">
-                              {renderStatusBadge(visit.status)}
+                            <td className="px-8 py-5 text-right">
+                              <span className={`px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-tighter ${getStatusColor(visit.status)}`}>
+                                {visit.status || 'Pending'}
+                              </span>
                             </td>
                           </tr>
                         );
                       })
                     ) : (
                       <tr>
-                        <td colSpan={2} className="px-8 py-6 text-center text-slate-500">No recent consultations</td>
+                        <td colSpan={2} className="px-8 py-20 text-center">
+                          <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">No Recent Activity</p>
+                        </td>
                       </tr>
                     )}
                   </tbody>
@@ -289,60 +317,70 @@ const Dashboard = () => {
               </div>
             </section>
 
-            {/* Right Side - Cards */}
-            <section className="space-y-8">
-              {/* <div className="bg-indigo-600 rounded-sm p-10 text-white relative overflow-hidden group shadow-lg shadow-indigo-100">
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
-                  <Zap size={100} strokeWidth={3} />
-                </div>
+            {/* RIGHT SIDE - ACTION CARDS */}
+            <section className="space-y-6">
+
+              {/* 1. Request Appointment Card (The "Hero" Card) */}
+              <div className="bg-linear-to-br from-indigo-600 via-indigo-700 to-purple-700 rounded-sm p-8 text-white relative overflow-hidden group shadow-xl shadow-indigo-200">
+                <div className="absolute -top-6 -right-6 w-32 h-32 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+
                 <div className="relative z-10">
-                  <h4 className="text-3xl font-extrabold uppercase tracking-tight mb-2">
-                    Request<br />Appointment
+                  <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-sm flex items-center justify-center mb-6 shadow-inner">
+                    <Zap size={24} className="text-white fill-white animate-pulse" />
+                  </div>
+                  <h4 className="text-2xl font-black uppercase tracking-tighter mb-2 leading-tight">
+                    Book a<br />Consultation
                   </h4>
-                  <p className="text-indigo-100 text-[10px] font-bold uppercase tracking-widest leading-relaxed mb-8">
-                    Schedule a session with a certified specialist.
+                  <p className="text-indigo-100 text-[10px] font-bold uppercase tracking-widest leading-relaxed mb-8 opacity-80">
+                    Certified specialists available 24/7.
                   </p>
-                  <Link to={"/appointment/book"} className="inline-block text-center w-full bg-slate-900 text-white py-5 rounded-sm font-bold text-[11px] uppercase tracking-[0.2em] hover:bg-white hover:text-slate-900 transition-all">
-                    Book Now
+                  <Link
+                    to={"/appointment/book"}
+                    className="flex items-center justify-center gap-3 w-full bg-white text-indigo-700 py-4 rounded-sm font-black text-[11px] uppercase tracking-[0.2em] hover:bg-slate-900 hover:text-white transition-all transform active:scale-95 shadow-lg"
+                  >
+                    Start Request <ArrowRight size={16} />
                   </Link>
                 </div>
-              </div> */}
+              </div>
 
-              <div className="bg-white rounded-sm p-8 border border-slate-200 shadow-sm">
-                <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-6">Upcoming Appointment</h4>
+              {/* 2. Upcoming Appointment Card */}
+              <div className="bg-white rounded-sm p-6 border border-slate-200 shadow-sm relative overflow-hidden">
+                <div className="flex justify-between items-center mb-6">
+                  <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Next Scheduled</h4>
+                  <div className="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></div>
+                </div>
 
                 {(() => {
-                  // 1. Find the first appointment matching the criteria from patientAppointments
-                  const nextAppt = patientAppointments?.find(
-                    (a) => a.status === "Approved" || a.status === "Pending"
-                  );
+                  const nextAppt = patientAppointments?.find(a => a.status === "Approved" || a.status === "Pending");
 
-                  // 2. If nothing is found, return the empty state
                   if (!nextAppt) {
                     return (
-                      <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center mt-4">
-                        No Upcoming Appointments
-                      </p>
+                      <div className="py-4 text-center border-2 border-dashed border-slate-100 rounded-sm">
+                        <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">No sessions pending</p>
+                      </div>
                     );
                   }
 
-                  // 3. Resolve the doctor object
                   const docId = typeof nextAppt.doctorId === "object" ? nextAppt.doctorId._id : nextAppt.doctorId;
-                  const docObj = doctorMap[docId] || nextAppt.doctorId;
+                  const docObj = doctorMap[docId];
 
-                  // 4. Return the UI card
                   return (
-                    <div className="flex gap-5 items-center p-6 bg-slate-50 rounded-sm border border-slate-100 hover:border-indigo-200 transition-colors">
-                      <div className="bg-indigo-600 p-3 rounded-sm text-white shadow-md shrink-0">
-                        <Calendar size={18} />
+                    <div className="flex gap-5 items-center p-4 bg-slate-50 rounded-sm border border-slate-100 hover:border-indigo-200 transition-all cursor-default">
+                      <div className="bg-indigo-600 w-12 h-12 rounded-sm flex items-center justify-center text-white shadow-lg shadow-indigo-100 shrink-0">
+                        <Calendar size={20} strokeWidth={2.5} />
                       </div>
-                      <div>
-                        <p className="text-[11px] font-bold text-slate-900 uppercase tracking-widest">
-                          Dr. {docObj?.lastName || nextAppt.name || "Specialist"}
+                      <div className="flex flex-col min-w-0">
+                        <p className="text-sm font-black text-slate-900 uppercase tracking-tight truncate">
+                          Dr. {docObj?.lastName || "Specialist"}
                         </p>
-                        <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider mt-1">
-                          {new Date(nextAppt.appointmentDate).toLocaleDateString()} • {nextAppt.approvedTimeSlot || nextAppt.requestedTimeSlot}
-                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest bg-indigo-50 px-2 py-0.5 rounded">
+                            {new Date(nextAppt.appointmentDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                          </span>
+                          <span className="text-[10px] font-bold text-slate-400 uppercase">
+                            at {nextAppt.approvedTimeSlot || nextAppt.requestedTimeSlot}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   );
@@ -351,79 +389,138 @@ const Dashboard = () => {
             </section>
           </div>
         )}
-
         {/* --- VISITS TAB (Full List) --- */}
         {activeTab === "visits" && (
-          <section className="bg-white rounded-sm border border-slate-200 shadow-sm overflow-hidden">
-            <div className="p-6 border-b border-slate-100 bg-linear-to-r from-slate-50 to-white">
-              <h3 className="text-xs font-extrabold text-slate-900 uppercase tracking-[0.2em]">Appointment Records</h3>
+          <section className="bg-white rounded-sm border border-slate-200 shadow-lg overflow-hidden transition-all">
+            {/* Header with a subtle colored accent */}
+            <div className="p-5 border-b border-slate-100 bg-linear-to-r from-indigo-50/50 to-white flex justify-between items-center">
+              <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                <span className="w-1 h-4 bg-indigo-600 rounded-full"></span>
+                Appointment Records
+              </h3>
+              <span className="text-[10px] bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                {patientAppointments?.length || 0} Total
+              </span>
             </div>
+
             <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left min-w-250">
-                <thead className="bg-slate-50 text-[10px] uppercase tracking-widest text-slate-500">
+              <table className="w-full text-sm text-left min-w-275">
+                <thead className="bg-slate-50/80 text-[11px] uppercase tracking-wider text-slate-500 font-bold border-b border-slate-100">
                   <tr>
                     <th className="px-6 py-4">ID</th>
-                    <th className="px-6 py-4">Doctor</th>
-                    <th className="px-6 py-4">Date</th>
-                    <th className="px-6 py-4">Requested</th>
-                    <th className="px-6 py-4">Approved</th>
+                    <th className="px-6 py-4">Doctor Details</th>
+                    <th className="px-6 py-4">Schedule</th>
                     <th className="px-6 py-4">Status</th>
                     <th className="px-6 py-4">Payment</th>
-                    <th className="px-6 py-4">Prescription</th>
-                    <th className="px-6 py-4">Reports</th>
-                    <th className="px-6 py-4">Get QR</th>
+                    <th className="px-6 py-4 text-center">Actions</th>
+                    <th className="px-6 py-4 text-right">Access</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-slate-50">
                   {patientAppointments && patientAppointments.length > 0 ? (
                     patientAppointments.map((px) => {
-                      const doctorId = typeof px.doctorId === "object" ? px.doctorId._id : px.doctorId;
-                      const doctor = doctorMap[doctorId];
+                      const doctorId = typeof px.doctorId === "object" ? px.doctorId?._id : px.doctorId;
+                      const doctor = doctorMap ? doctorMap[doctorId] : null;
+
+                      // Color Logic for Status
+                      const getStatusStyles = (status) => {
+                        const s = status?.toLowerCase();
+                        if (s === 'approved' || s === 'completed')
+                          return 'bg-emerald-100 text-emerald-700 border-emerald-200 shadow-sm shadow-emerald-50';
+                        if (s === 'pending' || s === 'requested')
+                          return 'bg-amber-100 text-amber-700 border-amber-200 shadow-sm shadow-amber-50';
+                        if (s === 'cancelled' || s === 'rejected')
+                          return 'bg-rose-100 text-rose-700 border-rose-200 shadow-sm shadow-rose-50';
+                        return 'bg-slate-100 text-slate-600 border-slate-200';
+                      };
+
                       return (
-                        <tr key={px._id} className="hover:bg-slate-50 transition-all duration-200">
-                          <td className="px-6 py-5 font-semibold text-slate-800">{px.appointmentId}</td>
-                          <td className="px-6 py-5">
-                            {doctor ? (
-                              <div className="flex flex-col">
-                                <span className="font-semibold text-slate-900 whitespace-nowrap">Dr. {doctor.firstName} {doctor.lastName}</span>
-                                <span className="text-[11px] text-indigo-600 font-medium">{doctor.specialization}</span>
-                              </div>
-                            ) : <span className="text-slate-400 text-xs">Loading...</span>}
+                        <tr key={px._id} className="hover:bg-indigo-50/30 transition-colors group">
+                          <td className="px-6 py-4">
+                            <span className="font-mono text-xs font-bold text-slate-400 group-hover:text-indigo-600 transition-colors">
+                              #{px.appointmentId || px._id?.slice(-5).toUpperCase()}
+                            </span>
                           </td>
-                          <td className="px-6 py-5 text-slate-600 whitespace-nowrap">{new Date(px.appointmentDate).toLocaleDateString()}</td>
-                          <td className="px-6 py-5 text-slate-600 whitespace-nowrap">{px.requestedTimeSlot || "-"}</td>
-                          <td className="px-6 py-5 text-slate-600 whitespace-nowrap">{px.approvedTimeSlot || "Pending"}</td>
-                          <td className="px-6 py-5">{renderStatusBadge(px.status)}</td>
-                          <td className="px-6 py-5">
+
+                          <td className="px-6 py-4">
+                            {doctor ? (
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-xs">
+                                  {doctor.firstName[0]}{doctor.lastName[0]}
+                                </div>
+                                <div className="flex flex-col">
+                                  <span className="font-bold text-slate-900 whitespace-nowrap">Dr. {doctor.firstName} {doctor.lastName}</span>
+                                  <span className="text-[10px] text-indigo-500 font-semibold">{doctor.specialization}</span>
+                                </div>
+                              </div>
+                            ) : <span className="text-slate-300 italic">Unassigned</span>}
+                          </td>
+
+                          <td className="px-6 py-4">
                             <div className="flex flex-col">
-                              <span className="text-slate-700 font-medium whitespace-nowrap">{px.paymentMode || "—"}</span>
-                              <span className="mt-1">{renderPaymentBadge(px.paymentStatus)}</span>
+                              <span className="text-slate-700 font-semibold whitespace-nowrap">
+                                {new Date(px.appointmentDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                              </span>
+                              <span className="text-[11px] text-slate-400 font-medium">
+                                Slot: {px.approvedTimeSlot || px.requestedTimeSlot || "TBD"}
+                              </span>
                             </div>
                           </td>
-                          <td className="px-6 py-5">
-                            <button onClick={() => handleOpenPrescriptionFromVisit(px._id)} className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest rounded-sm bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all whitespace-nowrap">
-                              View
-                            </button>
+
+                          <td className="px-6 py-4">
+                            <span className={`px-3 py-1 rounded-sm border text-[10px] font-black uppercase tracking-wider inline-block ${getStatusStyles(px.status || 'pending')}`}>
+                              {px.status || 'Pending'}
+                            </span>
                           </td>
-                          <td className="px-6 py-5">
-                            <button className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest rounded-sm bg-slate-100 text-slate-600 hover:bg-slate-800 hover:text-white transition-all whitespace-nowrap">
-                              View
-                            </button>
+
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2">
+                              <div className={`w-2 h-2 rounded-full ${px.paymentStatus === 'Paid' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`}></div>
+                              <div className="flex flex-col">
+                                <span className="text-slate-700 font-bold text-[11px]">{px.paymentStatus || 'Unpaid'}</span>
+                                <span className="text-[9px] text-slate-400 uppercase font-bold tracking-tighter">{px.paymentMode || 'N/A'}</span>
+                              </div>
+                            </div>
                           </td>
-                          <td className="px-6 py-5">
-                            {px.qrCode ? (
-                              <button onClick={() => setQrModal(px.qrCode)} className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest rounded-sm bg-indigo-600 text-white hover:bg-indigo-700 transition-all whitespace-nowrap">
-                                Get
+
+                          <td className="px-6 py-4">
+                            <div className="flex items-center justify-center gap-2">
+                              <button
+                                onClick={() => handleOpenPrescriptionFromVisit(px._id)}
+                                className="flex-1 bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-md text-[10px] font-bold uppercase hover:border-indigo-600 hover:text-indigo-600 transition-all active:scale-95 shadow-sm"
+                              >
+                                Prescription
                               </button>
-                            ) : <span className="text-xs text-slate-400">N/A</span>}
+                              <button className="flex-1 bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-md text-[10px] font-bold uppercase hover:border-slate-800 hover:text-slate-800 transition-all active:scale-95 shadow-sm">
+                                Reports
+                              </button>
+                            </div>
+                          </td>
+
+                          <td className="px-6 py-4 text-right">
+                            {px.qrCode ? (
+                              <button
+                                onClick={() => setQrModal(px.qrCode)}
+                                className="bg-indigo-600 text-white px-5 py-2 rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-200 transition-all transform active:scale-90"
+                              >
+                                Get QR
+                              </button>
+                            ) : (
+                              <span className="text-[10px] font-bold text-slate-300 mr-4">NO QR</span>
+                            )}
                           </td>
                         </tr>
                       );
                     })
                   ) : (
                     <tr>
-                      <td colSpan={10} className="text-center py-12 text-xs font-bold text-slate-400 uppercase tracking-widest">
-                        No Appointments Found
+                      <td colSpan={7} className="py-20 text-center bg-slate-50/30">
+                        <div className="inline-flex flex-col items-center">
+                          <div className="w-12 h-12 bg-white rounded-sm shadow-sm border border-slate-100 flex items-center justify-center mb-3">
+                            <span className="text-slate-300 text-xl">📂</span>
+                          </div>
+                          <p className="text-xs font-black text-slate-400 uppercase tracking-widest">No visit history found</p>
+                        </div>
                       </td>
                     </tr>
                   )}
@@ -432,32 +529,83 @@ const Dashboard = () => {
             </div>
           </section>
         )}
-
         {/* --- RECORDS TAB --- */}
         {activeTab === "records" && (
-          <section className="bg-white rounded-sm border border-slate-200 shadow-sm overflow-hidden">
-            <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-              <h3 className="text-[11px] font-bold text-slate-900 uppercase tracking-[0.2em]">Prescriptions & Records</h3>
+          <section className="bg-white rounded-4xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {/* Header */}
+            <div className="p-8 border-b border-slate-50 flex justify-between items-center bg-linear-to-r from-slate-50/50 to-white">
+              <div>
+                <h3 className="text-[12px] font-black text-slate-900 uppercase tracking-[0.3em] mb-1">
+                  Prescriptions & Records
+                </h3>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                  Secure Digital Health Vault
+                </p>
+              </div>
+              <div className="p-3 bg-white rounded-2xl shadow-sm border border-slate-100">
+                <FileText size={20} className="text-indigo-500" />
+              </div>
             </div>
-            <div className="p-8 grid gap-6">
+
+            {/* Content Grid */}
+            <div className="p-8 grid gap-4">
               {prescriptions && prescriptions.length > 0 ? (
                 prescriptions.map((px) => (
-                  <div key={px._id} onClick={() => setPrescriptionModal(px)} className="p-6 border border-slate-200 rounded-sm hover:border-indigo-600 transition-all cursor-pointer flex justify-between items-center group">
-                    <div>
-                      <h4 className="font-extrabold text-slate-900 text-lg uppercase mb-2">Diagnosis: {px.diagnosis}</h4>
-                      <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-4">
-                        Dr. {px.doctorId?.lastName} • {new Date(px.createdAt).toLocaleDateString()}
-                      </p>
+                  <div
+                    key={px._id}
+                    onClick={() => setPrescriptionModal(px)}
+                    className="group relative p-6 bg-slate-50/30 border border-slate-100 rounded-3xl hover:bg-white hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-50/50 transition-all cursor-pointer flex justify-between items-center overflow-hidden"
+                  >
+                    {/* Subtle background decoration */}
+                    <div className="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+                      <FileText size={100} strokeWidth={1} />
                     </div>
-                    <div className="bg-slate-50 p-4 rounded-full group-hover:bg-indigo-50 transition-colors">
-                      <ChevronRight className="text-slate-400 group-hover:text-indigo-600" />
+
+                    <div className="relative z-10 flex gap-6 items-center">
+                      {/* Date Badge */}
+                      <div className="flex flex-col items-center justify-center w-16 h-16 bg-white rounded-2xl border border-slate-100 shadow-sm group-hover:border-indigo-100 transition-colors">
+                        <span className="text-[10px] font-black text-indigo-600 uppercase">
+                          {new Date(px.createdAt).toLocaleDateString('en-US', { month: 'short' })}
+                        </span>
+                        <span className="text-lg font-black text-slate-900">
+                          {new Date(px.createdAt).getDate()}
+                        </span>
+                      </div>
+
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[8px] font-black uppercase tracking-widest rounded-md">
+                            Clinical Record
+                          </span>
+                        </div>
+                        <h4 className="font-black text-slate-900 text-lg tracking-tight group-hover:text-indigo-600 transition-colors">
+                          {px.diagnosis || "General Consultation"}
+                        </h4>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                          Issued by <span className="text-slate-600">Dr. {px.doctorId?.lastName || "Specialist"}</span> • {new Date(px.createdAt).getFullYear()}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="relative z-10 flex items-center gap-4">
+                      <span className="hidden md:block text-[9px] font-black text-slate-300 uppercase tracking-[0.2em] group-hover:text-indigo-400 transition-colors">
+                        View Details
+                      </span>
+                      <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 group-hover:bg-indigo-600 group-hover:border-indigo-600 transition-all transform group-hover:rotate-12">
+                        <ChevronRight className="text-slate-400 group-hover:text-white transition-colors" size={18} />
+                      </div>
                     </div>
                   </div>
                 ))
               ) : (
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center py-10">
-                  No prescriptions found
-                </p>
+                <div className="py-20 flex flex-col items-center justify-center border-2 border-dashed border-slate-100 rounded-4xl">
+                  <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                    <Search size={24} className="text-slate-300" />
+                  </div>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">
+                    No Clinical Records Found
+                  </p>
+                </div>
               )}
             </div>
           </section>

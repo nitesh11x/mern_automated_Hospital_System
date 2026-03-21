@@ -37,9 +37,6 @@ export const createPrescription = asyncHandler(async (req, res, next) => {
   });
 });
 
-// ===============================
-// 🔹 GET PRESCRIPTION BY ID
-// ===============================
 export const getPrescriptionById = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 

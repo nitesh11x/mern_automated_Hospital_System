@@ -56,7 +56,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-stretch bg-white font-sans">
+    <div className="min-h-screen flex items-stretch bg-white pt-18 font-sans">
       {/* LEFT SIDE: INSTITUTIONAL BRANDING */}
       <motion.div
         initial={{ opacity: 0 }}
