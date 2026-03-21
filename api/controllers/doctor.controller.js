@@ -162,6 +162,23 @@ export const updateDoctorById = asyncHandler(async (req, res, next) => {
     doctor
   });
 });
+export const updateDoctor = asyncHandler(async (req, res, next) => {
+  const doctorId = req.params.id;
+
+  const doctor = await Doctor.findByIdAndUpdate(
+    doctorId,
+    req.body,
+    { new: true, runValidators: true }
+  );
+  if (!doctor) {
+    return next(new ErrorHandler("Doctor not found", 404));
+  }
+  res.status(200).json({
+    success: true,
+    message: "Doctor updated successfully",
+    doctor
+  });
+});
 
 export const deleteDoctorById = asyncHandler(async (req, res, next) => {
   const doctorId = req.params.id;

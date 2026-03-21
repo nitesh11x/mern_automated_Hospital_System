@@ -14,7 +14,7 @@ router.get('/:id', isAdminAuth, getDoctorById)
 
 router.put('/:id', isAdminAuth, updateDoctorById)
 
-router.delete('/:id', isAdminAuth, deleteDoctorById)
+router.delete('/delete/:id', isAdminAuth, deleteDoctorById)
 
 
 
