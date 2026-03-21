@@ -119,7 +119,7 @@ const AdminDashboard = () => {
   return (
     <div className="flex min-h-screen bg-linear-to-br from-purple-50 via-white to-indigo-50 font-sans">
       {/* --- LEFT NAVIGATION --- */}
-      <aside className="w-72 bg-linear-to-b pt-16 from-purple-900 via-purple-800 to-indigo-900 text-purple-200 hidden lg:flex flex-col p-6 sticky top-0 h-screen shadow-2xl">
+      <aside className="w-72 bg-linear-to-b pt-18 from-purple-900 via-purple-800 to-indigo-900 text-purple-200 hidden lg:flex flex-col p-6 sticky top-0 h-screen shadow-2xl">
         <div className="px-2 pt-4 mb-12">
           <div className="flex items-center gap-2 mb-2">
             <div className="h-10 w-10 rounded-sm bg-linear-to-br from-purple-500 to-indigo-500 flex items-center justify-center shadow-lg">
@@ -173,11 +173,11 @@ const AdminDashboard = () => {
       <main className="flex-1 p-6 lg:p-10 overflow-y-auto">
         <div className="max-w-7xl mx-auto">
           {/* TOP HEADER */}
-          <div className="flex justify-between items-end mb-8 flex-wrap gap-4">
+          <div className="flex justify-between items-end pt-4 mb-8 flex-wrap gap-4">
             <div>
               <h1 className="text-4xl font-black bg-linear-to-r from-purple-700 via-purple-600 to-indigo-600 bg-clip-text text-transparent pt-6">
                 {activeTab === "dashboard"
-                  ? "Command Dashboard"
+                  ? "Dashboard"
                   : activeTab === "doctors"
                     ? "Medical Faculty"
                     : activeTab === "patients"
