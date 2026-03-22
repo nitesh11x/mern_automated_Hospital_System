@@ -209,7 +209,7 @@ const AdminDashboard = () => {
           {activeTab === "dashboard" && (
             <>
               {/* STATS CARDS */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-6 mb-4">
                 <StatCard
                   title="Active Admissions"
                   value={stats?.totalPatients || 0}
@@ -246,12 +246,13 @@ const AdminDashboard = () => {
 
               {/* QUICK ACTION BUTTON GRID */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
-                <ActionCard title="Admin Control" icon={<Lock size={18} />} gradient="from-purple-500 to-indigo-500">
+                <ActionCard title="Quic Links" icon={<Lock size={18} />} gradient="from-purple-500 to-indigo-500">
                   <div className="grid grid-cols-2 gap-3 mt-4">
                     <GridBtn icon={<UserPlus />} label="Register Admin" to="/admin/register" color="from-purple-600 to-indigo-600" />
-                    <GridBtn icon={<UserCog />} label="Edit Profile" to={`/admin/profile/${admin?.[0]?._id}`} color="from-gray-700 to-gray-800" />
                     <GridBtn icon={<RefreshCcw />} label="Update Status" to="/admin/status" color="from-gray-700 to-gray-800" />
-                    <GridBtn icon={<UserMinus />} label="Delete Admin" to="/admin/manage" color="from-rose-600 to-rose-700" />
+                    <GridBtn icon={<UserPlus />} label="Add Doctor" to="/doctor/register" color="from-purple-600 to-indigo-700" />
+                    <GridBtn icon={<UserCog />} label="Edit Profile" to={`/admin/profile/${admin?.[0]?._id}`} color="from-gray-700 to-gray-800" />
+                    <GridBtn icon={<UserPlus />} label="Add Patient" to="/patient/register" color="from-purple-600 to-indigo-700" />
                   </div>
                 </ActionCard>
 
@@ -429,7 +430,6 @@ const AdminDashboard = () => {
 };
 
 // --- INTERNAL COMPONENTS ---
-
 const ActionCard = ({ title, icon, children, gradient }) => (
   <div className="bg-white rounded-sm border border-purple-100 p-6 shadow-lg hover:shadow-xl transition-all duration-300 group">
     <div className="flex items-center gap-3 mb-3">

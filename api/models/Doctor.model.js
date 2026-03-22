@@ -27,7 +27,7 @@ const doctorSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      default: "Doctor"
+      default: "Doctor",
     },
     phone: {
       type: String,
@@ -81,8 +81,9 @@ const doctorSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    reviewId: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const Doctor = mongoose.model("Doctor", doctorSchema);
