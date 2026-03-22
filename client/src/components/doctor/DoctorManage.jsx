@@ -12,8 +12,6 @@ import { deleteDoctorThunk, getAllDoctorsThunk } from "../../redux/slices/doctor
 import { Link } from 'react-router-dom';
 import { api } from "../../utils/axios";
 import { toast } from "react-hot-toast";
-import { deleteAppointmentByIdThunk } from '../../redux/slices/appointment.slice';
-
 
 const DoctorManage = ({ isEmbedded }) => {
     const dispatch = useDispatch();
