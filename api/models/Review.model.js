@@ -16,6 +16,8 @@ const reviewSchema = new mongoose.Schema(
       max: 5,
     },
     message: String,
+    mediaUrl: String,
+    avatarUrl: String,
     // message: String,
   },
   { timestamps: true },

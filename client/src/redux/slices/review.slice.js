@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "../../utils/axios";
 
 
-// 🔥 Add Review
+//  Add Review
 export const addReviewThunk = createAsyncThunk(
     "review/add",
     async (reviewData, { rejectWithValue }) => {
@@ -18,7 +18,20 @@ export const addReviewThunk = createAsyncThunk(
 );
 
 
-// 🔥 Get Reviews By Doctor
+// Get all reviews
+export const getAllReviewsThunk = createAsyncThunk(
+    "review/get",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await api.get(`/review/get`);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message || "Failed to fetch reviews"
+            );
+        }
+    }
+);
 export const getDoctorReviewsThunk = createAsyncThunk(
     "review/getByDoctor",
     async (doctorId, { rejectWithValue }) => {
@@ -89,14 +102,14 @@ const reviewSlice = createSlice({
             })
 
             // ✅ Get Reviews
-            .addCase(getDoctorReviewsThunk.pending, (state) => {
+            .addCase(getAllReviewsThunk.pending, (state) => {
                 state.loading = true;
             })
-            .addCase(getDoctorReviewsThunk.fulfilled, (state, action) => {
+            .addCase(getAllReviewsThunk.fulfilled, (state, action) => {
                 state.loading = false;
                 state.reviews = action.payload;
             })
-            .addCase(getDoctorReviewsThunk.rejected, (state, action) => {
+            .addCase(getAllReviewsThunk.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
