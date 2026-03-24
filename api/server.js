@@ -3,9 +3,8 @@ dotenv.config();
 
 import express from "express";
 import cors from "cors";
-import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import cloudinary from "cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 import { connectDb } from "./lib/db.js";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
 import fileUpload from "express-fileupload";
@@ -19,7 +18,7 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE"],
   }),
 );
-cloudinary.v2.config({
+cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_secret: process.env.CLOUDINARY_API_SECRET,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -28,9 +27,11 @@ app.use(
   fileUpload({
     useTempFiles: true,
     tempFileDir: "/tmp/",
+    limits: { fileSize: 10 * 1024 * 1024 },
   }),
 );
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
@@ -47,7 +48,7 @@ import adminRouter from "./routes/admin.route.js";
 import appointmentRouter from "./routes/appointment.route.js";
 import reviewRouter from "./routes/review.route.js";
 import prescriptionRouter from "./routes/prescription.route.js";
-import notificationRouter from './routes/notification.route.js'
+import notificationRouter from "./routes/notification.route.js";
 
 app.use("/api/patient", userRouter);
 app.use("/api/otp", otpRouter);

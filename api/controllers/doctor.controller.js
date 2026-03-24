@@ -162,6 +162,7 @@ export const updateDoctorById = asyncHandler(async (req, res, next) => {
     doctor
   });
 });
+
 export const updateDoctor = asyncHandler(async (req, res, next) => {
   const doctorId = req.params.id;
 
