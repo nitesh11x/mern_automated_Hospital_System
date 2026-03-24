@@ -54,7 +54,7 @@ const Home = () => {
             </div>
 
             {/* --- MODULAR HERO SECTION --- */}
-            <section className="px-6 lg:px-12 py-12 max-w-7xl mx-auto relative">
+            <section className="px-6 lg:px-12 py-10 max-w-7xl mx-auto relative">
                 <motion.div
                     style={{ opacity, scale }}
                     className="grid lg:grid-cols-12 gap-6"
@@ -181,7 +181,7 @@ const Home = () => {
             </section>
 
             {/* --- STATS SECTION --- */}
-            <motion.section
+            {/* <motion.section
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -205,10 +205,10 @@ const Home = () => {
                         </motion.div>
                     ))}
                 </div>
-            </motion.section>
+            </motion.section> */}
 
             {/* --- THE BENTO FEATURES --- */}
-            <motion.section
+            {/* <motion.section
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
@@ -272,7 +272,7 @@ const Home = () => {
                         </div>
                     </motion.div>
                 </div>
-            </motion.section>
+            </motion.section> */}
 
             {/* --- STRIPED MARQUEE --- */}
             <div className="bg-linear-to-r from-indigo-700 via-purple-700 to-pink-700 py-5 overflow-hidden shadow-inner">
@@ -297,7 +297,7 @@ const Home = () => {
             </div>
 
             {/* --- SERVICES PREVIEW --- */}
-            <motion.section
+            {/* <motion.section
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
@@ -342,10 +342,10 @@ const Home = () => {
                         ))}
                     </div>
                 </div>
-            </motion.section>
+            </motion.section> */}
 
             {/* --- CTA SECTION --- */}
-            <motion.section
+            {/* <motion.section
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -384,7 +384,7 @@ const Home = () => {
                         </div>
                     </div>
                 </div>
-            </motion.section>
+            </motion.section> */}
         </div>
     );
 };

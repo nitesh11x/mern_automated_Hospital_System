@@ -4,7 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler.util.js";
 import ErrorHandler from "../utils/errorHandler.utils.js";
 
 export const createReview = asyncHandler(async (req, res, next) => {
-  const { doctorId, rating, message } = req.body;
+  const { doctorId, rating, message, mediaUrl, avatarUrl } = req.body;
   const patientId = req.patient.id;
 
   if (!doctorId || !rating) {
@@ -15,6 +15,8 @@ export const createReview = asyncHandler(async (req, res, next) => {
     doctorId: doctorId,
     rating,
     message,
+    mediaUrl,
+    avatarUrl,
   });
   const reviews = await Review.find({ doctorId });
   const avgRating =
