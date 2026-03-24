@@ -300,7 +300,7 @@ const Stories = () => {
                         >
                             <div className="bg-white rounded-sn shadow-2xl overflow-hidden">
                                 {/* Header */}
-                                <div className="relative bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
+                                <div className="relative bg-linear-to-r from-indigo-600 to-purple-600 px-6 py-4">
                                     <h2 className="text-xl font-bold text-white">Share Your Story</h2>
                                     <p className="text-indigo-100 text-sm mt-1">
                                         Tell us about your experience with our doctors
@@ -450,7 +450,7 @@ const Stories = () => {
                                         <button
                                             type="submit"
                                             disabled={isSubmitting}
-                                            className="flex-1 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-sn hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                            className="flex-1 px-4 py-2 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-sn hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
                                             {isSubmitting ? (
                                                 <div className="flex items-center justify-center gap-2">
