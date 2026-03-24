@@ -67,6 +67,7 @@ const AdminDashboard = () => {
   const { doctors } = useSelector((state) => state.doctor);
   const { appointments } = useSelector((state) => state.appointment);
   const { bypassOtp } = useSelector((state) => state.otp);
+  console.log(patients.length)
 
   useEffect(() => {
     if (isAdminAuthenticated) {
@@ -137,19 +138,19 @@ const AdminDashboard = () => {
         <nav className="flex-1 space-y-2">
           <SidebarBtn
             icon={<LayoutDashboard size={20} />}
-            label="Operational Hub"
+            label="Dashboard"
             active={activeTab === "dashboard"}
             onClick={() => setActiveTab("dashboard")}
           />
           <SidebarBtn
             icon={<Stethoscope size={20} />}
-            label="Medical Faculty"
+            label="Medical"
             active={activeTab === "doctors"}
             onClick={() => setActiveTab("doctors")}
           />
           <SidebarBtn
             icon={<Users size={20} />}
-            label="Patient Registry"
+            label="Patient"
             active={activeTab === "patients"}
             onClick={() => setActiveTab("patients")}
           />
@@ -159,6 +160,31 @@ const AdminDashboard = () => {
             active={activeTab === "appointments"}
             onClick={() => setActiveTab("appointments")}
           />
+          <SidebarBtn
+            icon={<Calendar size={20} />}
+            label="Reviews"
+            active={activeTab === "reviews"}
+            onClick={() => setActiveTab("reviews")}
+          />
+          <SidebarBtn
+            icon={<Calendar size={20} />}
+            label="Medicines"
+            active={activeTab === "medicines"}
+            onClick={() => setActiveTab("medicines")}
+          />
+          <SidebarBtn
+            icon={<Calendar size={20} />}
+            label="Faculty"
+            active={activeTab === "faculty"}
+            onClick={() => setActiveTab("faculty")}
+          />
+          <SidebarBtn
+            icon={<Calendar size={20} />}
+            label="Settings"
+            active={activeTab === "setting"}
+            onClick={() => setActiveTab("setting")}
+          />
+
         </nav>
 
         <div className="pt-6 mt-6 border-t border-purple-700/50">
@@ -211,16 +237,16 @@ const AdminDashboard = () => {
               {/* STATS CARDS */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-6 mb-4">
                 <StatCard
-                  title="Active Admissions"
-                  value={stats?.totalPatients || 0}
+                  title="Total Patients"
+                  value={patients?.length || totalPatients || 0}
                   icon={<Users size={24} className="text-white" />}
                   trend="up"
                   trendValue="+12% vs last month"
                   color="from-emerald-500 to-emerald-600"
                 />
                 <StatCard
-                  title="Medical Faculty"
-                  value={stats?.totalDoctors || 0}
+                  title="Total Doctors "
+                  value={doctors?.length || stats?.totalDoctors || 0}
                   icon={<Stethoscope size={24} className="text-white" />}
                   trend="up"
                   trendValue="+4 new this quarter"
@@ -228,7 +254,7 @@ const AdminDashboard = () => {
                 />
                 <StatCard
                   title="Total Appointments"
-                  value={stats?.totalAppointments || 0}
+                  value={appointments?.length || stats?.totalAppointments || 0}
                   icon={<Calendar size={24} className="text-white" />}
                   trend="up"
                   trendValue="+18% capacity"
@@ -295,15 +321,15 @@ const AdminDashboard = () => {
                     </h3>
                     <div className="flex gap-6">
                       <div className="text-center">
-                        <p className="text-xl font-black text-purple-700">{stats?.totalPatients || 0}</p>
+                        <p className="text-xl font-black text-purple-700">{patients?.length || stats?.totalPatients || 0}</p>
                         <p className="text-[9px] font-bold text-purple-400 uppercase">Active</p>
                       </div>
                       <div className="text-center">
-                        <p className="text-xl font-black text-purple-700">{stats?.totalDoctors || 0}</p>
+                        <p className="text-xl font-black text-purple-700">{doctors?.length || stats?.totalDoctors || 0}</p>
                         <p className="text-[9px] font-bold text-purple-400 uppercase">Faculty</p>
                       </div>
                       <div className="text-center">
-                        <p className="text-xl font-black text-purple-700">{stats?.totalAppointments || 0}</p>
+                        <p className="text-xl font-black text-purple-700">{appointments?.length || stats?.totalAppointments || 0}</p>
                         <p className="text-[9px] font-bold text-purple-400 uppercase">Schedules</p>
                       </div>
                     </div>
@@ -423,6 +449,22 @@ const AdminDashboard = () => {
               <ShowAppointments isEmbedded />
             </div>
           )}
+          {activeTab === "medicines" && (
+            <div className="-mx-6 -mt-10">
+              {/* <ShowAppointments isEmbedded /> */}
+            </div>
+          )}
+          {activeTab === "faculty" && (
+            <div className="-mx-6 -mt-10">
+              {/* <ShowAppointments isEmbedded /> */}
+            </div>
+          )}
+          {activeTab === "setting" && (
+            <div className="-mx-6 -mt-10">
+              {/* <ShowAppointments isEmbedded /> */}
+            </div>
+          )}
+
         </div>
       </main>
     </div>

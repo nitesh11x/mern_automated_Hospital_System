@@ -17,7 +17,7 @@ const Stories = () => {
     const dispatch = useDispatch();
 
     const { reviews } = useSelector(state => state.review);
-    
+
     // Transform reviews to match the component's expected format
     const transformedReviews = reviews?.reviews?.map((review, index) => ({
         id: review._id,
@@ -27,8 +27,8 @@ const Stories = () => {
         review: review.message,
         video: review.mediaUrl || null,
         avatar: review.avatarUrl || `https://ui-avatars.com/api/?name=Patient+${index + 1}&background=6366f1&color=fff&bold=true`,
-        date: new Date(review.createdAt).toLocaleDateString('en-US', { 
-            month: 'short', 
+        date: new Date(review.createdAt).toLocaleDateString('en-US', {
+            month: 'short',
             day: 'numeric',
             year: 'numeric'
         })
@@ -82,8 +82,8 @@ const Stories = () => {
     };
 
     // Calculate average rating
-    const averageRating = transformedReviews.length > 0 
-        ? transformedReviews.reduce((sum, review) => sum + review.rating, 0) / transformedReviews.length 
+    const averageRating = transformedReviews.length > 0
+        ? transformedReviews.reduce((sum, review) => sum + review.rating, 0) / transformedReviews.length
         : 0;
     const satisfactionRate = Math.round((averageRating / 5) * 100);
 
@@ -119,7 +119,7 @@ const Stories = () => {
         return (
             <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-purple-50 py-4 px-6 flex items-center justify-center">
                 <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
+                    <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-sm animate-spin mx-auto mb-4"></div>
                     <p className="text-slate-600">Loading patient stories...</p>
                 </div>
             </div>
@@ -140,7 +140,7 @@ const Stories = () => {
                 >
                     <div className="flex items-center justify-center gap-3 mb-2">
                         <div className="w-12 h-0.5 bg-linear-to-r from-indigo-600 to-purple-600" />
-                        <div className="bg-linear-to-r from-indigo-600 to-purple-600 p-2 rounded-full">
+                        <div className="bg-linear-to-r from-indigo-600 to-purple-600 p-2 rounded-sm">
                             <Heart size={16} className="text-white" />
                         </div>
                         <div className="w-12 h-0.5 bg-linear-to-r from-purple-600 to-indigo-600" />
@@ -171,7 +171,7 @@ const Stories = () => {
                                 className="flex-1"
                             >
                                 <div
-                                    className={`h-1 rounded-full transition-all duration-500 ${idx === current
+                                    className={`h-1 rounded-sm transition-all duration-500 ${idx === current
                                         ? 'bg-linear-to-r from-indigo-600 to-purple-600'
                                         : idx < current
                                             ? 'bg-indigo-200'
@@ -225,12 +225,12 @@ const Stories = () => {
                                                 <img
                                                     src={currentReview.avatar}
                                                     alt={currentReview.name}
-                                                    className="w-14 h-14 rounded-full object-cover border-2 border-indigo-200"
+                                                    className="w-14 h-14 rounded-sm object-cover border-2 border-indigo-200"
                                                     onError={(e) => {
                                                         e.target.src = `https://ui-avatars.com/api/?name=Patient&background=6366f1&color=fff&bold=true`;
                                                     }}
                                                 />
-                                                <div className="absolute -bottom-1 -right-1 bg-emerald-500 rounded-full p-1">
+                                                <div className="absolute -bottom-1 -right-1 bg-emerald-500 rounded-sm p-1">
                                                     <ShieldCheck size={10} className="text-white" />
                                                 </div>
                                             </div>
@@ -263,7 +263,7 @@ const Stories = () => {
                                                     <Heart size={120} className="text-indigo-600 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
                                                 </div>
                                                 <div className="relative z-10">
-                                                    <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                    <div className="w-20 h-20 bg-indigo-100 rounded-sm flex items-center justify-center mx-auto mb-4">
                                                         <Users size={32} className="text-indigo-600" />
                                                     </div>
                                                     <p className="text-slate-500 text-sm">
@@ -291,7 +291,7 @@ const Stories = () => {
                         <div className="flex items-center justify-between gap-4 p-8 pt-0 border-t border-indigo-100 bg-indigo-50/30">
                             <button
                                 onClick={handlePrev}
-                                className="group flex items-center justify-center w-12 h-12 rounded-full bg-white border border-indigo-200 text-indigo-600 hover:bg-linear-to-r hover:from-indigo-600 hover:to-purple-600 hover:text-white hover:border-transparent transition-all duration-300 shadow-md hover:shadow-xl"
+                                className="group flex items-center justify-center w-12 h-12 rounded-sm bg-white border border-indigo-200 text-indigo-600 hover:bg-linear-to-r hover:from-indigo-600 hover:to-purple-600 hover:text-white hover:border-transparent transition-all duration-300 shadow-md hover:shadow-xl"
                             >
                                 <ChevronLeft size={20} />
                             </button>
@@ -304,7 +304,7 @@ const Stories = () => {
                                             videoRef.current.pause();
                                         }
                                     }}
-                                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-indigo-200 text-indigo-600 hover:bg-indigo-50 transition-all"
+                                    className="flex items-center gap-2 px-4 py-2 rounded-sm bg-white border border-indigo-200 text-indigo-600 hover:bg-indigo-50 transition-all"
                                 >
                                     {isPlaying ? <Pause size={14} /> : <Play size={14} />}
                                     <span className="text-xs font-bold uppercase tracking-wider">
@@ -319,7 +319,7 @@ const Stories = () => {
 
                             <button
                                 onClick={handleNext}
-                                className="group flex items-center gap-2 px-6 py-3 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-full hover:shadow-xl transition-all duration-300"
+                                className="group flex items-center gap-2 px-6 py-3 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-sm hover:shadow-xl transition-all duration-300"
                             >
                                 <span className="text-xs uppercase tracking-wider">Next Story</span>
                                 <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
