@@ -121,18 +121,18 @@ const AdminDashboard = () => {
     <div className="flex min-h-screen bg-linear-to-br from-purple-50 via-white to-indigo-50 font-sans">
       {/* --- LEFT NAVIGATION --- */}
       <aside className="w-72 bg-linear-to-b pt-18 from-purple-900 via-purple-800 to-indigo-900 text-purple-200 hidden lg:flex flex-col p-6 sticky top-0 h-screen shadow-2xl">
-        <div className="px-2 pt-4 mb-12">
+        <div className="px-2 pt-4">
           <div className="flex items-center gap-2 mb-2">
-            <div className="h-10 w-10 rounded-sm bg-linear-to-br from-purple-500 to-indigo-500 flex items-center justify-center shadow-lg">
+            {/* <div className="h-10 w-10 rounded-sm bg-linear-to-br from-purple-500 to-indigo-500 flex items-center justify-center shadow-lg">
               <Stethoscope size={20} className="text-white" />
-            </div>
-            <h2 className="text-2xl font-black text-white tracking-tight">
+            </div> */}
+            {/* <h2 className="text-2xl font-black text-white tracking-tight">
               New<span className="text-purple-300">Care</span>
-            </h2>
+            </h2> */}
           </div>
-          <p className="text-[10px] font-bold text-purple-300 tracking-[0.2em] uppercase mt-2">
+          {/* <p className="text-[10px] font-bold text-purple-300 tracking-[0.2em] uppercase mt-2">
             ADMINISTRATOR PORTAL
-          </p>
+          </p> */}
         </div>
 
         <nav className="flex-1 space-y-2">
@@ -238,7 +238,7 @@ const AdminDashboard = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-6 mb-4">
                 <StatCard
                   title="Total Patients"
-                  value={patients?.length ||0}
+                  value={patients?.length || 0}
                   icon={<Users size={24} className="text-white" />}
                   trend="up"
                   trendValue="+12% vs last month"
