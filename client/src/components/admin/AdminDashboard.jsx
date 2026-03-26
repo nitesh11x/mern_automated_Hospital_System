@@ -238,7 +238,7 @@ const AdminDashboard = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-6 mb-4">
                 <StatCard
                   title="Total Patients"
-                  value={patients?.length || totalPatients || 0}
+                  value={patients?.length ||0}
                   icon={<Users size={24} className="text-white" />}
                   trend="up"
                   trendValue="+12% vs last month"
