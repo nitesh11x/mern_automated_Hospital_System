@@ -8,6 +8,7 @@ import {
   getAppointmentById,
   getDoctorAppointments,
   getPatientAppointments,
+  getPreviousAppointment,
   reScheduelAppointmentById,
   updateAppointmentPaymentStatus,
   updateAppointmentStatus
@@ -27,7 +28,9 @@ router.get("/all", isAdminAuth, getAllAppointments);
 router.get("/me", isPatientAuth, getPatientAppointments);
 router.get("/doctor/appointments", isDoctorAuth, getDoctorAppointments);
 router.get("/qr/:appointmentId", generateAppointmentQR);
+router.get("/previous", isPatientAuth, getPreviousAppointment);
 router.get("/:appointmentId", isPatientAuth, getAppointmentById);
+
 
 router.put("/status/:id", isAdminAuth, updateAppointmentStatus);
 router.put("/status/payment/:id", isAdminAuth, updateAppointmentPaymentStatus);
