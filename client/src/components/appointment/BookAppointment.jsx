@@ -22,57 +22,11 @@ import { getAllDoctorsThunk } from "../../redux/slices/doctor.slice";
 import {
     bookAppointment,
     resetBookingState,
+    getAvailableSlotsThunk
 } from "../../redux/slices/appointment.slice";
 import { notifyProcessingAppointmentThunk } from "../../redux/slices/notification.slice";
 
-// Static Doctor Working Hours Configuration - ALL SLOTS VISIBLE
-const DOCTOR_HOURS = {
-    "A": {
-        name: "Morning Block (9:00 AM - 1:30 PM)",
-        slots: [
-            { slotId: "A01", time: "9:00 AM", isBooked: false, left: 4 },
-            { slotId: "A02", time: "9:30 AM", isBooked: false, left: 4 },
-            { slotId: "A03", time: "10:00 AM", isBooked: false, left: 4 },
-            { slotId: "A04", time: "10:30 AM", isBooked: false, left: 4 },
-            { slotId: "A05", time: "11:00 AM", isBooked: false, left: 4 },
-            { slotId: "A06", time: "11:30 AM", isBooked: false, left: 4 },
-            { slotId: "A07", time: "12:00 PM", isBooked: false, left: 4 },
-            { slotId: "A08", time: "12:30 PM", isBooked: false, left: 4 },
-            { slotId: "A09", time: "1:00 PM", isBooked: false, left: 4 },
-            { slotId: "A10", time: "1:30 PM", isBooked: false, left: 4 }
-        ]
-    },
-    "B": {
-        name: "Afternoon Block (2:00 PM - 6:30 PM)",
-        slots: [
-            { slotId: "B01", time: "2:00 PM", isBooked: false, left: 4 },
-            { slotId: "B02", time: "2:30 PM", isBooked: false, left: 4 },
-            { slotId: "B03", time: "3:00 PM", isBooked: false, left: 4 },
-            { slotId: "B04", time: "3:30 PM", isBooked: false, left: 4 },
-            { slotId: "B05", time: "4:00 PM", isBooked: false, left: 4 },
-            { slotId: "B06", time: "4:30 PM", isBooked: false, left: 4 },
-            { slotId: "B07", time: "5:00 PM", isBooked: false, left: 4 },
-            { slotId: "B08", time: "5:30 PM", isBooked: false, left: 4 },
-            { slotId: "B09", time: "6:00 PM", isBooked: false, left: 4 },
-            { slotId: "B10", time: "6:30 PM", isBooked: false, left: 4 }
-        ]
-    },
-    "C": {
-        name: "Evening Block (7:00 PM - 11:30 PM)",
-        slots: [
-            { slotId: "C01", time: "7:00 PM", isBooked: false, left: 4 },
-            { slotId: "C02", time: "7:30 PM", isBooked: false, left: 4 },
-            { slotId: "C03", time: "8:00 PM", isBooked: false, left: 4 },
-            { slotId: "C04", time: "8:30 PM", isBooked: false, left: 4 },
-            { slotId: "C05", time: "9:00 PM", isBooked: false, left: 4 },
-            { slotId: "C06", time: "9:30 PM", isBooked: false, left: 4 },
-            { slotId: "C07", time: "10:00 PM", isBooked: false, left: 4 },
-            { slotId: "C08", time: "10:30 PM", isBooked: false, left: 4 },
-            { slotId: "C09", time: "11:00 PM", isBooked: false, left: 4 },
-            { slotId: "C10", time: "11:30 PM", isBooked: false, left: 4 }
-        ]
-    }
-};
+// Dynamic Slots Will Be Used
 
 // Static Previous Appointments Data
 const STATIC_PREVIOUS_APPOINTMENTS = [
@@ -182,6 +136,8 @@ const BookAppointment = () => {
         loading: bookingLoading,
         bookingSuccess,
         error,
+        availableSlots,
+        slotsLoading,
     } = useSelector((state) => state.appointment);
 
     const doctors = reduxDoctors?.length > 0 ? reduxDoctors : STATIC_DOCTORS;
@@ -234,6 +190,16 @@ const BookAppointment = () => {
             dispatch(getAllDoctorsThunk());
         }
     }, [dispatch, doctors]);
+
+    useEffect(() => {
+        if (formData.doctorId && formData.appointmentDate) {
+            dispatch(getAvailableSlotsThunk({
+                doctorId: formData.doctorId, 
+                date: formData.appointmentDate
+            }));
+            setSelectedSlot(null);
+        }
+    }, [dispatch, formData.doctorId, formData.appointmentDate]);
 
     useEffect(() => {
         if (bookingSuccess) {
@@ -586,72 +552,83 @@ const BookAppointment = () => {
                                 </h3>
 
                                 <div className="space-y-8">
-                                    {Object.keys(DOCTOR_HOURS).map((blockKey) => {
-                                        const block = DOCTOR_HOURS[blockKey];
-                                        const availableCount = block.slots.filter(s => !s.isBooked).length;
+                                    {slotsLoading ? (
+                                        <div className="text-center py-8 text-slate-500">
+                                            <RefreshCw size={24} className="animate-spin mx-auto mb-2 text-indigo-400" />
+                                            <p className="text-sm font-bold">Synchronizing Encrypted Slots...</p>
+                                        </div>
+                                    ) : availableSlots && Object.keys(availableSlots).length > 0 ? (
+                                        Object.keys(availableSlots).map((blockKey) => {
+                                            const block = availableSlots[blockKey];
+                                            const availableCount = block.slots.filter(s => !s.isBooked).length;
 
-                                        return (
-                                            <div key={blockKey} className="border-b border-slate-100 pb-6 last:border-0">
-                                                <div className="flex items-center justify-between mb-4">
-                                                    <div>
-                                                        <h4 className="text-base font-black uppercase tracking-tight text-indigo-600">
-                                                            Block {blockKey}
-                                                        </h4>
-                                                        <p className="text-[10px] font-bold text-slate-500 mt-1">
-                                                            {block.name}
-                                                        </p>
+                                            return (
+                                                <div key={blockKey} className="border-b border-slate-100 pb-6 last:border-0">
+                                                    <div className="flex items-center justify-between mb-4">
+                                                        <div>
+                                                            <h4 className="text-base font-black uppercase tracking-tight text-indigo-600">
+                                                                Block {blockKey}
+                                                            </h4>
+                                                            <p className="text-[10px] font-bold text-slate-500 mt-1">
+                                                                {block.name}
+                                                            </p>
+                                                        </div>
+                                                        <div className="bg-indigo-50 px-3 py-1 rounded-full">
+                                                            <span className="text-[10px] font-black text-indigo-600">
+                                                                {availableCount} / {block.slots.length} slots available
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                    <div className="bg-indigo-50 px-3 py-1 rounded-full">
-                                                        <span className="text-[10px] font-black text-indigo-600">
-                                                            {availableCount} / {block.slots.length} slots available
-                                                        </span>
+
+                                                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                                                        {block.slots.map((slot) => {
+                                                            const isSelected = selectedSlot?.slotId === slot.slotId;
+                                                            const isBooked = slot.isBooked;
+
+                                                            return (
+                                                                <button
+                                                                    key={slot.slotId}
+                                                                    type="button"
+                                                                    onClick={() => handleSelectTimeSlot(blockKey, slot)}
+                                                                    disabled={isBooked}
+                                                                    className={`
+                                                                        relative py-3 px-2 rounded-lg text-center transition-all duration-200
+                                                                        ${isSelected
+                                                                            ? 'bg-indigo-600 text-white shadow-lg scale-105 ring-2 ring-indigo-300'
+                                                                            : isBooked
+                                                                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                                                                : 'bg-indigo-50 hover:bg-indigo-100 hover:scale-105 border-2 border-indigo-200 cursor-pointer'
+                                                                        }
+                                                                    `}
+                                                                >
+                                                                    <div className="text-xs font-black uppercase tracking-wider">
+                                                                        {slot.slotId}
+                                                                    </div>
+                                                                    <div className="text-[10px] font-bold mt-1">
+                                                                        {slot.time}
+                                                                    </div>
+                                                                    {isBooked && (
+                                                                        <div className="absolute inset-0 flex items-center justify-center">
+                                                                            <div className="w-full h-0.5 bg-gray-400 rotate-45"></div>
+                                                                        </div>
+                                                                    )}
+                                                                    {isSelected && (
+                                                                        <div className="absolute -top-2 -right-2 bg-green-500 rounded-full p-1">
+                                                                            <Check size={12} className="text-white" />
+                                                                        </div>
+                                                                    )}
+                                                                </button>
+                                                            );
+                                                        })}
                                                     </div>
                                                 </div>
-
-                                                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                                                    {block.slots.map((slot) => {
-                                                        const isSelected = selectedSlot?.slotId === slot.slotId;
-                                                        const isBooked = slot.isBooked;
-
-                                                        return (
-                                                            <button
-                                                                key={slot.slotId}
-                                                                type="button"
-                                                                onClick={() => handleSelectTimeSlot(blockKey, slot)}
-                                                                disabled={isBooked}
-                                                                className={`
-                                                                    relative py-3 px-2 rounded-lg text-center transition-all duration-200
-                                                                    ${isSelected
-                                                                        ? 'bg-indigo-600 text-white shadow-lg scale-105 ring-2 ring-indigo-300'
-                                                                        : isBooked
-                                                                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                                                            : 'bg-indigo-50 hover:bg-indigo-100 hover:scale-105 border-2 border-indigo-200 cursor-pointer'
-                                                                    }
-                                                                `}
-                                                            >
-                                                                <div className="text-xs font-black uppercase tracking-wider">
-                                                                    {slot.slotId}
-                                                                </div>
-                                                                <div className="text-[10px] font-bold mt-1">
-                                                                    {slot.time}
-                                                                </div>
-                                                                {isBooked && (
-                                                                    <div className="absolute inset-0 flex items-center justify-center">
-                                                                        <div className="w-full h-0.5 bg-gray-400 rotate-45"></div>
-                                                                    </div>
-                                                                )}
-                                                                {isSelected && (
-                                                                    <div className="absolute -top-2 -right-2 bg-green-500 rounded-full p-1">
-                                                                        <Check size={12} className="text-white" />
-                                                                    </div>
-                                                                )}
-                                                            </button>
-                                                        );
-                                                    })}
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
+                                            );
+                                        })
+                                    ) : (
+                                        <div className="text-center py-8 text-slate-500">
+                                            <p className="text-sm font-bold">No slots available for this date.</p>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {selectedSlot && (

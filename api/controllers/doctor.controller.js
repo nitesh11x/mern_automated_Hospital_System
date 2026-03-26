@@ -136,12 +136,54 @@ export const getDoctorById = asyncHandler(async (req, res, next) => {
   });
 });
 
-export const getAllDoctor = asyncHandler(async (req, res) => {
+export const getAllDoctor = asyncHandler(async (req, res, next) => {
   const doctors = await Doctor.find()
   if (!doctors) return next(new ErrorHandler("doctor not found", 400))
   res.status(200).json({
     success: true,
     doctors
+  });
+});
+
+export const updateDoctorProfile = asyncHandler(async (req, res, next) => {
+  const doctorId = req.doctor.id; // active session ID
+  const { workingHours, firstName, lastName, phone, specialization, experience, consultationFees, bio } = req.body;
+  
+  const updateData = {};
+  if (firstName) updateData.firstName = firstName;
+  if (lastName) updateData.lastName = lastName;
+  if (phone) updateData.phone = phone;
+  if (specialization) updateData.specialization = specialization;
+  if (experience) updateData.experience = experience;
+  if (consultationFees) updateData.consultationFees = consultationFees;
+  if (bio) updateData.bio = bio;
+
+  // Flatten nested workingHours properly without overwriting the entire schema blindly
+  if (workingHours) {
+    if (workingHours.morning) {
+      if (workingHours.morning.start) updateData["workingHours.morning.start"] = workingHours.morning.start;
+      if (workingHours.morning.end) updateData["workingHours.morning.end"] = workingHours.morning.end;
+    }
+    if (workingHours.evening) {
+      if (workingHours.evening.start) updateData["workingHours.evening.start"] = workingHours.evening.start;
+      if (workingHours.evening.end) updateData["workingHours.evening.end"] = workingHours.evening.end;
+    }
+  }
+
+  const doctor = await Doctor.findByIdAndUpdate(
+    doctorId,
+    { $set: updateData },
+    { new: true, runValidators: true }
+  );
+
+  if (!doctor) {
+    return next(new ErrorHandler("Doctor not found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Profile updated successfully",
+    doctor
   });
 });
 

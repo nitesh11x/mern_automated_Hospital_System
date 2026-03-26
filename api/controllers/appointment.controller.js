@@ -3,7 +3,7 @@ import { Appointment } from "../models/Appointment.model.js";
 import { asyncHandler } from "../utils/asyncHandler.util.js";
 import ErrorHandler from "../utils/errorHandler.utils.js";
 import QRCode from "qrcode";
-
+import { Doctor } from "../models/Doctor.model.js";
 export const bookAppointment = asyncHandler(async (req, res, next) => {
   const {
     doctorId,
@@ -13,6 +13,7 @@ export const bookAppointment = asyncHandler(async (req, res, next) => {
     relation,
     appointmentDate,
     requestedTimeSlot,
+    slotId,
     paymentMode,
   } = req.body;
 
@@ -55,6 +56,7 @@ export const bookAppointment = asyncHandler(async (req, res, next) => {
       relation,
       appointmentDate,
       requestedTimeSlot,
+      slotId: slotId || requestedTimeSlot,
       paymentMode,
       isVisit: !!previousAppointment,
       previousAppointmentId: previousAppointment?.appointmentId || null,
@@ -80,6 +82,7 @@ export const bookAppointmentOfSpecificDoctor = asyncHandler(
       relation,
       appointmentDate,
       requestedTimeSlot,
+      slotId,
       paymentMode,
     } = req.body;
 
@@ -121,6 +124,7 @@ export const bookAppointmentOfSpecificDoctor = asyncHandler(
         relation,
         appointmentDate,
         requestedTimeSlot,
+        slotId: slotId || requestedTimeSlot,
         paymentMode,
         isVisit: !!previousAppointment,
         previousAppointmentId: previousAppointment?.appointmentId || null,
@@ -357,5 +361,100 @@ export const getPreviousAppointment = asyncHandler(async (req, res, next) => {
     res.status(200).json({
     success: true,
     prevAppointments,
+  });
+});
+
+export const getDoctorSlots = asyncHandler(async (req, res, next) => {
+  const { doctorId } = req.params;
+  const { date } = req.query;
+
+  if (!doctorId || !date) {
+    return next(new ErrorHandler("Doctor ID and date are required", 400));
+  }
+
+  const doctor = await Doctor.findById(doctorId);
+  if (!doctor) {
+    return next(new ErrorHandler("Doctor not found", 404));
+  }
+
+  const startOfDay = new Date(date);
+  startOfDay.setHours(0, 0, 0, 0);
+  const endOfDay = new Date(date);
+  endOfDay.setHours(23, 59, 59, 999);
+
+  const appointments = await Appointment.find({
+    doctorId,
+    appointmentDate: { $gte: startOfDay, $lte: endOfDay },
+    status: { $ne: "Cancelled" } // Ignore cancelled ones
+  });
+
+  const bookedSlots = appointments.map((app) => app.requestedTimeSlot);
+
+  const generateSlots = (startStr, endStr) => {
+    if (!startStr || !endStr) return [];
+    
+    const parseTime = (timeStr) => {
+      const [h, m] = timeStr.split(':').map(Number);
+      return h * 60 + m;
+    };
+    
+    const formatTime = (minutes) => {
+      const h = Math.floor(minutes / 60);
+      const m = minutes % 60;
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const hours12 = h % 12 || 12;
+      return `${hours12}:${m.toString().padStart(2, '0')} ${ampm}`;
+    };
+
+    const start = parseTime(startStr);
+    const end = parseTime(endStr);
+    
+    const interval = 6; 
+    
+    const slots = [];
+    let current = start;
+    let index = 1;
+    
+    while (current < end) {
+      const timeString = formatTime(current);
+      slots.push({
+        slotId: `S${index.toString().padStart(2, '0')}`,
+        time: timeString,
+        isBooked: bookedSlots.includes(timeString),
+        left: bookedSlots.includes(timeString) ? 0 : 1,
+      });
+      current += interval;
+      index++;
+    }
+    return slots;
+  };
+
+  const morningSlots = generateSlots(doctor.workingHours?.morning?.start || '10:00', doctor.workingHours?.morning?.end || '14:00');
+  const eveningSlots = generateSlots(doctor.workingHours?.evening?.start || '16:00', doctor.workingHours?.evening?.end || '19:00');
+
+  const formatAMPM = (timeStr) => {
+    const [h, m] = timeStr.split(':').map(Number);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const hours12 = h % 12 || 12;
+    return `${hours12}:${m.toString().padStart(2, '0')} ${ampm}`;
+  };
+
+  const availableSlots = {};
+  if (morningSlots.length > 0) {
+    availableSlots["A"] = {
+      name: `Morning Block (${formatAMPM(doctor.workingHours?.morning?.start || '10:00')} - ${formatAMPM(doctor.workingHours?.morning?.end || '14:00')})`,
+      slots: morningSlots.map((s, i) => ({ ...s, slotId: `A${(i + 1).toString().padStart(2, '0')}` })),
+    };
+  }
+  if (eveningSlots.length > 0) {
+    availableSlots["B"] = {
+      name: `Evening Block (${formatAMPM(doctor.workingHours?.evening?.start || '16:00')} - ${formatAMPM(doctor.workingHours?.evening?.end || '19:00')})`,
+      slots: eveningSlots.map((s, i) => ({ ...s, slotId: `B${(i + 1).toString().padStart(2, '0')}` })),
+    };
+  }
+
+  res.status(200).json({
+    success: true,
+    availableSlots,
   });
 });

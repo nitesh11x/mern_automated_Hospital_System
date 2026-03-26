@@ -81,6 +81,16 @@ const doctorSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    workingHours: {
+      morning: {
+        start: { type: String, default: "10:00" },
+        end: { type: String, default: "14:00" },
+      },
+      evening: {
+        start: { type: String, default: "16:00" },
+        end: { type: String, default: "19:00" },
+      },
+    },
     reviewId: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
   },
   { timestamps: true },

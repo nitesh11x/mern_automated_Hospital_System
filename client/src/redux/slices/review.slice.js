@@ -35,7 +35,7 @@ export const getAllReviewsThunk = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/review/get");
-      return response.data;
+      return response.data.reviews; // ✅ FIX
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch reviews",

@@ -10,6 +10,8 @@ import {
   updatePatientById,
   updatePatientStatusById,
   getPatientId,
+  updatePatientProfile,
+  changePatientPassword
 } from "../controllers/patient.controller.js";
 import {
   isAdminAuth,
@@ -24,6 +26,8 @@ router.post("/login", loginPatientWithPassword);
 router.post("/logout", isPatientAuth, logoutPatient);
 
 router.get("/me", isPatientAuth, patientProfile);
+router.put("/me/update", isPatientAuth, updatePatientProfile);
+router.put("/me/password", isPatientAuth, changePatientPassword);
 router.get("/all", isAdminAuth, getAllPatient);
 router.get("/getPatientId", getPatientId);
 router.get("/:patientId", isPatientAuth, getPatientById);

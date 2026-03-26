@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getDoctorAppointments, updateAppointmentStatus } from "../../redux/slices/appointment.slice";
 import { createPrescriptionThunk, resetPrescriptionState } from "../../redux/slices/prescription.slice";
@@ -7,8 +7,9 @@ import {
   LayoutDashboard, CalendarCheck, Users, FileText, Settings,
   LogOut, Bell, Search, X, CheckCircle2, Clock, AlertCircle, Plus, Trash2, MapPin,
   Stethoscope, Heart, Activity, Calendar, ChevronRight, Download, Eye,
-  Pill, Award, TrendingUp, User, Phone, Mail, CalendarDays, Clock as ClockIcon
+  Pill, Award, TrendingUp, User, Phone, Mail, CalendarDays, Clock as ClockIcon, Filter
 } from "lucide-react";
+import DoctorSettings from "./DoctorSettings";
 
 const DoctorDashboard = () => {
   const dispatch = useDispatch();
@@ -23,6 +24,19 @@ const DoctorDashboard = () => {
     advice: "",
     medicines: [{ name: "", dosage: "", duration: "" }]
   });
+  const [filterType, setFilterType] = useState('all');
+
+  const filteredAppointments = useMemo(() => {
+    if (!appointments) return [];
+    if (filterType === 'today') {
+      const today = new Date().toDateString();
+      return appointments.filter(a => a.appointmentDate && new Date(a.appointmentDate).toDateString() === today);
+    }
+    if (filterType === 'completed') {
+      return appointments.filter(a => a.status === "Completed");
+    }
+    return appointments;
+  }, [appointments, filterType]);
 
   useEffect(() => {
     dispatch(getDoctorAppointments());
@@ -156,7 +170,7 @@ const DoctorDashboard = () => {
         </header>
 
         <div className="p-6 md:p-10 max-w-7xl mx-auto w-full">
-          {activeTab === 'appointments' ? (
+          {activeTab === 'appointments' && (
             <div className="space-y-6">
               {/* Stats Cards */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
@@ -175,10 +189,14 @@ const DoctorDashboard = () => {
                         <div className="w-1 h-5 bg-linear-to-b from-purple-600 to-violet-600 rounded-full"></div>
                         Scheduled Consultations
                       </h3>
-                      <p className="text-[9px] text-purple-500 mt-1">Manage patient appointments and medical records</p>
+                      <div className="flex gap-2 mt-3">
+                        <button onClick={() => setFilterType('all')} className={`px-3 py-1 text-[9px] font-bold uppercase rounded-sm transition-all ${filterType === 'all' ? 'bg-purple-600 text-white' : 'bg-purple-100 text-purple-600 hover:bg-purple-200'}`}>All Appointments</button>
+                        <button onClick={() => setFilterType('today')} className={`px-3 py-1 text-[9px] font-bold uppercase rounded-sm transition-all ${filterType === 'today' ? 'bg-purple-600 text-white' : 'bg-purple-100 text-purple-600 hover:bg-purple-200'}`}>Today's Visits</button>
+                        <button onClick={() => setFilterType('completed')} className={`px-3 py-1 text-[9px] font-bold uppercase rounded-sm transition-all ${filterType === 'completed' ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200'}`}>Completed</button>
+                      </div>
                     </div>
                     <span className="text-[10px] bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-bold">
-                      {appointments?.length || 0} Total
+                      {filteredAppointments?.length || 0} Total
                     </span>
                   </div>
                 </div>
@@ -194,7 +212,7 @@ const DoctorDashboard = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-purple-50">
-                      {appointments?.map((apt, idx) => (
+                      {filteredAppointments?.map((apt, idx) => (
                         <tr key={apt._id} className="hover:bg-purple-50/30 transition-colors group">
                           <td className="px-5 py-4">
                             <div className="flex items-center gap-3">
@@ -260,7 +278,11 @@ const DoctorDashboard = () => {
                 </div>
               </div>
             </div>
-          ) : (
+          )}
+          
+          {activeTab === 'settings' && <DoctorSettings />}
+          
+          {(activeTab === 'dashboard' || activeTab === 'patients') && (
             /* Dashboard View */
             <div className="space-y-8">
               {/* Welcome Card */}

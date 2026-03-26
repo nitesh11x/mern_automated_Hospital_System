@@ -47,6 +47,10 @@ const appointmentSchema = new mongoose.Schema(
       required: true,
     },
 
+    slotId: {
+      type: String,
+    },
+
     approvedTimeSlot: {
       type: String,
       default: null,

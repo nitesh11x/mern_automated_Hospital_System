@@ -11,7 +11,8 @@ import {
   getPreviousAppointment,
   reScheduelAppointmentById,
   updateAppointmentPaymentStatus,
-  updateAppointmentStatus
+  updateAppointmentStatus,
+  getDoctorSlots
 } from "../controllers/appointment.controller.js";
 
 import {
@@ -23,6 +24,8 @@ import {
 const router = express.Router();
 router.post("/book", isPatientAuth, bookAppointment);
 router.post("/book/:doctorId", isPatientAuth, bookAppointmentOfSpecificDoctor);
+
+router.get("/:doctorId/slots", getDoctorSlots);
 
 router.get("/all", isAdminAuth, getAllAppointments);
 router.get("/me", isPatientAuth, getPatientAppointments);

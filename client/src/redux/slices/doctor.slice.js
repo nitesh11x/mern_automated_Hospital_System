@@ -70,6 +70,20 @@ export const deleteDoctorThunk = createAsyncThunk(
   },
 );
 
+export const updateDoctorProfileThunk = createAsyncThunk(
+    "doctor/me/update",
+    async (updateData, { rejectWithValue }) => {
+        try {
+            const res = await api.put("/doctor/me/update", updateData);
+            return res.data;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message || "Failed to update profile"
+            );
+        }
+    }
+);
+
 export const doctorLogoutThunk = createAsyncThunk(
     "doctor/logout",
     async (_, { rejectWithValue }) => {
@@ -156,6 +170,23 @@ const doctorSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
                 state.isDoctorAuthenticated = false;
+            })
+
+            /* ===== UPDATE PROFILE ===== */
+            .addCase(updateDoctorProfileThunk.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.success = false;
+            })
+            .addCase(updateDoctorProfileThunk.fulfilled, (state, action) => {
+                state.loading = false;
+                state.doctor = action.payload.doctor;
+                state.success = true;
+            })
+            .addCase(updateDoctorProfileThunk.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+                state.success = false;
             })
 
             .addCase(getAllDoctorsThunk.pending, (state) => {

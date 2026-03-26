@@ -152,6 +152,59 @@ export const getPatientById = asyncHandler(async (req, res, next) => {
   });
 });
 
+
+
+export const updatePatientProfile = asyncHandler(async (req, res, next) => {
+  const patientId = req.patient.id;
+  const { firstName, lastName, phone, dob, address, gender } = req.body;
+  
+  const updateData = {};
+  if (firstName) updateData.firstName = firstName;
+  if (lastName) updateData.lastName = lastName;
+  if (phone) updateData.phone = phone;
+  if (dob) updateData.dob = dob;
+  if (address) updateData.address = address;
+  if (gender) updateData.gender = gender;
+
+  const patient = await Patient.findByIdAndUpdate(
+    patientId,
+    { $set: updateData },
+    { new: true, runValidators: true }
+  );
+
+  if (!patient) {
+    return next(new ErrorHandler("Patient not found", 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Profile updated successfully",
+    patient
+  });
+});
+
+export const changePatientPassword = asyncHandler(async (req, res, next) => {
+  const patientId = req.patient.id;
+  const { oldPassword, newPassword } = req.body;
+
+  if (!oldPassword || !newPassword) {
+    return next(new ErrorHandler("Please provide both old and new passwords", 400));
+  }
+
+  const patient = await Patient.findById(patientId).select("+password");
+  if (!patient) return next(new ErrorHandler("Patient not found", 404));
+
+  const isMatch = await bcrypt.compare(oldPassword, patient.password);
+  if (!isMatch) return next(new ErrorHandler("Incorrect old password", 400));
+
+  patient.password = await bcrypt.hash(newPassword, 10);
+  await patient.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Password changed successfully"
+  });
+});  
 export const getAllPatient = asyncHandler(async (req, res, next) => {
   const patients = await Patient.find()
     .select("-password")

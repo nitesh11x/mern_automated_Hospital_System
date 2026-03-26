@@ -1,6 +1,6 @@
 
 import express from "express";
-import { deleteDoctorById, doctorProfile, getAllDoctor, getDoctorById, loginDoctor, logoutDoctor, registerDoctor, updateDoctorById } from "../controllers/doctor.controller.js";
+import { deleteDoctorById, doctorProfile, getAllDoctor, getDoctorById, loginDoctor, logoutDoctor, registerDoctor, updateDoctorById, updateDoctorProfile } from "../controllers/doctor.controller.js";
 import { isAdminAuth, isDoctorAuth } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
@@ -9,6 +9,7 @@ router.post('/login', loginDoctor)
 router.post('/logout', isDoctorAuth, logoutDoctor)
 
 router.get('/me', isDoctorAuth, doctorProfile)
+router.put('/me/update', isDoctorAuth, updateDoctorProfile)
 router.get('/all', getAllDoctor)
 router.get('/:id', isAdminAuth, getDoctorById)
 
