@@ -96,6 +96,34 @@ export const profilePatientThunk = createAsyncThunk(
   },
 );
 
+export const updatePatientProfileThunk = createAsyncThunk(
+  "patient/updateProfile",
+  async (profileData, { rejectWithValue }) => {
+    try {
+      const { data } = await api.put("/patient/me/update", profileData);
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Failed to update profile",
+      );
+    }
+  },
+);
+
+export const changePatientPasswordThunk = createAsyncThunk(
+  "patient/changePassword",
+  async (passwordData, { rejectWithValue }) => {
+    try {
+      const { data } = await api.put("/patient/me/password", passwordData);
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Failed to change password",
+      );
+    }
+  },
+);
+
 const initialState = {
   patient: null,
   patients: [],
@@ -210,6 +238,35 @@ const patientSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
         state.isPatientAuthenticated = false;
+      })
+
+      /* ========= UPDATE PROFILE ========= */
+      .addCase(updatePatientProfileThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updatePatientProfileThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.patient = action.payload?.patient || state.patient;
+        state.error = null;
+      })
+      .addCase(updatePatientProfileThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      /* ========= CHANGE PASSWORD ========= */
+      .addCase(changePatientPasswordThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(changePatientPasswordThunk.fulfilled, (state) => {
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(changePatientPasswordThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

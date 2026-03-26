@@ -19,18 +19,10 @@ import {
   Pill,
   Stethoscope,
   ArrowRight,
-  User,
-  Heart,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  CreditCard,
-  QrCode,
-  Eye,
-  Download,
-  Settings,
-  Activity
+  User, Phone, Mail, MapPin, Heart, Activity, Star, CheckCircle, CheckCircle2,
+  XCircle, Clock, AlertCircle, CreditCard, QrCode, Eye, Download, Settings, ScanLine
 } from "lucide-react";
+import PatientSettings from "./PatientSettings";
 
 import { getPatientAppointments } from "../../redux/slices/appointment.slice";
 import { getPatientPrescriptionsThunk } from "../../redux/slices/prescription.slice";
@@ -539,7 +531,7 @@ const Dashboard = () => {
                                 >
                                   Prescription
                                 </button>
-                                <button className="px-3 py-1.5 bg-white border border-purple-200 text-purple-600 rounded-sm text-[9px] font-bold uppercase hover:bg-purple-600 hover:text-white transition-all shadow-sm">
+                                <button onClick={() => toast("Laboratory reports pending or unavailable. Please refer to Prescription records.", { icon: "ℹ️" })} className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-sm hover:bg-blue-600 hover:text-white transition-all">
                                   Reports
                                 </button>
                               </div>

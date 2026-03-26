@@ -20,6 +20,7 @@ import { getAllDoctorsThunk } from "../../redux/slices/doctor.slice";
 import {
     bookAppointment,
     resetBookingState,
+    getAvailableSlotsThunk
 } from "../../redux/slices/appointment.slice";
 import { notifyProcessingAppointmentThunk } from "../../redux/slices/notification.slice";
 
@@ -32,6 +33,8 @@ const BookAppointmentOfSpecificDoctor = () => {
         loading: bookingLoading,
         bookingSuccess,
         error,
+        availableSlots,
+        slotsLoading
     } = useSelector((state) => state.appointment);
 
     const [isOpen, setIsOpen] = useState(false);
@@ -88,6 +91,15 @@ const BookAppointmentOfSpecificDoctor = () => {
     }, [dispatch, doctors]);
 
     useEffect(() => {
+        if (formData.doctorId && formData.appointmentDate) {
+            dispatch(getAvailableSlotsThunk({
+                doctorId: formData.doctorId, 
+                date: formData.appointmentDate
+            }));
+        }
+    }, [dispatch, formData.doctorId, formData.appointmentDate]);
+
+    useEffect(() => {
         if (bookingSuccess) {
             toast.success("Schedule Synchronized");
             dispatch(notifyProcessingAppointmentThunk({ email: formData.email, name: formData.name }));
@@ -139,10 +151,11 @@ const BookAppointmentOfSpecificDoctor = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!formData.doctorId) return toast.error("Please assign a specialist");
+        if (!formData.requestedTimeSlot) return toast.error("Please select a time slot");
 
         const submissionData = {
             ...formData,
-            requestedTimeSlot: formatTo12Hr(formData.requestedTimeSlot)
+            requestedTimeSlot: formData.requestedTimeSlot // It's already 12Hr now from the options
         };
         dispatch(bookAppointment(submissionData));
     };
@@ -265,7 +278,24 @@ const BookAppointmentOfSpecificDoctor = () => {
                                     <input type="date" name="appointmentDate" min={minDateValue} value={formData.appointmentDate} onChange={handleChange} required />
                                 </FormGroup>
                                 <FormGroup label="Time Slot">
-                                    <input type="time" name="requestedTimeSlot" value={formData.requestedTimeSlot} onChange={handleChange} required />
+                                    <select name="requestedTimeSlot" value={formData.requestedTimeSlot} onChange={handleChange} required>
+                                        <option value="">SELECT SLOT</option>
+                                        {slotsLoading ? (
+                                            <option disabled>FETCHING SLOTS...</option>
+                                        ) : availableSlots && Object.keys(availableSlots).length > 0 ? (
+                                            Object.keys(availableSlots).map(blockKey => (
+                                                <optgroup key={blockKey} label={availableSlots[blockKey].name}>
+                                                    {availableSlots[blockKey].slots.map(slot => (
+                                                        <option key={slot.slotId} value={slot.time} disabled={slot.isBooked}>
+                                                            {slot.time} {slot.isBooked ? '(Booked)' : ''}
+                                                        </option>
+                                                    ))}
+                                                </optgroup>
+                                            ))
+                                        ) : (
+                                            <option disabled>NO SLOTS FOR THIS DATE</option>
+                                        )}
+                                    </select>
                                 </FormGroup>
                                 <FormGroup label="Payment Mode">
                                     <select name="paymentMode" value={formData.paymentMode} onChange={handleChange}>
@@ -305,7 +335,7 @@ const BookAppointmentOfSpecificDoctor = () => {
                                     <SummaryItem label="Assigned Expert" value={formData.selectedDocName} />
                                     <SummaryItem
                                         label="Timeline"
-                                        value={formData.appointmentDate ? `${formData.appointmentDate} @ ${formatTo12Hr(formData.requestedTimeSlot) || 'TBD'}` : "NOT SCHEDULED"}
+                                        value={formData.appointmentDate ? `${formData.appointmentDate} @ ${formData.requestedTimeSlot || 'TBD'}` : "NOT SCHEDULED"}
                                     />
                                     <SummaryItem label="Primary Patient" value={formData.name || "AWAITING..."} />
 

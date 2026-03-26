@@ -87,11 +87,27 @@ export const getDoctorReviews = asyncHandler(async (req, res, next) => {
 });
 
 export const getAllReviews = asyncHandler(async (req, res, next) => {
-  const reviews = await Review.find();
+  const reviews = await Review.find().populate("patientId doctorId");
   if (!reviews) return next(new ErrorHandler("Reviews not found "), 400);
   res.status(200).json({
     success: true,
     count: reviews.length,
     reviews,
+  });
+});
+
+export const deleteReview = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const review = await Review.findByIdAndDelete(id);
+  if (!review) return next(new ErrorHandler("Review not found", 404));
+
+  // Optionally remove review from doctor array if necessary:
+  await Doctor.findByIdAndUpdate(review.doctorId, {
+    $pull: { reviewId: id },
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Review deleted successfully",
   });
 });

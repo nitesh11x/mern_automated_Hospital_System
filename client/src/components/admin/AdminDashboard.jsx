@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import DoctorManage from "../doctor/DoctorManage";
 import PatientManage from "../patient/PatientManage";
 import ShowAppointments from "../appointment/ShowAppointments";
+import ManageReviews from "./ManageReviews";
 import {
   PieChart,
   Pie,
@@ -161,7 +162,7 @@ const AdminDashboard = () => {
             onClick={() => setActiveTab("appointments")}
           />
           <SidebarBtn
-            icon={<Calendar size={20} />}
+            icon={<Star size={20} />}
             label="Reviews"
             active={activeTab === "reviews"}
             onClick={() => setActiveTab("reviews")}
@@ -447,6 +448,11 @@ const AdminDashboard = () => {
           {activeTab === "appointments" && (
             <div className="-mx-6 -mt-10">
               <ShowAppointments isEmbedded />
+            </div>
+          )}
+          {activeTab === "reviews" && (
+            <div className="-mx-6 -mt-10 p-6">
+              <ManageReviews />
             </div>
           )}
           {activeTab === "medicines" && (

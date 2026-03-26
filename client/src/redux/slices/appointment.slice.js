@@ -128,9 +128,26 @@ export const deleteAppointmentByIdThunk = createAsyncThunk(
     }
   },
 );
+
+export const getAvailableSlotsThunk = createAsyncThunk(
+  "appointment/getAvailableSlots",
+  async ({ doctorId, date }, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get(`/appointment/${doctorId}/slots?date=${date}`);
+      return data.availableSlots;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Failed to fetch slots",
+      );
+    }
+  },
+);
+
 const initialState = {
   appointments: [],
   patientAppointments: null,
+  availableSlots: null,
+  slotsLoading: false,
   loading: false,
   error: null,
   bookingSuccess: false,
@@ -242,6 +259,20 @@ const appointmentSlice = createSlice({
         state.appointments = state.appointments.filter(
           (app) => app._id !== deletedId,
         );
+      })
+      // Fetch available slots
+      .addCase(getAvailableSlotsThunk.pending, (state) => {
+        state.slotsLoading = true;
+        state.error = null;
+      })
+      .addCase(getAvailableSlotsThunk.fulfilled, (state, action) => {
+        state.slotsLoading = false;
+        state.availableSlots = action.payload;
+      })
+      .addCase(getAvailableSlotsThunk.rejected, (state, action) => {
+        state.slotsLoading = false;
+        state.error = action.payload;
+        state.availableSlots = null;
       });
   },
 });
