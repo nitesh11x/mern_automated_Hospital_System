@@ -100,19 +100,19 @@ const DoctorDashboard = () => {
       {/* Sidebar */}
       <aside className="w-72 bg-linear-to-b from-purple-900 via-purple-800 to-violet-900 hidden lg:flex flex-col sticky top-0 h-screen shadow-2xl z-20">
         <div className="p-6 border-b border-purple-700/50">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="h-12 w-12 rounded-xl bg-linear-to-br from-purple-500 to-violet-500 flex items-center justify-center shadow-lg">
+          <div className="flex pt-4 items-center gap-3 mb-3">
+            {/* <div className="h-12 w-12  rounded-sm bg-linear-to-br from-purple-500 to-violet-500 flex items-center justify-center shadow-lg">
               <Stethoscope size={24} className="text-white" />
-            </div>
-            <div>
+            </div> */}
+            {/* <div>
               <h2 className="text-lg font-black text-white tracking-tight">DR. {doctor?.lastName?.toUpperCase() || "SPECIALIST"}</h2>
               <p className="text-[9px] font-bold text-purple-300 uppercase tracking-wider">{doctor?.specialization || "General Medicine"}</p>
-            </div>
+            </div> */}
           </div>
-          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-purple-700/30">
+          {/* <div className="flex items-center gap-2 mt-3 pt-3 border-t border-purple-700/30">
             <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
             <p className="text-[8px] font-bold text-purple-300 uppercase">Online • Available for Consultations</p>
-          </div>
+          </div> */}
         </div>
 
         <nav className="flex-1 p-4 space-y-1">
@@ -123,7 +123,7 @@ const DoctorDashboard = () => {
         </nav>
 
         <div className="p-4 mt-6 border-t border-purple-700/50">
-          <button className="flex items-center gap-3 px-4 py-3 w-full text-purple-300 hover:text-white hover:bg-purple-800/50 rounded-xl transition-all text-[10px] font-bold uppercase tracking-widest group">
+          <button className="flex items-center gap-3 px-4 py-3 w-full text-purple-300 hover:text-white hover:bg-purple-800/50 rounded-sm transition-all text-[10px] font-bold uppercase tracking-widest group">
             <LogOut size={16} className="group-hover:text-purple-300" />
             Sign Out
           </button>
@@ -145,10 +145,10 @@ const DoctorDashboard = () => {
               <input
                 type="text"
                 placeholder="Search..."
-                className="pl-10 pr-4 py-2 bg-purple-50 border border-purple-200 rounded-xl text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none w-64"
+                className="pl-10 pr-4 py-2 bg-purple-50 border border-purple-200 rounded-sm text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none w-64"
               />
             </div>
-            <button className="p-2 bg-purple-100 rounded-xl hover:bg-purple-200 transition-colors relative">
+            <button className="p-2 bg-purple-100 rounded-sm hover:bg-purple-200 transition-colors relative">
               <Bell size={18} className="text-purple-600" />
               <span className="absolute top-0 right-0 w-2 h-2 bg-rose-500 rounded-full"></span>
             </button>
@@ -167,7 +167,7 @@ const DoctorDashboard = () => {
               </div>
 
               {/* Appointments Table */}
-              <div className="bg-white rounded-2xl border border-purple-100 shadow-xl overflow-hidden">
+              <div className="bg-white rounded-sm border border-purple-100 shadow-xl overflow-hidden">
                 <div className="p-5 border-b border-purple-100 bg-linear-to-r from-purple-50/30 to-white">
                   <div className="flex justify-between items-center">
                     <div>
@@ -198,7 +198,7 @@ const DoctorDashboard = () => {
                         <tr key={apt._id} className="hover:bg-purple-50/30 transition-colors group">
                           <td className="px-5 py-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-xl bg-linear-to-br from-purple-500 to-violet-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                              <div className="w-10 h-10 rounded-sm bg-linear-to-br from-purple-500 to-violet-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
                                 {apt.name?.charAt(0) || "P"}
                               </div>
                               <div>
@@ -234,7 +234,7 @@ const DoctorDashboard = () => {
                           <td className="px-5 py-4">
                             {apt.prescriptionId ? (
                               <div className="flex items-center gap-2">
-                                <div className="p-1.5 bg-emerald-100 rounded-lg">
+                                <div className="p-1.5 bg-emerald-100 rounded-sm">
                                   <FileText size={12} className="text-emerald-600" />
                                 </div>
                                 <div>
@@ -264,11 +264,11 @@ const DoctorDashboard = () => {
             /* Dashboard View */
             <div className="space-y-8">
               {/* Welcome Card */}
-              <div className="bg-linear-to-r from-purple-600 to-violet-600 rounded-2xl p-8 text-white shadow-xl">
+              <div className="bg-linear-to-r from-purple-600 to-violet-600 rounded-sm p-8 text-white shadow-xl">
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="flex items-center gap-2 mb-3">
-                      <div className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center">
+                      <div className="w-8 h-8 bg-white/20 rounded-sm flex items-center justify-center">
                         <Activity size={16} className="text-white" />
                       </div>
                       <span className="text-[10px] font-bold uppercase tracking-wider">Clinical Overview</span>
@@ -277,7 +277,7 @@ const DoctorDashboard = () => {
                     <p className="text-purple-100 text-sm">You have {stats.pending} pending appointments awaiting your review</p>
                   </div>
                   <div className="text-right">
-                    <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
+                    <div className="w-16 h-16 bg-white/20 rounded-sm flex items-center justify-center">
                       <Stethoscope size={32} className="text-white" />
                     </div>
                   </div>
@@ -286,7 +286,7 @@ const DoctorDashboard = () => {
 
               {/* Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <StatCard label="Total Patients" value={stats.totalPatients} icon={<Users size={20} />} color="purple" trend="+12% vs last month" />
+                <StatCard label="Toady Appointments" value={stats.totalPatients} icon={<Users size={20} />} color="purple" trend="+12% vs last month" />
                 <StatCard label="Completed Visits" value={stats.completed} icon={<CheckCircle2 size={20} />} color="emerald" trend="+8 this week" />
                 <StatCard label="Pending Approvals" value={stats.pending} icon={<Clock size={20} />} color="amber" trend="Requires attention" />
                 <StatCard label="Revenue Generated" value={`₹${(stats.completed * 500).toLocaleString()}`} icon={<TrendingUp size={20} />} color="blue" trend="+22% YoY" />
@@ -295,7 +295,7 @@ const DoctorDashboard = () => {
               {/* Recent Activity */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Recent Appointments */}
-                <div className="bg-white rounded-2xl border border-purple-100 shadow-lg p-6">
+                <div className="bg-white rounded-sm border border-purple-100 shadow-lg p-6">
                   <div className="flex justify-between items-center mb-5">
                     <h3 className="text-xs font-black text-purple-700 uppercase tracking-wider flex items-center gap-2">
                       <Calendar size={14} /> Recent Appointments
@@ -309,9 +309,9 @@ const DoctorDashboard = () => {
                   </div>
                   <div className="space-y-3">
                     {appointments?.slice(0, 5).map((apt) => (
-                      <div key={apt._id} className="flex items-center justify-between p-3 bg-purple-50/30 rounded-xl hover:bg-purple-50 transition-all">
+                      <div key={apt._id} className="flex items-center justify-between p-3 bg-purple-50/30 rounded-sm hover:bg-purple-50 transition-all">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-lg bg-linear-to-br from-purple-500 to-violet-500 flex items-center justify-center text-white font-bold text-xs">
+                          <div className="w-8 h-8 rounded-sm bg-linear-to-br from-purple-500 to-violet-500 flex items-center justify-center text-white font-bold text-xs">
                             {apt.name?.charAt(0)}
                           </div>
                           <div>
@@ -331,16 +331,16 @@ const DoctorDashboard = () => {
                 </div>
 
                 {/* Quick Stats */}
-                <div className="bg-white rounded-2xl border border-purple-100 shadow-lg p-6">
+                <div className="bg-white rounded-sm border border-purple-100 shadow-lg p-6">
                   <h3 className="text-xs font-black text-purple-700 uppercase tracking-wider mb-5 flex items-center gap-2">
                     <Award size={14} /> Practice Insights
                   </h3>
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center p-3 bg-purple-50 rounded-xl">
+                    <div className="flex justify-between items-center p-3 bg-purple-50 rounded-sm">
                       <span className="text-xs font-bold text-slate-700">Consultation Completion Rate</span>
                       <span className="text-lg font-black text-purple-600">{stats.totalPatients ? Math.round((stats.completed / stats.totalPatients) * 100) : 0}%</span>
                     </div>
-                    <div className="flex justify-between items-center p-3 bg-purple-50 rounded-xl">
+                    <div className="flex justify-between items-center p-3 bg-purple-50 rounded-sm">
                       <span className="text-xs font-bold text-slate-700">Patient Satisfaction</span>
                       <div className="flex items-center gap-1">
                         <div className="flex gap-0.5">
@@ -351,7 +351,7 @@ const DoctorDashboard = () => {
                         <span className="text-sm font-bold text-amber-600">4.8</span>
                       </div>
                     </div>
-                    <div className="flex justify-between items-center p-3 bg-purple-50 rounded-xl">
+                    <div className="flex justify-between items-center p-3 bg-purple-50 rounded-sm">
                       <span className="text-xs font-bold text-slate-700">Prescriptions Issued</span>
                       <span className="text-lg font-black text-purple-600">{appointments?.filter(a => a.prescriptionId).length || 0}</span>
                     </div>
@@ -371,7 +371,7 @@ const DoctorDashboard = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-white w-full max-w-3xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-purple-100"
+              className="bg-white w-full max-w-3xl rounded-sm shadow-2xl flex flex-col max-h-[90vh] border border-purple-100"
             >
               <div className="p-6 border-b border-purple-100 bg-linear-to-r from-purple-50 to-violet-50 rounded-t-2xl flex justify-between items-center">
                 <div>
@@ -400,7 +400,7 @@ const DoctorDashboard = () => {
                   <input
                     type="text"
                     required
-                    className="w-full px-4 py-3 border border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none bg-purple-50/30"
+                    className="w-full px-4 py-3 border border-purple-200 rounded-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none bg-purple-50/30"
                     placeholder="e.g., Acute Upper Respiratory Infection"
                     value={prescriptionForm.diagnosis}
                     onChange={(e) => setPrescriptionForm({ ...prescriptionForm, diagnosis: e.target.value })}
@@ -416,19 +416,19 @@ const DoctorDashboard = () => {
                     <button
                       type="button"
                       onClick={addMedicineRow}
-                      className="flex items-center gap-1 text-[9px] font-black text-white bg-linear-to-r from-purple-600 to-violet-600 px-3 py-1.5 rounded-lg hover:shadow-md transition-all"
+                      className="flex items-center gap-1 text-[9px] font-black text-white bg-linear-to-r from-purple-600 to-violet-600 px-3 py-1.5 rounded-sm hover:shadow-md transition-all"
                     >
                       <Plus size={12} /> Add Medicine
                     </button>
                   </div>
 
                   {prescriptionForm.medicines.map((med, idx) => (
-                    <div key={idx} className="grid grid-cols-12 gap-3 items-end bg-purple-50/30 p-3 rounded-xl border border-purple-100">
+                    <div key={idx} className="grid grid-cols-12 gap-3 items-end bg-purple-50/30 p-3 rounded-sm border border-purple-100">
                       <div className="col-span-5">
                         <label className="text-[8px] font-bold text-purple-500 uppercase block mb-1">Medication Name</label>
                         <input
                           placeholder="e.g., Paracetamol"
-                          className="w-full px-3 py-2 border border-purple-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-white"
+                          className="w-full px-3 py-2 border border-purple-200 rounded-sm text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-white"
                           value={med.name}
                           onChange={(e) => handleMedicineChange(idx, 'name', e.target.value)}
                         />
@@ -437,7 +437,7 @@ const DoctorDashboard = () => {
                         <label className="text-[8px] font-bold text-purple-500 uppercase block mb-1">Dosage</label>
                         <input
                           placeholder="e.g., 500mg"
-                          className="w-full px-3 py-2 border border-purple-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-white"
+                          className="w-full px-3 py-2 border border-purple-200 rounded-sm text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-white"
                           value={med.dosage}
                           onChange={(e) => handleMedicineChange(idx, 'dosage', e.target.value)}
                         />
@@ -446,7 +446,7 @@ const DoctorDashboard = () => {
                         <label className="text-[8px] font-bold text-purple-500 uppercase block mb-1">Duration</label>
                         <input
                           placeholder="e.g., 5 Days"
-                          className="w-full px-3 py-2 border border-purple-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-white"
+                          className="w-full px-3 py-2 border border-purple-200 rounded-sm text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-white"
                           value={med.duration}
                           onChange={(e) => handleMedicineChange(idx, 'duration', e.target.value)}
                         />
@@ -456,7 +456,7 @@ const DoctorDashboard = () => {
                           <button
                             type="button"
                             onClick={() => removeMedicineRow(idx)}
-                            className="p-1.5 text-purple-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                            className="p-1.5 text-purple-400 hover:text-rose-500 hover:bg-rose-50 rounded-sm transition-colors"
                           >
                             <Trash2 size={16} />
                           </button>
@@ -472,7 +472,7 @@ const DoctorDashboard = () => {
                     <FileText size={12} /> General Advice
                   </label>
                   <textarea
-                    className="w-full h-28 px-4 py-3 border border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none bg-purple-50/30 resize-none"
+                    className="w-full h-28 px-4 py-3 border border-purple-200 rounded-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none bg-purple-50/30 resize-none"
                     placeholder="Dietary restrictions, rest instructions, follow-up recommendations..."
                     value={prescriptionForm.advice}
                     onChange={(e) => setPrescriptionForm({ ...prescriptionForm, advice: e.target.value })}
@@ -481,7 +481,7 @@ const DoctorDashboard = () => {
 
                 <button
                   type="submit"
-                  className="w-full bg-linear-to-r from-purple-600 to-violet-600 text-white font-black py-4 rounded-xl hover:shadow-lg transition-all uppercase text-xs tracking-wider"
+                  className="w-full bg-linear-to-r from-purple-600 to-violet-600 text-white font-black py-4 rounded-sm hover:shadow-lg transition-all uppercase text-xs tracking-wider"
                 >
                   Authorize & Save Prescription
                 </button>
@@ -504,14 +504,14 @@ const StatCard = ({ label, value, icon, color, trend }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl p-5 border border-purple-100 shadow-lg hover:shadow-xl transition-all duration-300 group">
+    <div className="bg-white rounded-sm p-5 border border-purple-100 shadow-lg hover:shadow-xl transition-all duration-300 group">
       <div className="flex justify-between items-start">
         <div>
           <p className="text-[9px] font-black text-purple-500 uppercase tracking-wider mb-1">{label}</p>
           <p className="text-2xl font-black text-slate-800">{value}</p>
           {trend && <p className="text-[8px] text-emerald-600 mt-1 font-bold">{trend}</p>}
         </div>
-        <div className={`h-10 w-10 rounded-xl bg-linear-to-br ${colorClasses[color]} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+        <div className={`h-10 w-10 rounded-sm bg-linear-to-br ${colorClasses[color]} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
           {icon}
         </div>
       </div>
@@ -527,7 +527,7 @@ const ActionButtons = ({ apt, handleStatusUpdate, setPrescriptionApptId }) => {
       {status === 'pending' && (
         <button
           onClick={() => handleStatusUpdate(apt._id, 'Approved')}
-          className="px-4 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-[10px] font-bold uppercase hover:bg-emerald-600 hover:text-white transition-all flex items-center gap-1"
+          className="px-4 py-2 bg-emerald-50 text-emerald-700 rounded-sm text-[10px] font-bold uppercase hover:bg-emerald-600 hover:text-white transition-all flex items-center gap-1"
         >
           <CheckCircle2 size={12} /> Approve
         </button>
@@ -535,7 +535,7 @@ const ActionButtons = ({ apt, handleStatusUpdate, setPrescriptionApptId }) => {
       {status === 'approved' && (
         <button
           onClick={() => handleStatusUpdate(apt._id, 'Completed')}
-          className="px-4 py-2 bg-purple-600 text-white rounded-lg text-[10px] font-bold uppercase hover:bg-purple-700 transition-all"
+          className="px-4 py-2 bg-purple-600 text-white rounded-sm text-[10px] font-bold uppercase hover:bg-purple-700 transition-all"
         >
           Complete Visit
         </button>
@@ -543,7 +543,7 @@ const ActionButtons = ({ apt, handleStatusUpdate, setPrescriptionApptId }) => {
       {status === 'completed' && (
         <button
           onClick={() => setPrescriptionApptId(apt._id)}
-          className="px-4 py-2 border-2 border-purple-600 text-purple-600 rounded-lg text-[10px] font-bold uppercase hover:bg-purple-600 hover:text-white transition-all flex items-center gap-1"
+          className="px-4 py-2 border-2 border-purple-600 text-purple-600 rounded-sm text-[10px] font-bold uppercase hover:bg-purple-600 hover:text-white transition-all flex items-center gap-1"
         >
           <FileText size={12} /> {apt.prescriptionId ? 'Modify Rx' : 'Prescribe'}
         </button>
@@ -555,7 +555,7 @@ const ActionButtons = ({ apt, handleStatusUpdate, setPrescriptionApptId }) => {
 const NavBtn = ({ icon, label, active, onClick }) => (
   <button
     onClick={onClick}
-    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-[10px] font-bold uppercase tracking-wider ${active
+    className={`w-full flex items-center gap-3 px-4 py-3 rounded-sm transition-all text-[10px] font-bold uppercase tracking-wider ${active
       ? "bg-linear-to-r from-purple-600 to-violet-600 text-white shadow-lg"
       : "text-purple-300 hover:bg-purple-800/50 hover:text-white"
       }`}

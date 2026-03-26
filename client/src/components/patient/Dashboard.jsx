@@ -167,19 +167,19 @@ const Dashboard = () => {
         fixed inset-y-0 left-0 z-40 w-72 bg-linear-to-b from-purple-900 via-purple-800 to-indigo-900 text-purple-200 transform transition-transform duration-300 lg:translate-x-0 lg:static lg:h-screen lg:top-0 flex flex-col shadow-2xl
         ${isSidebarOpen ? "translate-x-0 mt-16 lg:mt-0" : "-translate-x-full"}
       `}>
-        <div className="px-6  pb-6 mb-6 border-b pt-20 border-purple-700/50">
+        <div className="px-6  pb-4 border-b pt-20 border-purple-700/50">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-sm bg-linear-to-br  from-purple-500 to-indigo-500 flex items-center justify-center shadow-lg">
+            {/* <div className="h-10 w-10 rounded-sm bg-linear-to-br  from-purple-500 to-indigo-500 flex items-center justify-center shadow-lg">
               <Heart size={20} className="text-white" />
-            </div>
-            <div>
+            </div> */}
+            {/* <div>
               <h2 className="text-xl font-black text-white tracking-tight">
                 MED<span className="text-purple-300">OS</span>
               </h2>
               <p className="text-[8px] font-bold text-purple-300 tracking-[0.2em] uppercase mt-0.5">
                 Patient Portal
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
 

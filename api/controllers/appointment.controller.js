@@ -346,3 +346,16 @@ export const generateAppointmentQR = asyncHandler(async (req, res, next) => {
     qr,
   });
 });
+
+export const getPreviousAppointment = asyncHandler(async (req, res, next) => {
+  // const { appointmentId } = req.params;
+  const { email } = req.body;
+
+  const prevAppointments = await Appointment.findOne({ email }).sort({ createdAt: -1 })
+  if (!prevAppointments) return next(new ErrorHandler("not visited", 500));
+
+    res.status(200).json({
+    success: true,
+    prevAppointments,
+  });
+});
