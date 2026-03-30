@@ -20,7 +20,7 @@ export const createPrescriptionThunk = createAsyncThunk(
   async (prescriptionData, { rejectWithValue }) => {
     try {
       const { data } = await api.post("/prescription/create", prescriptionData);
-      console.log(data);
+      // console.log(data);
       return data?.prescription || data;
     } catch (error) {
       return rejectWithValue(

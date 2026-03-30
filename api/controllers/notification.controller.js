@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import { asyncHandler } from "../utils/asyncHandler.util.js";
 import ErrorHandler from "../utils/errorHandler.utils.js";
 import { Appointment } from "../models/Appointment.model.js";
+import cron from "node-cron";
 
 const sendAppointmentMail = async (appointment) => {
   const transporter = nodemailer.createTransport({
@@ -136,7 +137,6 @@ const sendProcessingMail = async (email, name) => {
 };
 export const sendProcessingMailNotification = asyncHandler(
   async (req, res, next) => {
-
     const { email, name } = req.body;
 
     if (!email) {
@@ -149,5 +149,27 @@ export const sendProcessingMailNotification = asyncHandler(
       success: true,
       message: "Processing mail sent",
     });
-  }
+  },
 );
+
+
+const getTimes = (freq) => {
+  if (freq == 1) return ["09:00"];
+  if (freq == 2) return ["09:00", "21:00"];
+  if (freq == 3) return ["09:00", "14:00", "21:00"];
+};
+
+export const scheduleSimpleReminder = (email, name, medicine) => {
+  const freq = Number(medicine.frequencyOfDose);
+  const times = getTimes(freq);
+
+  times.forEach((time) => {
+    const [hour, minute] = time.split(":");
+
+    cron.schedule(`${minute} ${hour} * * *`, async () => {
+      console.log("⏰ Sending reminder at", time);
+
+      await sendTakeMedicineMail(email, name, medicine, time);
+    });
+  });
+};

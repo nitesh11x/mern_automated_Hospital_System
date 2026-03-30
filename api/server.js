@@ -18,11 +18,13 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE"],
   }),
 );
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_secret: process.env.CLOUDINARY_API_SECRET,
   api_key: process.env.CLOUDINARY_API_KEY,
 });
+
 app.use(
   fileUpload({
     useTempFiles: true,
@@ -30,6 +32,7 @@ app.use(
     limits: { fileSize: 10 * 1024 * 1024 },
   }),
 );
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -49,6 +52,7 @@ import appointmentRouter from "./routes/appointment.route.js";
 import reviewRouter from "./routes/review.route.js";
 import prescriptionRouter from "./routes/prescription.route.js";
 import notificationRouter from "./routes/notification.route.js";
+import { startMedicineScheduler } from "./controllers/prescription.controller.js";
 
 app.use("/api/patient", userRouter);
 app.use("/api/otp", otpRouter);
@@ -60,7 +64,12 @@ app.use("/api/prescription", prescriptionRouter);
 app.use("/api/notification", notificationRouter);
 
 app.use(errorMiddleware);
-await connectDb();
 
-const PORT = process.env.PORT;
-app.listen(PORT, () => console.log(`server is live on ${PORT}`));
+const startServer = async () => {
+    await connectDb();
+    await startMedicineScheduler();
+    const PORT = process.env.PORT || 1111;
+    app.listen(PORT, () => console.log(`server is live on ${PORT}`));
+};
+
+startServer();
