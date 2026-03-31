@@ -35,7 +35,7 @@ export const getAllReviewsThunk = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/review/get");
-      return response.data.reviews; // ✅ FIX
+      return response.data.reviews; 
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch reviews",
@@ -49,7 +49,7 @@ export const getDoctorReviewsThunk = createAsyncThunk(
   async (doctorId, { rejectWithValue }) => {
     try {
       const response = await api.get(`/review/doctor/${doctorId}`);
-      return response.data.reviews; // ✅ FIX
+      return response.data.reviews;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch reviews",
@@ -91,7 +91,6 @@ const reviewSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-
       .addCase(addReviewThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -100,7 +99,9 @@ const reviewSlice = createSlice({
       .addCase(addReviewThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.success = true;
-        state.reviews = action.payload;
+        state.reviews = Array.isArray(state.reviews) 
+          ? [action.payload, ...state.reviews] 
+          : [action.payload];
       })
       .addCase(addReviewThunk.rejected, (state, action) => {
         state.loading = false;
@@ -112,11 +113,12 @@ const reviewSlice = createSlice({
       })
       .addCase(getAllReviewsThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.reviews = action.payload;
+        state.reviews = Array.isArray(action.payload) ? action.payload : [];
       })
       .addCase(getAllReviewsThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.reviews = []; 
       })
 
       .addCase(getDoctorReviewsThunk.pending, (state) => {
@@ -124,11 +126,12 @@ const reviewSlice = createSlice({
       })
       .addCase(getDoctorReviewsThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.reviews = action.payload;
+        state.reviews = Array.isArray(action.payload) ? action.payload : [];
       })
       .addCase(getDoctorReviewsThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.reviews = [];
       })
 
       .addCase(deleteReviewThunk.pending, (state) => {
@@ -136,9 +139,11 @@ const reviewSlice = createSlice({
       })
       .addCase(deleteReviewThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.reviews = state.reviews.filter(
-          (review) => review._id !== action.payload,
-        );
+        if (Array.isArray(state.reviews)) {
+          state.reviews = state.reviews.filter(
+            (review) => review._id !== action.payload,
+          );
+        }
       })
       .addCase(deleteReviewThunk.rejected, (state, action) => {
         state.loading = false;
