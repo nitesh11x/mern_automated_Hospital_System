@@ -4,15 +4,16 @@ import {
     getPrescriptionById,
     getPatientPrescriptions,
     getDoctorPrescriptions,
-    getReminderStatus  // Add this
+    getReminderStatus
 } from '../controllers/prescription.controller.js';
-
+import { isDoctorAuth, isPatientAuth } from '../middlewares/auth.middleware.js';
 const router = express.Router();
 
-router.post('/create', createPrescription);
-router.get('/:id', getPrescriptionById);
-router.get('/patient/my-prescriptions', getPatientPrescriptions);
-router.get('/doctor/my-prescriptions', getDoctorPrescriptions);
-router.get('/reminder-status/:prescriptionId', getReminderStatus);  // Add this route for debugging
+router.post('/create', isDoctorAuth, createPrescription);
+
+router.get('/doctor/my-prescriptions', isDoctorAuth, getDoctorPrescriptions);
+router.get('/reminder-status/:prescriptionId', isDoctorAuth, getReminderStatus);
+router.get('/patient/me', isPatientAuth, getPatientPrescriptions);
+router.get('/:appointmentId', isDoctorAuth, getPrescriptionById);
 
 export default router;

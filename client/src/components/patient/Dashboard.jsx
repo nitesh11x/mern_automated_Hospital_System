@@ -25,10 +25,9 @@ import {
 import PatientSettings from "./PatientSettings";
 
 import { getPatientAppointments } from "../../redux/slices/appointment.slice";
-import { getPatientPrescriptionsThunk } from "../../redux/slices/prescription.slice";
+import { getPatientPrescriptionByIdThunk, getPatientPrescriptionsThunk } from "../../redux/slices/prescription.slice";
 import { getAllDoctorsThunk } from "../../redux/slices/doctor.slice";
 import { patientLogoutThunk } from "../../redux/slices/patient.slice";
-
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [qrModal, setQrModal] = useState(null);
@@ -43,7 +42,7 @@ const Dashboard = () => {
     (state) => state.appointment || {}
   );
   const { doctors = [] } = useSelector((state) => state.doctor || {});
-  const { prescriptions = [] } = useSelector((state) => state.prescription || {});
+  const { prescriptions = [], prescription } = useSelector((state) => state.prescription || {});
 
   useEffect(() => {
     dispatch(getPatientAppointments());
@@ -84,12 +83,21 @@ const Dashboard = () => {
     }
   };
 
-  const handleOpenPrescriptionFromVisit = (appointmentId) => {
-    const found = prescriptions?.find((p) => p.appointmentId === appointmentId);
+  const handleOpenPrescriptionFromVisit = async (appointmentId) => {
+    const found = prescriptions?.find(
+      (p) => String(p.appointmentId) === String(appointmentId)
+    );
     if (found) {
       setPrescriptionModal(found);
     } else {
-      toast.error("Prescription not yet uploaded for this visit");
+      try {
+        const res = await dispatch(
+          getPatientPrescriptionByIdThunk(appointmentId)
+        ).unwrap();
+        setPrescriptionModal(res.prescription);
+      } catch (error) {
+        toast.error("Prescription not yet uploaded for this visit");
+      }
     }
   };
 
@@ -222,9 +230,9 @@ const Dashboard = () => {
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-8 h-0.5 bg-linear-to-r from-purple-600 to-indigo-600 rounded-full" />
-                <p className="text-[10px] font-bold text-purple-500 uppercase tracking-widest">
+                {/* <p className="text-[10px] font-bold text-purple-500 uppercase tracking-widest">
                   Authenticated Health Profile
-                </p>
+                </p> */}
               </div>
               <h1 className="text-4xl md:text-4xl font-black bg-linear-to-r from-purple-700 via-purple-600 to-indigo-600 bg-clip-text text-transparent tracking-tight">
                 Welcome, <span className="bg-linear-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{patient?.firstName || "Patient"}</span>

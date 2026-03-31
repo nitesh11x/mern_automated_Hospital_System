@@ -60,7 +60,7 @@ const DoctorDashboard = () => {
   useEffect(() => {
     if (prescriptionSuccess) {
       setPrescriptionApptId(null);
-      setPrescriptionForm({ diagnosis: "", advice: "", medicines: [{ name: "", dosage: "", duration: "",frequencyOfDose:"" }] });
+      setPrescriptionForm({ diagnosis: "", advice: "", medicines: [{ name: "", dosage: "", duration: "", frequencyOfDose: "" }] });
       dispatch(getDoctorAppointments());
       setTimeout(() => dispatch(resetPrescriptionState()), 3000);
     }
@@ -73,7 +73,7 @@ const DoctorDashboard = () => {
   const addMedicineRow = () => {
     setPrescriptionForm({
       ...prescriptionForm,
-      medicines: [...prescriptionForm.medicines, { name: "", dosage: "", duration: "",frequencyOfDose:"" }]
+      medicines: [...prescriptionForm.medicines, { name: "", dosage: "", duration: "", frequencyOfDose: "" }]
     });
   };
 
@@ -92,13 +92,20 @@ const DoctorDashboard = () => {
   const submitPrescription = (e) => {
     e.preventDefault();
     const apt = appointments?.find(a => a._id === prescriptionApptId);
-    dispatch(createPrescriptionThunk({
+
+    if (!apt) {
+      console.error("Appointment not found");
+      return;
+    }
+    console.log("Submitting prescription for appointment:", apt._id);
+    const prescriptionData = {
       appointmentId: apt._id,
-      patientId: apt.patientId?._id || apt.patientId,
       diagnosis: prescriptionForm.diagnosis,
       advice: prescriptionForm.advice,
       medicines: prescriptionForm.medicines
-    }));
+    };
+    console.log("Prescription data being sent:", prescriptionData);
+    dispatch(createPrescriptionThunk(prescriptionData));
   };
 
   const stats = {
@@ -446,7 +453,7 @@ const DoctorDashboard = () => {
 
                   {prescriptionForm.medicines.map((med, idx) => (
                     <div key={idx} className="grid grid-cols-12 gap-3 items-end bg-purple-50/30 p-3 rounded-sm border border-purple-100">
-                      <div className="col-span-5">
+                      <div className="col-span-2">
                         <label className="text-[8px] font-bold text-purple-500 uppercase block mb-1">Medication Name</label>
                         <input
                           placeholder="e.g., Paracetamol"
