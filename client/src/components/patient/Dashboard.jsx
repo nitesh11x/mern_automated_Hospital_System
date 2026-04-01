@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import PatientSettings from "./PatientSettings";
 
-import { getPatientAppointments } from "../../redux/slices/appointment.slice";
+import { cancelAppointmentThunk, getPatientAppointments } from "../../redux/slices/appointment.slice";
 import { getPatientPrescriptionByIdThunk, getPatientPrescriptionsThunk } from "../../redux/slices/prescription.slice";
 import { getAllDoctorsThunk } from "../../redux/slices/doctor.slice";
 import { patientLogoutThunk } from "../../redux/slices/patient.slice";
@@ -545,7 +545,7 @@ const Dashboard = () => {
                               </div>
                             </td>
 
-                            <td className="px-6 py-4 text-right">
+                            <td className="px-6 flex gap-4 py-4 text-right">
                               {px.qrCode ? (
                                 <button
                                   onClick={() => setQrModal(px.qrCode)}
@@ -556,6 +556,20 @@ const Dashboard = () => {
                               ) : (
                                 <span className="text-[9px] font-bold text-purple-300 mr-4">NO QR</span>
                               )}
+                              <button
+                                className="bg-linear-to-r from-green-600 to-green-600 text-white px-5 py-2 rounded-sm text-[9px] font-black uppercase tracking-wider hover:shadow-lg transition-all transform active:scale-95"
+                              >
+                                Payment
+                              </button>
+                              <button
+                                onClick={() => {
+                                  dispatch(cancelAppointmentThunk({ appointmentId: px._id, status: "Cancelled", }))
+                                  toast.success("appointment cancelled successfully")
+                                }}
+                                className="bg-linear-to-r from-red-600 to-red-600 text-white px-5 py-2 rounded-sm text-[9px] font-black uppercase tracking-wider hover:shadow-lg transition-all transform active:scale-95"
+                              >
+                                Cancel
+                              </button>
                             </td>
                           </tr>
                         );

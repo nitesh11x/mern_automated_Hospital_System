@@ -128,16 +128,32 @@ export const deleteAppointmentByIdThunk = createAsyncThunk(
     }
   },
 );
-
 export const getAvailableSlotsThunk = createAsyncThunk(
   "appointment/getAvailableSlots",
   async ({ doctorId, date }, { rejectWithValue }) => {
     try {
-      const { data } = await api.get(`/appointment/${doctorId}/slots?date=${date}`);
+      const { data } = await api.get(
+        `/appointment/${doctorId}/slots?date=${date}`,
+      );
       return data.availableSlots;
     } catch (error) {
       return rejectWithValue(
         error?.response?.data?.message || "Failed to fetch slots",
+      );
+    }
+  },
+);
+export const cancelAppointmentThunk = createAsyncThunk(
+  "appointment/cancel",
+  async ({ appointmentId, status }, { rejectWithValue }) => {
+    try {
+      const { data } = await api.put(`/appointment/cancel/${appointmentId}`, {
+        status,
+      });
+      return data?.appointment || data;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Failed to Cancel appointment",
       );
     }
   },
@@ -167,7 +183,7 @@ const appointmentSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // ================= Book Appointment 
+      // ================= Book Appointment
       .addCase(bookAppointment.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -183,7 +199,7 @@ const appointmentSlice = createSlice({
         state.error = action.payload;
         state.bookingSuccess = false;
       })
-      // ================= FETCH 
+      // ================= FETCH
       .addCase(getAllAppointments.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -210,7 +226,7 @@ const appointmentSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ================= DOCTOR APPOINTMENTS 
+      // ================= DOCTOR APPOINTMENTS
       .addCase(getDoctorAppointments.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -223,7 +239,7 @@ const appointmentSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      // ================= UPDATE STATUS 
+      // ================= UPDATE STATUS
       .addCase(updateAppointmentStatus.fulfilled, (state, action) => {
         const updatedAppointment = action.payload;
         state.appointments = state.appointments.map((appt) =>
@@ -238,7 +254,7 @@ const appointmentSlice = createSlice({
           appt._id === updatedAppointment._id ? updatedAppointment : appt,
         );
       })
-      // ================= resheduel appoitment 
+      // ================= resheduel appoitment
       .addCase(reScheduelAppointmentByIdThunk.fulfilled, (state, action) => {
         const updated = action.payload;
         const index = state.appointments.findIndex(
@@ -273,6 +289,18 @@ const appointmentSlice = createSlice({
         state.slotsLoading = false;
         state.error = action.payload;
         state.availableSlots = null;
+      })
+      // cancel
+      .addCase(cancelAppointmentThunk.pending, (state) => {
+        state.slotsLoading = true;
+        state.error = null;
+      })
+      .addCase(cancelAppointmentThunk.fulfilled, (state, action) => {
+        state.slotsLoading = false;
+      })
+      .addCase(cancelAppointmentThunk.rejected, (state, action) => {
+        state.slotsLoading = false;
+        state.error = action.payload;
       });
   },
 });
