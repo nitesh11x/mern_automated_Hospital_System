@@ -44,6 +44,7 @@ import DoctorManage from './components/doctor/DoctorManage';
 import BookAppointment from './components/appointment/BookAppointment';
 import ShowAppointments from './components/appointment/ShowAppointments';
 import BookAppointmentOfSpecificDoctor from './components/appointment/BookAppointmentOfSpecificDoctor';
+import DoctorRoute from './utils/DoctorRoute';
 
 function App() {
   const dispatch = useDispatch();
@@ -75,17 +76,17 @@ function App() {
           <Route path='/patient/login' element={<Login />}></Route>
           <Route path='/patient/register' element={<Register />}></Route>
           <Route path='/patient/dashboard' element={<PatientRoute><Dashboard /></PatientRoute>}></Route>
-          <Route path='/patient/me' element={<Profile />}></Route>
-          <Route path='/patient/all' element={<Patients />}></Route>
+          <Route path='/patient/me' element={<PatientRoute><Profile /></PatientRoute>}></Route>
+          <Route path='/patient/all' element={<AdminRoute><Patients /></AdminRoute>}></Route>
           <Route path='/patient/manage' element={<AdminRoute><PatientManage /></AdminRoute>}></Route>
 
           {/* doctor routes  */}
           <Route path='/doctor/login' element={<DoctorLogin />}></Route>
-          <Route path='/doctor/register' element={<DoctorRegister />}></Route>
-          <Route path='/doctor/dashboard' element={<DoctorDashboard />}></Route>
+          <Route path='/doctor/register' element={<AdminRoute><DoctorRegister /></AdminRoute>}></Route>
+          <Route path='/doctor/dashboard' element={<DoctorRoute><DoctorDashboard /></DoctorRoute>}></Route>
           <Route path='/doctor/all' element={<Doctors />}></Route>
           <Route path='/doctor/all/:id' element={< DoctorDetail />}></Route >
-          <Route path='/doctor/:id' element={<DoctorProfile />}></Route>
+          <Route path='/doctor/:id' element={<DoctorRoute><DoctorProfile /></DoctorRoute>}></Route>
           <Route path='/doctor/detail' element={<DoctorDetail />}></Route>
           <Route path='/doctor/manage' element={<AdminRoute><DoctorManage /></AdminRoute>}></Route>
 
@@ -93,8 +94,8 @@ function App() {
           <Route path='/admin/login' element={<AdminLogin />}></Route >
           <Route path='/admin/register' element={<AdminRoute><AdminRegister /></AdminRoute>}></Route >
           <Route path='/admin/dashboard' element={<AdminRoute><AdminDashboard /></AdminRoute>}></Route >
-          <Route path='/admin/detail' element={<AdminDetail />}></Route >
-          <Route path='/admin/:id' element={<AdminProfile />}></Route >
+          <Route path='/admin/detail' element={<AdminRoute><AdminDetail /></AdminRoute>}></Route >
+          <Route path='/admin/:id' element={<AdminRoute><AdminProfile /></AdminRoute>}></Route >
 
 
           {/* appointment routes  */}

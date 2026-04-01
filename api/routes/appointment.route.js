@@ -12,7 +12,8 @@ import {
   reScheduelAppointmentById,
   updateAppointmentPaymentStatus,
   updateAppointmentStatus,
-  getDoctorSlots
+  getDoctorSlots,
+  cancelAppointmentById
 } from "../controllers/appointment.controller.js";
 
 import {
@@ -38,6 +39,7 @@ router.get("/:appointmentId", isPatientAuth, getAppointmentById);
 router.put("/status/:id", isAdminAuth, updateAppointmentStatus);
 router.put("/status/payment/:id", isAdminAuth, updateAppointmentPaymentStatus);
 router.put("/rescheduel/:appointmentId", isAdminAuth, reScheduelAppointmentById);
+router.put("/cancel/:appointmentId",  cancelAppointmentById);
 
 router.delete("/delete/:appointmentId", isAdminAuth, deleteAppointmentById);
 
