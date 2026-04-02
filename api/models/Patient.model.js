@@ -106,6 +106,13 @@ const patientSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    address: {
+      type: String,
+    },
+    bloodGroup: {
+      type: String,
+      default:null
+    },
   },
   { timestamps: true },
 );
