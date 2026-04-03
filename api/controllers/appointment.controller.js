@@ -4,6 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler.util.js";
 import ErrorHandler from "../utils/errorHandler.utils.js";
 import QRCode from "qrcode";
 import { Doctor } from "../models/Doctor.model.js";
+import { Patient } from "../models/Patient.model.js";
 export const bookAppointment = asyncHandler(async (req, res, next) => {
   const {
     doctorId,
@@ -18,7 +19,7 @@ export const bookAppointment = asyncHandler(async (req, res, next) => {
   } = req.body;
 
   const patientId = req.patient?.id;
-
+  const patient = await Patient.findById(patientId);
   if (!patientId) {
     return next(new ErrorHandler("Unauthorized", 401));
   }
@@ -61,6 +62,10 @@ export const bookAppointment = asyncHandler(async (req, res, next) => {
       isVisit: !!previousAppointment,
       previousAppointmentId: previousAppointment?.appointmentId || null,
     });
+
+    patient.appointmentId = appointment._id;
+    patient.doctorId = appointment.doctorId;
+    await patient.save();
 
     res.status(201).json({
       success: true,

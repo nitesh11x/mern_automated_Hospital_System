@@ -52,6 +52,7 @@ import appointmentRouter from "./routes/appointment.route.js";
 import reviewRouter from "./routes/review.route.js";
 import prescriptionRouter from "./routes/prescription.route.js";
 import notificationRouter from "./routes/notification.route.js";
+import medicineRouter from "./routes/medicine.route.js";
 import { startMedicineScheduler } from "./controllers/prescription.controller.js";
 
 app.use("/api/patient", userRouter);
@@ -62,6 +63,7 @@ app.use("/api/review", reviewRouter);
 app.use("/api/appointment", appointmentRouter);
 app.use("/api/prescription", prescriptionRouter);
 app.use("/api/notification", notificationRouter);
+app.use("/api/medicine", medicineRouter);
 
 app.use(errorMiddleware);
 

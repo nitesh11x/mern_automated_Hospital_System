@@ -41,6 +41,7 @@ import {
 } from "lucide-react";
 import { changeOtpFlagThunk } from "../../redux/slices/otp.slice";
 import { toast } from "react-hot-toast";
+import ShowMedicine from "../medicine/ShowMedicine";
 
 const COLORS = {
   primary: "#8B5CF6",
@@ -203,13 +204,25 @@ const AdminDashboard = () => {
           <div className="flex justify-between items-end pt-4 mb-8 flex-wrap gap-4">
             <div>
               <h1 className="text-4xl font-black bg-linear-to-r from-purple-700 via-purple-600 to-indigo-600 bg-clip-text text-transparent pt-6">
-                {activeTab === "dashboard"
-                  ? "Dashboard"
-                  : activeTab === "doctors"
-                    ? "Medical Faculty"
-                    : activeTab === "patients"
-                      ? "Patient Registry"
-                      : "Appointments Overview"}
+                {
+                  activeTab === "dashboard"
+                    ? "Dashboard"
+                    : activeTab === "doctors"
+                      ? "Doctors"
+                      : activeTab === "patients"
+                        ? "Patients"
+                        : activeTab === "appointments"
+                          ? "Appointments"
+                          : activeTab === "medicines"
+                            ? "Medicines"
+                            : activeTab === "faculty"
+                              ? "Faculty"
+                              : activeTab === "setting"
+                                ? "Setting"
+                                : activeTab === "reviews"
+                                  ? "Reviews"
+                                  : "Dashboard"
+                }
               </h1>
               <p className="text-purple-500 text-[11px] font-semibold uppercase tracking-wider mt-2 flex items-center gap-2">
                 <Activity size={12} />
@@ -457,7 +470,7 @@ const AdminDashboard = () => {
           )}
           {activeTab === "medicines" && (
             <div className="-mx-6 -mt-10">
-              {/* <ShowAppointments isEmbedded /> */}
+              <ShowMedicine isEmbedded />
             </div>
           )}
           {activeTab === "faculty" && (
