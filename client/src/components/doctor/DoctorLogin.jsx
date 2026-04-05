@@ -37,7 +37,7 @@ const DoctorLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-100 to-indigo-50 flex items-center justify-center font-sans relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-indigo-100 via-purple-100 to-indigo-50 flex items-center justify-center font-sans relative overflow-hidden">
       {/* Structural Decorative Elements */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
         style={{ backgroundImage: `radial-gradient(#4F46E5 1px, transparent 1px)`, backgroundSize: '40px 40px' }} />
@@ -45,7 +45,7 @@ const DoctorLogin = () => {
       <div className="max-w-5xl w-full grid lg:grid-cols-2 bg-white shadow-2xl rounded-sm overflow-hidden border border-indigo-100 m-6">
 
         {/* Left Column: Visual Branding - Light Purple Theme */}
-        <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-indigo-600 to-purple-700 p-16 text-white relative overflow-hidden">
+        <div className="hidden lg:flex flex-col justify-between bg-linear-to-br from-indigo-600 to-purple-700 p-16 text-white relative overflow-hidden">
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-8">
               <Activity className="text-indigo-300" size={24} />

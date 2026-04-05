@@ -187,6 +187,7 @@ export const bookAppointmentOfSpecificDoctor = asyncHandler(
     }
   }
 );
+
 export const approveAppointment = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const { approvedTimeSlot } = req.body;

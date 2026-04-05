@@ -145,7 +145,7 @@ const DoctorDashboard = () => {
       appointmentId: apt._id,
       diagnosis: prescriptionForm.diagnosis,
       advice: prescriptionForm.advice,
-      medicines: prescriptionForm.medicines
+      medicines: prescriptionForm.medicines,
     };
     console.log("Prescription data being sent:", prescriptionData);
     dispatch(createPrescriptionThunk(prescriptionData));

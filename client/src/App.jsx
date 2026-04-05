@@ -45,6 +45,7 @@ import BookAppointment from './components/appointment/BookAppointment';
 import ShowAppointments from './components/appointment/ShowAppointments';
 import BookAppointmentOfSpecificDoctor from './components/appointment/BookAppointmentOfSpecificDoctor';
 import DoctorRoute from './utils/DoctorRoute';
+import PatientDetail from './components/patient/PatientDetail';
 
 function App() {
   const dispatch = useDispatch();
@@ -79,7 +80,7 @@ function App() {
           <Route path='/patient/me' element={<PatientRoute><Profile /></PatientRoute>}></Route>
           <Route path='/patient/all' element={<AdminRoute><Patients /></AdminRoute>}></Route>
           <Route path='/patient/manage' element={<AdminRoute><PatientManage /></AdminRoute>}></Route>
-          <Route path='/patient/:patientId' element={<Profile />}></Route>
+          <Route path='/patient/:patientId' element={<PatientDetail />}></Route>
 
           {/* doctor routes  */}
           <Route path='/doctor/login' element={<DoctorLogin />}></Route>

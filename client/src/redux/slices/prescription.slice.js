@@ -28,13 +28,11 @@ export const getPatientPrescriptionByIdThunk = createAsyncThunk(
     }
   },
 );
-
 export const createPrescriptionThunk = createAsyncThunk(
   "prescription/create",
   async (prescriptionData, { rejectWithValue }) => {
     try {
-      const { patientId, ...cleanData } = prescriptionData;
-      const { data } = await api.post("/prescription/create", cleanData);
+      const { data } = await api.post("/prescription/create", prescriptionData);
       return data?.prescription || data;
     } catch (error) {
       console.error(
@@ -47,7 +45,6 @@ export const createPrescriptionThunk = createAsyncThunk(
     }
   },
 );
-
 const initialState = {
   prescriptions: [],
   prescription: null,
