@@ -20,19 +20,23 @@ import {
   Stethoscope,
   ArrowRight,
   User, Phone, Mail, MapPin, Heart, Activity, Star, CheckCircle, CheckCircle2,
-  XCircle, Clock, AlertCircle, CreditCard, QrCode, Eye, Download, Settings, ScanLine
+  XCircle, Clock, AlertCircle, CreditCard, QrCode, Eye, Download, Settings, ScanLine, Loader2
 } from "lucide-react";
 import PatientSettings from "./PatientSettings";
 
-import { getPatientAppointments } from "../../redux/slices/appointment.slice";
+import { cancelAppointmentThunk, getPatientAppointments } from "../../redux/slices/appointment.slice";
 import { getPatientPrescriptionByIdThunk, getPatientPrescriptionsThunk } from "../../redux/slices/prescription.slice";
 import { getAllDoctorsThunk } from "../../redux/slices/doctor.slice";
 import { patientLogoutThunk } from "../../redux/slices/patient.slice";
+
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [qrModal, setQrModal] = useState(null);
   const [prescriptionModal, setPrescriptionModal] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [paymentModal, setPaymentModal] = useState(null);
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -101,6 +105,37 @@ const Dashboard = () => {
     }
   };
 
+  const handlePayment = async (appointment) => {
+    setPaymentModal(appointment);
+    setPaymentSuccess(false);
+  };
+
+  const processPayment = async () => {
+    setPaymentLoading(true);
+    // Simulate payment processing
+    setTimeout(() => {
+      setPaymentLoading(false);
+      setPaymentSuccess(true);
+      toast.success("Payment successful!");
+      // After 2 seconds, close modal and refresh appointments
+      setTimeout(() => {
+        setPaymentModal(null);
+        setPaymentSuccess(false);
+        dispatch(getPatientAppointments());
+      }, 2000);
+    }, 2000);
+  };
+
+  const handleCancelAppointment = async (appointmentId) => {
+    try {
+      await dispatch(cancelAppointmentThunk({ appointmentId, status: "Cancelled" })).unwrap();
+      toast.success("Appointment cancelled successfully");
+      dispatch(getPatientAppointments());
+    } catch (error) {
+      toast.error("Failed to cancel appointment");
+    }
+  };
+
   const renderStatusBadge = (status) => {
     const s = (status || "").toLowerCase();
     if (s === "approved") {
@@ -145,10 +180,10 @@ const Dashboard = () => {
   const upcomingAppointment = getUpcomingAppointment();
 
   return (
-    <div className="flex min-h-screen bg-linear-to-br  from-purple-50 via-white to-indigo-50 font-sans pt-16 lg:pt-0">
+    <div className="flex min-h-screen bg-linear-to-br from-purple-50 via-white to-indigo-50 font-sans pt-16 lg:pt-0">
 
       {/* MOBILE HEADER */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-16  bg-white border-b border-purple-100 z-50 flex items-center justify-between px-6 shadow-sm">
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-purple-100 z-50 flex items-center justify-between px-6 shadow-sm">
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-sm bg-linear-to-br from-purple-500 to-indigo-500 flex items-center justify-center shadow-md">
             <Heart size={14} className="text-white" />
@@ -167,19 +202,9 @@ const Dashboard = () => {
         fixed inset-y-0 left-0 z-40 w-72 bg-linear-to-b from-purple-900 via-purple-800 to-indigo-900 text-purple-200 transform transition-transform duration-300 lg:translate-x-0 lg:static lg:h-screen lg:top-0 flex flex-col shadow-2xl
         ${isSidebarOpen ? "translate-x-0 mt-16 lg:mt-0" : "-translate-x-full"}
       `}>
-        <div className="px-6  pb-4 border-b pt-20 border-purple-700/50">
+        <div className="px-6 pb-4 border-b pt-20 border-purple-700/50">
           <div className="flex items-center gap-3">
-            {/* <div className="h-10 w-10 rounded-sm bg-linear-to-br  from-purple-500 to-indigo-500 flex items-center justify-center shadow-lg">
-              <Heart size={20} className="text-white" />
-            </div> */}
-            {/* <div>
-              <h2 className="text-xl font-black text-white tracking-tight">
-                MED<span className="text-purple-300">OS</span>
-              </h2>
-              <p className="text-[8px] font-bold text-purple-300 tracking-[0.2em] uppercase mt-0.5">
-                Patient Portal
-              </p>
-            </div> */}
+            {/* Sidebar content */}
           </div>
         </div>
 
@@ -230,9 +255,6 @@ const Dashboard = () => {
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-8 h-0.5 bg-linear-to-r from-purple-600 to-indigo-600 rounded-full" />
-                {/* <p className="text-[10px] font-bold text-purple-500 uppercase tracking-widest">
-                  Authenticated Health Profile
-                </p> */}
               </div>
               <h1 className="text-4xl md:text-4xl font-black bg-linear-to-r from-purple-700 via-purple-600 to-indigo-600 bg-clip-text text-transparent tracking-tight">
                 Welcome, <span className="bg-linear-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{patient?.firstName || "Patient"}</span>
@@ -471,6 +493,8 @@ const Dashboard = () => {
                       patientAppointments.map((px) => {
                         const doctorId = typeof px.doctorId === "object" ? px.doctorId?._id : px.doctorId;
                         const doctor = doctorMap ? doctorMap[doctorId] : null;
+                        const isCancelled = px.status?.toLowerCase() === 'cancelled';
+                        const isPaid = px.paymentStatus === 'Paid';
 
                         const getStatusStyles = (status) => {
                           const s = status?.toLowerCase();
@@ -524,8 +548,8 @@ const Dashboard = () => {
 
                             <td className="px-6 py-4">
                               <div className="flex items-center gap-2">
-                                <div className={`w-2 h-2 rounded-full ${px.paymentStatus === 'Paid' ? 'bg-emerald-500 animate-pulse' : 'bg-amber-400'}`}></div>
-                                <span className={`text-[10px] font-bold ${px.paymentStatus === 'Paid' ? 'text-emerald-600' : 'text-amber-600'}`}>
+                                <div className={`w-2 h-2 rounded-full ${isPaid ? 'bg-emerald-500 animate-pulse' : 'bg-amber-400'}`}></div>
+                                <span className={`text-[10px] font-bold ${isPaid ? 'text-emerald-600' : 'text-amber-600'}`}>
                                   {px.paymentStatus || 'Unpaid'}
                                 </span>
                               </div>
@@ -545,7 +569,7 @@ const Dashboard = () => {
                               </div>
                             </td>
 
-                            <td className="px-6 py-4 text-right">
+                            <td className="px-6 flex gap-4 py-4 text-right">
                               {px.qrCode ? (
                                 <button
                                   onClick={() => setQrModal(px.qrCode)}
@@ -556,6 +580,32 @@ const Dashboard = () => {
                               ) : (
                                 <span className="text-[9px] font-bold text-purple-300 mr-4">NO QR</span>
                               )}
+                              
+                              {/* Payment Button - Disabled if already paid or appointment is cancelled */}
+                              <button
+                                onClick={() => handlePayment(px)}
+                                disabled={isPaid || isCancelled}
+                                className={`px-5 py-2 rounded-sm text-[9px] font-black uppercase tracking-wider transition-all transform active:scale-95 ${
+                                  isPaid || isCancelled
+                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                    : 'bg-linear-to-r from-green-600 to-green-600 text-white hover:shadow-lg'
+                                }`}
+                              >
+                                {isPaid ? 'Paid' : 'Payment'}
+                              </button>
+                              
+                              {/* Cancel Button - Disabled if already cancelled */}
+                              <button
+                                onClick={() => handleCancelAppointment(px._id)}
+                                disabled={isCancelled}
+                                className={`px-5 py-2 rounded-sm text-[9px] font-black uppercase tracking-wider transition-all transform active:scale-95 ${
+                                  isCancelled
+                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                    : 'bg-linear-to-r from-red-600 to-red-600 text-white hover:shadow-lg'
+                                }`}
+                              >
+                                {isCancelled ? 'Cancelled' : 'Cancel'}
+                              </button>
                             </td>
                           </tr>
                         );
@@ -711,9 +761,96 @@ const Dashboard = () => {
         </div>
       </main>
 
-      {/* MODALS */}
+      {/* PAYMENT MODAL */}
       <AnimatePresence>
-        {/* QR MODAL */}
+        {paymentModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-sm p-6 shadow-2xl text-center max-w-md w-full border-t-4 border-purple-600"
+            >
+              {!paymentSuccess ? (
+                <>
+                  <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-4">
+                    <CreditCard size={28} className="text-purple-600" />
+                  </div>
+                  <h3 className="text-lg font-black mb-2 text-slate-800">Complete Payment</h3>
+                  <p className="text-[10px] text-purple-500 mb-4">
+                    Appointment with Dr. {paymentModal.doctorId?.firstName} {paymentModal.doctorId?.lastName}
+                  </p>
+                  
+                  <div className="bg-purple-50 p-4 rounded-sm mb-6">
+                    <div className="flex justify-between mb-2">
+                      <span className="text-[10px] font-bold text-purple-600">Consultation Fee</span>
+                      <span className="text-sm font-black text-purple-700">₹500</span>
+                    </div>
+                    <div className="flex justify-between border-t border-purple-200 pt-2 mt-2">
+                      <span className="text-[10px] font-bold text-purple-600">Total Amount</span>
+                      <span className="text-base font-black text-purple-700">₹500</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 mb-6">
+                    <button className="w-full py-3 bg-blue-600 text-white rounded-sm text-[10px] font-bold uppercase tracking-wider hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
+                      <CreditCard size={14} /> Pay with Card
+                    </button>
+                    <button className="w-full py-3 bg-emerald-600 text-white rounded-sm text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-700 transition-all flex items-center justify-center gap-2">
+                      <QrCode size={14} /> Pay with UPI
+                    </button>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      onClick={processPayment}
+                      disabled={paymentLoading}
+                      className="flex-1 py-3 text-[10px] font-bold bg-linear-to-r from-purple-600 to-indigo-600 text-white rounded-sm uppercase tracking-widest hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                    >
+                      {paymentLoading ? (
+                        <>
+                          <Loader2 size={12} className="animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        'Pay Now'
+                      )}
+                    </button>
+                    <button
+                      onClick={() => setPaymentModal(null)}
+                      className="flex-1 py-3 text-[10px] font-bold border border-purple-200 text-purple-600 rounded-sm uppercase tracking-widest hover:bg-purple-50 transition-all"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle2 size={28} className="text-emerald-600" />
+                  </div>
+                  <h3 className="text-lg font-black mb-2 text-slate-800">Payment Successful!</h3>
+                  <p className="text-[10px] text-purple-500 mb-6">
+                    Your payment has been processed successfully.
+                  </p>
+                  <div className="animate-bounce mb-6">
+                    <CheckCircle size={48} className="text-emerald-500 mx-auto" />
+                  </div>
+                  <button
+                    onClick={() => setPaymentModal(null)}
+                    className="w-full py-3 text-[10px] font-bold bg-linear-to-r from-emerald-600 to-green-600 text-white rounded-sm uppercase tracking-widest hover:shadow-lg transition-all"
+                  >
+                    Close
+                  </button>
+                </>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* QR MODAL */}
+      <AnimatePresence>
         {qrModal && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-sm p-6 shadow-2xl text-center max-w-sm w-full border-t-4 border-purple-600">
@@ -736,8 +873,10 @@ const Dashboard = () => {
             </motion.div>
           </div>
         )}
+      </AnimatePresence>
 
-        {/* PRESCRIPTION MODAL */}
+      {/* PRESCRIPTION MODAL */}
+      <AnimatePresence>
         {prescriptionModal && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} className="bg-white w-full max-w-2xl rounded-sm shadow-2xl overflow-hidden border border-purple-100">
