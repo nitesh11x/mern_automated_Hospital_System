@@ -69,7 +69,6 @@ const AdminDashboard = () => {
   const { doctors } = useSelector((state) => state.doctor);
   const { appointments } = useSelector((state) => state.appointment);
   const { bypassOtp } = useSelector((state) => state.otp);
-  console.log(patients.length)
 
   useEffect(() => {
     if (isAdminAuthenticated) {

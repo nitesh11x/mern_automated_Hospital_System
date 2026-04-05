@@ -158,7 +158,21 @@ export const cancelAppointmentThunk = createAsyncThunk(
     }
   },
 );
-
+export const getPreviousAppointmentByEmailThunk = createAsyncThunk(
+  "appointment/previous",
+  async ({ email }, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get("/appointment/previous", {
+        params: { email },
+      });
+      return data.prevAppointments;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Failed to fetch appointments",
+      );
+    }
+  },
+);
 const initialState = {
   appointments: [],
   patientAppointments: null,
@@ -167,6 +181,7 @@ const initialState = {
   loading: false,
   error: null,
   bookingSuccess: false,
+  previousAppointments: [],
 };
 
 const appointmentSlice = createSlice({
@@ -300,6 +315,22 @@ const appointmentSlice = createSlice({
       })
       .addCase(cancelAppointmentThunk.rejected, (state, action) => {
         state.slotsLoading = false;
+        state.error = action.payload;
+      })
+      //previous appointment by email
+      .addCase(getPreviousAppointmentByEmailThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getPreviousAppointmentByEmailThunk.fulfilled,
+        (state, action) => {
+          state.loading = false;
+          state.previousAppointments = action.payload;
+        },
+      )
+      .addCase(getPreviousAppointmentByEmailThunk.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload;
       });
   },

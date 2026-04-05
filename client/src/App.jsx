@@ -16,7 +16,7 @@ import OtpForm from './components/common/OtpForm';
 import Services from './components/section/Services';
 import LoginDashboard from './components/common/LoginDashboard';
 
-import Profile from './components/patient/Profile'
+import Profile from './components/patient/PatientDetail'
 import Login from './components/patient/Login'
 import Register from './components/patient/Register'
 import Dashboard from './components/patient/Dashboard'
@@ -79,11 +79,12 @@ function App() {
           <Route path='/patient/me' element={<PatientRoute><Profile /></PatientRoute>}></Route>
           <Route path='/patient/all' element={<AdminRoute><Patients /></AdminRoute>}></Route>
           <Route path='/patient/manage' element={<AdminRoute><PatientManage /></AdminRoute>}></Route>
+          <Route path='/patient/:patientId' element={<Profile />}></Route>
 
           {/* doctor routes  */}
           <Route path='/doctor/login' element={<DoctorLogin />}></Route>
           <Route path='/doctor/register' element={<AdminRoute><DoctorRegister /></AdminRoute>}></Route>
-          <Route path='/doctor/dashboard' element={<DoctorRoute><DoctorDashboard /></DoctorRoute>}></Route>
+          <Route path='/doctor/dashboard' element={<DoctorDashboard />}></Route>
           <Route path='/doctor/all' element={<Doctors />}></Route>
           <Route path='/doctor/all/:id' element={< DoctorDetail />}></Route >
           <Route path='/doctor/:id' element={<DoctorRoute><DoctorProfile /></DoctorRoute>}></Route>

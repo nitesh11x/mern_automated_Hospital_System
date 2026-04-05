@@ -141,23 +141,23 @@ export const patientProfile = asyncHandler(async (req, res, next) => {
 });
 
 export const getPatientById = asyncHandler(async (req, res, next) => {
-  const patientId = req.params;
+  const { patientId } = req.params;
   const patient = await Patient.findById(patientId).select("-password");
   if (!patient) {
     return next(new ErrorHandler("Invalid ID", 404));
   }
+
   res.status(200).json({
+    success: true,
     message: "Patient found successfully",
     patient,
   });
 });
 
-
-
 export const updatePatientProfile = asyncHandler(async (req, res, next) => {
   const patientId = req.patient.id;
   const { firstName, lastName, phone, dob, address, gender } = req.body;
-  
+
   const updateData = {};
   if (firstName) updateData.firstName = firstName;
   if (lastName) updateData.lastName = lastName;
@@ -169,7 +169,7 @@ export const updatePatientProfile = asyncHandler(async (req, res, next) => {
   const patient = await Patient.findByIdAndUpdate(
     patientId,
     { $set: updateData },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   );
 
   if (!patient) {
@@ -179,7 +179,7 @@ export const updatePatientProfile = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Profile updated successfully",
-    patient
+    patient,
   });
 });
 
@@ -188,7 +188,9 @@ export const changePatientPassword = asyncHandler(async (req, res, next) => {
   const { oldPassword, newPassword } = req.body;
 
   if (!oldPassword || !newPassword) {
-    return next(new ErrorHandler("Please provide both old and new passwords", 400));
+    return next(
+      new ErrorHandler("Please provide both old and new passwords", 400),
+    );
   }
 
   const patient = await Patient.findById(patientId).select("+password");
@@ -202,9 +204,10 @@ export const changePatientPassword = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    message: "Password changed successfully"
+    message: "Password changed successfully",
   });
-});  
+});
+
 export const getAllPatient = asyncHandler(async (req, res, next) => {
   const patients = await Patient.find()
     .select("-password")
@@ -265,7 +268,6 @@ export const getPatientId = asyncHandler(async (req, res, next) => {
   const patientId = `PAT${String(nextNumber).padStart(4, "0")}`;
   res.status(200).json({
     success: true,
-    patientId
+    patientId,
   });
-
 });
