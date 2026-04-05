@@ -7,32 +7,49 @@ const patientSchema = new mongoose.Schema(
       type: String,
       unique: true,
     },
-    doctorId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Doctor",
-      default: null,
-    },
+    doctorIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Doctor",
+        default: null,
+      },
+    ],
+    appointmentIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Appointment",
+        default: null,
+      },
+    ],
 
-    prescriptionId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Prescription",
-      default: null,
-    },
-    previousAppointmentId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Appointment",
-      default: null,
-    },
-    reportId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Report",
-      default: null,
-    },
-    historyId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "History",
-      default: null,
-    },
+    prescriptionIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Prescription",
+        default: null,
+      },
+    ],
+    previousAppointmentIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Appointment",
+        default: null,
+      },
+    ],
+    reportIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Report",
+        default: null,
+      },
+    ],
+    historyIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "History",
+        default: null,
+      },
+    ],
 
     profileUrl: {
       url: String,
@@ -111,7 +128,7 @@ const patientSchema = new mongoose.Schema(
     },
     bloodGroup: {
       type: String,
-      default:null
+      default: null,
     },
   },
   { timestamps: true },

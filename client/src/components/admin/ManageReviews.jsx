@@ -79,7 +79,7 @@ const ManageReviews = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <p className="text-xs text-slate-600 line-clamp-2 max-w-xs break-words font-medium">
+                      <p className="text-xs text-slate-600 line-clamp-2 max-w-xs wrap-break-word font-medium">
                         "{rev.message}"
                       </p>
                     </td>

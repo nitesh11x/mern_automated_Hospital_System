@@ -5,6 +5,7 @@ import ErrorHandler from "../utils/errorHandler.utils.js";
 import cron from "node-cron";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import { Patient } from "../models/Patient.model.js";
 
 dotenv.config();
 
@@ -213,11 +214,7 @@ export const createPrescription = asyncHandler(async (req, res, next) => {
   try {
     const { appointmentId, diagnosis, medicines, advice } = req.body;
 
-    // Check if doctor exists in request (from cookie-based auth middleware)
-    if (!req.doctor) {
-      console.error(
-        "Doctor not found in request. Auth middleware may not be running.",
-      );
+    if (!req.doctor || !req.doctor.id) {
       return next(
         new ErrorHandler(
           "Authentication required. Please login as doctor.",
@@ -226,26 +223,7 @@ export const createPrescription = asyncHandler(async (req, res, next) => {
       );
     }
 
-    // Get doctor ID from the decoded token
     const docId = req.doctor.id;
-
-    if (!docId) {
-      console.error("Doctor ID not found in request:", req.doctor);
-      return next(
-        new ErrorHandler(
-          "Doctor ID not found. Please check authentication.",
-          401,
-        ),
-      );
-    }
-
-    console.log("Creating prescription with:", {
-      appointmentId,
-      diagnosis,
-      medicines,
-      advice,
-      docId,
-    });
 
     if (!appointmentId) {
       return next(new ErrorHandler("Appointment ID is required", 400));
@@ -255,7 +233,6 @@ export const createPrescription = asyncHandler(async (req, res, next) => {
       return next(new ErrorHandler("Medicines are required", 400));
     }
 
-    // Validate each medicine has required fields
     for (let i = 0; i < medicines.length; i++) {
       const med = medicines[i];
       if (!med.name || !med.dosage || !med.duration) {
@@ -295,7 +272,6 @@ export const createPrescription = asyncHandler(async (req, res, next) => {
       );
     }
 
-    // Initialize medicines with empty remindersSent array
     const medicinesWithTracking = medicines.map((med) => ({
       name: med.name,
       dosage: med.dosage,
@@ -304,7 +280,6 @@ export const createPrescription = asyncHandler(async (req, res, next) => {
       remindersSent: [],
     }));
 
-    // Create prescription
     const prescription = await Prescription.create({
       appointmentId,
       patientId: appointment.patientId._id,
@@ -314,15 +289,16 @@ export const createPrescription = asyncHandler(async (req, res, next) => {
       advice,
     });
 
-    // Update appointment
     appointment.prescriptionId = prescription._id;
     appointment.status = "Completed";
     appointment.completedAt = new Date();
     await appointment.save();
 
-    console.log(`\n✅ Prescription created successfully!`);
-    console.log(`👤 Patient: ${appointment.patientId.email}`);
-    console.log(`💊 Medicines: ${medicines.map((m) => m.name).join(", ")}`);
+    await Patient.findByIdAndUpdate(appointment.patientId._id, {
+      $addToSet: {
+        prescriptionIds: prescription._id,
+      },
+    });
 
     res.status(201).json({
       success: true,

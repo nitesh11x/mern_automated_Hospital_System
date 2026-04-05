@@ -7,15 +7,17 @@ import {
   LayoutDashboard, CalendarCheck, Users, FileText, Settings,
   LogOut, Bell, Search, X, CheckCircle2, Clock, AlertCircle, Plus, Trash2, MapPin,
   Stethoscope, Heart, Activity, Calendar, ChevronRight, Download, Eye,
-  Pill, Award, TrendingUp, User, Phone, Mail, CalendarDays, Clock as ClockIcon, Filter
+  Pill, Award, TrendingUp, User, Phone, Mail, CalendarDays, Clock as ClockIcon, Filter, ChevronDown, Package
 } from "lucide-react";
 import DoctorSettings from "./DoctorSettings";
+import { getAllMedicineThunk } from "../../redux/slices/medicine.slice";
 
 const DoctorDashboard = () => {
   const dispatch = useDispatch();
   const { doctor } = useSelector((state) => state.doctor);
   const { appointments } = useSelector((state) => state.appointment);
   const { success: prescriptionSuccess, error: prescriptionError } = useSelector((state) => state.prescription);
+  const { medicines } = useSelector(state => state.medicine)
 
   const [activeTab, setActiveTab] = useState("dashboard");
   const [prescriptionApptId, setPrescriptionApptId] = useState(null);
@@ -25,6 +27,11 @@ const DoctorDashboard = () => {
     medicines: [{ name: "", dosage: "", duration: "", frequencyOfDose: "" }]
   });
   const [filterType, setFilterType] = useState('all');
+
+  // Medicine search states
+  const [medicineSearchTerm, setMedicineSearchTerm] = useState("");
+  const [showMedicineDropdown, setShowMedicineDropdown] = useState(null); // stores index of medicine row
+  const [filteredMedicines, setFilteredMedicines] = useState([]);
 
   const filteredAppointments = useMemo(() => {
     if (!appointments) return [];
@@ -51,7 +58,7 @@ const DoctorDashboard = () => {
           advice: apt.prescriptionId.advice || "",
           medicines: apt.prescriptionId.medicines?.length > 0
             ? apt.prescriptionId.medicines
-            : [{ name: "", dosage: "", duration: "" }]
+            : [{ name: "", dosage: "", duration: "", frequencyOfDose: "" }]
         });
       }
     }
@@ -89,6 +96,42 @@ const DoctorDashboard = () => {
     setPrescriptionForm({ ...prescriptionForm, medicines: updated });
   };
 
+  // Handle medicine selection from dropdown
+  const handleSelectMedicine = (index, medicine) => {
+    const updated = prescriptionForm.medicines.map((med, i) =>
+      i === index ? {
+        ...med,
+        name: medicine.medicineName, // Changed from 'name' to 'medicineName'
+        dosage: "", // You can set default dosage if available in your schema
+        frequencyOfDose: ""
+      } : med
+    );
+    setPrescriptionForm({ ...prescriptionForm, medicines: updated });
+    setShowMedicineDropdown(null);
+    setMedicineSearchTerm("");
+  };
+
+  // Handle medicine search with debounce
+  useEffect(() => {
+    if (medicineSearchTerm.trim() && showMedicineDropdown !== null) {
+      const filtered = medicines?.filter(med =>
+        med.medicineName?.toLowerCase().includes(medicineSearchTerm.toLowerCase()) // Changed from 'name' to 'medicineName'
+      ) || [];
+      setFilteredMedicines(filtered);
+    } else {
+      setFilteredMedicines([]);
+    }
+  }, [medicineSearchTerm, medicines, showMedicineDropdown]);
+
+  // Fetch medicines when opening dropdown
+  const handleOpenMedicineDropdown = (index) => {
+    setShowMedicineDropdown(index);
+    setMedicineSearchTerm("");
+    if (!medicines || medicines.length === 0) {
+      dispatch(getAllMedicineThunk());
+    }
+  };
+
   const submitPrescription = (e) => {
     e.preventDefault();
     const apt = appointments?.find(a => a._id === prescriptionApptId);
@@ -102,7 +145,7 @@ const DoctorDashboard = () => {
       appointmentId: apt._id,
       diagnosis: prescriptionForm.diagnosis,
       advice: prescriptionForm.advice,
-      medicines: prescriptionForm.medicines
+      medicines: prescriptionForm.medicines,
     };
     console.log("Prescription data being sent:", prescriptionData);
     dispatch(createPrescriptionThunk(prescriptionData));
@@ -116,24 +159,18 @@ const DoctorDashboard = () => {
     paid: appointments?.filter(a => a.paymentStatus === "Paid").length || 0,
   };
 
+  const handleGetAllMedicine = async () => {
+    await dispatch(getAllMedicineThunk());
+  };
+
   return (
     <div className="min-h-screen bg-linear-to-br from-purple-50 via-white to-violet-50 flex font-sans">
       {/* Sidebar */}
       <aside className="w-72 bg-linear-to-b from-purple-900 via-purple-800 to-violet-900 hidden lg:flex flex-col sticky top-0 h-screen shadow-2xl z-20">
         <div className="p-6 border-b border-purple-700/50">
           <div className="flex pt-4 items-center gap-3 mb-3">
-            {/* <div className="h-12 w-12  rounded-sm bg-linear-to-br from-purple-500 to-violet-500 flex items-center justify-center shadow-lg">
-              <Stethoscope size={24} className="text-white" />
-            </div> */}
-            {/* <div>
-              <h2 className="text-lg font-black text-white tracking-tight">DR. {doctor?.lastName?.toUpperCase() || "SPECIALIST"}</h2>
-              <p className="text-[9px] font-bold text-purple-300 uppercase tracking-wider">{doctor?.specialization || "General Medicine"}</p>
-            </div> */}
+            {/* Sidebar content */}
           </div>
-          {/* <div className="flex items-center gap-2 mt-3 pt-3 border-t border-purple-700/30">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-            <p className="text-[8px] font-bold text-purple-300 uppercase">Online • Available for Consultations</p>
-          </div> */}
         </div>
 
         <nav className="flex-1 p-4 space-y-1">
@@ -276,6 +313,7 @@ const DoctorDashboard = () => {
                               apt={apt}
                               handleStatusUpdate={handleStatusUpdate}
                               setPrescriptionApptId={setPrescriptionApptId}
+                              handleGetAllMedicine={handleGetAllMedicine}
                             />
                           </td>
                         </tr>
@@ -315,7 +353,7 @@ const DoctorDashboard = () => {
 
               {/* Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <StatCard label="Toady Appointments" value={stats.totalPatients} icon={<Users size={20} />} color="purple" trend="+12% vs last month" />
+                <StatCard label="Today Appointments" value={stats.totalPatients} icon={<Users size={20} />} color="purple" trend="+12% vs last month" />
                 <StatCard label="Completed Visits" value={stats.completed} icon={<CheckCircle2 size={20} />} color="emerald" trend="+8 this week" />
                 <StatCard label="Pending Approvals" value={stats.pending} icon={<Clock size={20} />} color="amber" trend="Requires attention" />
                 <StatCard label="Revenue Generated" value={`₹${(stats.completed * 500).toLocaleString()}`} icon={<TrendingUp size={20} />} color="blue" trend="+22% YoY" />
@@ -392,7 +430,7 @@ const DoctorDashboard = () => {
         </div>
       </main>
 
-      {/* Prescription Modal */}
+      {/* Prescription Modal with Medicine Search */}
       <AnimatePresence>
         {prescriptionApptId && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
@@ -400,7 +438,7 @@ const DoctorDashboard = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-white w-full max-w-3xl rounded-sm shadow-2xl flex flex-col max-h-[90vh] border border-purple-100"
+              className="bg-white w-full max-w-4xl rounded-sm shadow-2xl flex flex-col max-h-[90vh] border border-purple-100"
             >
               <div className="p-6 border-b border-purple-100 bg-linear-to-r from-purple-50 to-violet-50 rounded-t-2xl flex justify-between items-center">
                 <div>
@@ -436,7 +474,7 @@ const DoctorDashboard = () => {
                   />
                 </div>
 
-                {/* Medicines Section */}
+                {/* Medicines Section with Search */}
                 <div className="space-y-4">
                   <div className="flex justify-between items-center border-b border-purple-100 pb-2">
                     <label className="text-[10px] font-black text-purple-600 uppercase tracking-wider flex items-center gap-2">
@@ -452,53 +490,116 @@ const DoctorDashboard = () => {
                   </div>
 
                   {prescriptionForm.medicines.map((med, idx) => (
-                    <div key={idx} className="grid grid-cols-12 gap-3 items-end bg-purple-50/30 p-3 rounded-sm border border-purple-100">
-                      <div className="col-span-2">
-                        <label className="text-[8px] font-bold text-purple-500 uppercase block mb-1">Medication Name</label>
-                        <input
-                          placeholder="e.g., Paracetamol"
-                          className="w-full px-3 py-2 border border-purple-200 rounded-sm text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-white"
-                          value={med.name}
-                          onChange={(e) => handleMedicineChange(idx, 'name', e.target.value)}
-                        />
-                      </div>
-                      <div className="col-span-3">
-                        <label className="text-[8px] font-bold text-purple-500 uppercase block mb-1">Dosage</label>
-                        <input
-                          placeholder="e.g., 500mg"
-                          className="w-full px-3 py-2 border border-purple-200 rounded-sm text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-white"
-                          value={med.dosage}
-                          onChange={(e) => handleMedicineChange(idx, 'dosage', e.target.value)}
-                        />
-                      </div>
-                      <div className="col-span-3">
-                        <label className="text-[8px] font-bold text-purple-500 uppercase block mb-1">Frequency</label>
-                        <input
-                          placeholder="2 Times , 3 Times"
-                          className="w-full px-3 py-2 border border-purple-200 rounded-sm text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-white"
-                          value={med.frequencyOfDose}
-                          onChange={(e) => handleMedicineChange(idx, 'frequencyOfDose', e.target.value)}
-                        />
-                      </div>
-                      <div className="col-span-3">
-                        <label className="text-[8px] font-bold text-purple-500 uppercase block mb-1">Duration</label>
-                        <input
-                          placeholder="e.g., 5 Days"
-                          className="w-full px-3 py-2 border border-purple-200 rounded-sm text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-white"
-                          value={med.duration}
-                          onChange={(e) => handleMedicineChange(idx, 'duration', e.target.value)}
-                        />
-                      </div>
-                      <div className="col-span-1 pb-1">
-                        {prescriptionForm.medicines.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => removeMedicineRow(idx)}
-                            className="p-1.5 text-purple-400 hover:text-rose-500 hover:bg-rose-50 rounded-sm transition-colors"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        )}
+                    <div key={idx} className="relative">
+                      <div className="grid grid-cols-12 gap-3 items-end bg-purple-50/30 p-3 rounded-sm border border-purple-100">
+                        <div className="col-span-3 relative">
+                          <label className="text-[8px] font-bold text-purple-500 uppercase block mb-1">Medication Name</label>
+                          <div className="relative">
+                            <input
+                              placeholder="Search medicine..."
+                              className="w-full px-3 py-2 border border-purple-200 rounded-sm text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-white pr-8"
+                              value={med.name}
+                              onChange={(e) => {
+                                handleMedicineChange(idx, 'name', e.target.value);
+                                setMedicineSearchTerm(e.target.value);
+                                setShowMedicineDropdown(idx);
+                              }}
+                              onFocus={() => handleOpenMedicineDropdown(idx)}
+                              onClick={() => setShowMedicineDropdown(idx)}
+                            />
+                            <ChevronDown
+                              size={16}
+                              className="absolute right-2 top-1/2 -translate-y-1/2 text-purple-400 cursor-pointer"
+                              onClick={() => setShowMedicineDropdown(showMedicineDropdown === idx ? null : idx)}
+                            />
+                          </div>
+
+                          {/* Medicine Dropdown */}
+                          {showMedicineDropdown === idx && (
+                            <div className="absolute z-50 w-full mt-1 bg-white border border-purple-200 rounded-sm shadow-lg max-h-60 overflow-y-auto">
+                              <div className="sticky top-0 bg-white p-2 border-b border-purple-100">
+                                <input
+                                  type="text"
+                                  placeholder="Search medicines..."
+                                  className="w-full px-3 py-1.5 border border-purple-200 rounded-sm text-xs focus:ring-2 focus:ring-purple-500 outline-none"
+                                  value={medicineSearchTerm}
+                                  onChange={(e) => setMedicineSearchTerm(e.target.value)}
+                                  autoFocus
+                                />
+                              </div>
+                              <div className="divide-y divide-purple-50">
+                                {filteredMedicines.length > 0 ? (
+                                  filteredMedicines.map((medicine) => (
+                                    <div
+                                      key={medicine._id}
+                                      className="p-3 hover:bg-purple-50 cursor-pointer transition-colors"
+                                      onClick={() => handleSelectMedicine(idx, medicine)}
+                                    >
+                                      <div className="flex justify-between items-start">
+                                        <div>
+                                          <p className="text-sm font-semibold text-slate-800">{medicine.medicineName}</p>
+                                          <div className="flex gap-2 mt-1">
+                                            {medicine.avaliableStock && (
+                                              <span className="text-[8px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded flex items-center gap-1">
+                                                <Package size={8} /> Stock: {medicine.avaliableStock}
+                                              </span>
+                                            )}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))
+                                ) : (
+                                  <div className="p-4 text-center">
+                                    {medicineSearchTerm ? (
+                                      <p className="text-xs text-slate-500">No medicines found matching "{medicineSearchTerm}"</p>
+                                    ) : (
+                                      <p className="text-xs text-slate-500">Type to search medicines from database</p>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        <div className="col-span-3">
+                          <label className="text-[8px] font-bold text-purple-500 uppercase block mb-1">Dosage</label>
+                          <input
+                            placeholder="e.g., 500mg"
+                            className="w-full px-3 py-2 border border-purple-200 rounded-sm text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-white"
+                            value={med.dosage}
+                            onChange={(e) => handleMedicineChange(idx, 'dosage', e.target.value)}
+                          />
+                        </div>
+                        <div className="col-span-3">
+                          <label className="text-[8px] font-bold text-purple-500 uppercase block mb-1">Frequency</label>
+                          <input
+                            placeholder="2 Times , 3 Times"
+                            className="w-full px-3 py-2 border border-purple-200 rounded-sm text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-white"
+                            value={med.frequencyOfDose}
+                            onChange={(e) => handleMedicineChange(idx, 'frequencyOfDose', e.target.value)}
+                          />
+                        </div>
+                        <div className="col-span-2">
+                          <label className="text-[8px] font-bold text-purple-500 uppercase block mb-1">Duration</label>
+                          <input
+                            placeholder="e.g., 5 Days"
+                            className="w-full px-3 py-2 border border-purple-200 rounded-sm text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-white"
+                            value={med.duration}
+                            onChange={(e) => handleMedicineChange(idx, 'duration', e.target.value)}
+                          />
+                        </div>
+                        <div className="col-span-1 pb-1">
+                          {prescriptionForm.medicines.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => removeMedicineRow(idx)}
+                              className="p-1.5 text-purple-400 hover:text-rose-500 hover:bg-rose-50 rounded-sm transition-colors"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -550,14 +651,14 @@ const StatCard = ({ label, value, icon, color, trend }) => {
           {trend && <p className="text-[8px] text-emerald-600 mt-1 font-bold">{trend}</p>}
         </div>
         <div className={`h-10 w-10 rounded-sm bg-linear-to-br ${colorClasses[color]} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
-          {icon}
+          {React.cloneElement(icon, { size: 16, className: "text-white" })}
         </div>
       </div>
     </div>
   );
 };
 
-const ActionButtons = ({ apt, handleStatusUpdate, setPrescriptionApptId }) => {
+const ActionButtons = ({ apt, handleStatusUpdate, setPrescriptionApptId, handleGetAllMedicine }) => {
   const status = apt.status?.toLowerCase();
 
   return (
@@ -580,7 +681,10 @@ const ActionButtons = ({ apt, handleStatusUpdate, setPrescriptionApptId }) => {
       )}
       {status === 'completed' && (
         <button
-          onClick={() => setPrescriptionApptId(apt._id)}
+          onClick={() => {
+            setPrescriptionApptId(apt._id);
+            handleGetAllMedicine();
+          }}
           className="px-4 py-2 border-2 border-purple-600 text-purple-600 rounded-sm text-[10px] font-bold uppercase hover:bg-purple-600 hover:text-white transition-all flex items-center gap-1"
         >
           <FileText size={12} /> {apt.prescriptionId ? 'Modify Rx' : 'Prescribe'}

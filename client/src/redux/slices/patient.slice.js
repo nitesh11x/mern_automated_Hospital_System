@@ -124,6 +124,20 @@ export const changePatientPasswordThunk = createAsyncThunk(
   },
 );
 
+export const getPatientByIdThunk = createAsyncThunk(
+  "patient/byId",
+  async (patientId, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get(`/patient/${patientId}`);
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Fetch patients failed",
+      );
+    }
+  },
+);
+
 const initialState = {
   patient: null,
   patients: [],
@@ -131,6 +145,7 @@ const initialState = {
   loading: false,
   error: null,
   isPatientAuthenticated: false,
+  patientFromId: null,
 };
 
 const patientSlice = createSlice({
@@ -166,7 +181,6 @@ const patientSlice = createSlice({
       .addCase(patientRegisterThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.patient = action.payload?.patient || action.payload?.data || null;
-        // state.isPatientAuthenticated = true;
         state.error = null;
       })
       .addCase(patientRegisterThunk.rejected, (state, action) => {
@@ -267,6 +281,22 @@ const patientSlice = createSlice({
       .addCase(changePatientPasswordThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+
+      /* ========= GET PATIENT BY ID (FIXED) ========= */
+      .addCase(getPatientByIdThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getPatientByIdThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.patientFromId = action.payload;
+        state.error = null;
+      })
+      .addCase(getPatientByIdThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.patientFromId = null;
       });
   },
 });

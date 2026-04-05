@@ -18,6 +18,7 @@ import {
   isDoctorAuth,
   isPatientAuth,
 } from "../middlewares/auth.middleware.js";
+import { getPreviousAppointment } from "../controllers/appointment.controller.js";
 
 const router = express.Router();
 
@@ -30,7 +31,9 @@ router.put("/me/update", isPatientAuth, updatePatientProfile);
 router.put("/me/password", isPatientAuth, changePatientPassword);
 router.get("/all", isAdminAuth, getAllPatient);
 router.get("/getPatientId", getPatientId);
-router.get("/:patientId", isPatientAuth, getPatientById);
+router.get("/:patientId",  getPatientById);
+router.get("/previous/",  getPreviousAppointment);
+
 
 router.put("/:id", updatePatientById);
 router.put("/status/:id", isAdminAuth, updatePatientStatusById);

@@ -30,6 +30,7 @@ import { getAllPatientThunk } from "../../redux/slices/patient.slice";
 import { useDispatch, useSelector } from "react-redux";
 import { api } from "../../utils/axios";
 import { toast } from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 const PatientManage = ({ isEmbedded }) => {
     const dispatch = useDispatch();
@@ -368,12 +369,12 @@ const PatientManage = ({ isEmbedded }) => {
                                                 {/* Actions */}
                                                 <td className="px-4 py-3">
                                                     <div className="flex items-center justify-center gap-1">
-                                                        <button
+                                                        <Link to={`/patient/${patient._id}`}
                                                             title="Medical Records"
                                                             className="p-1.5 text-purple-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-sm transition-all"
                                                         >
                                                             <FileText size={14} />
-                                                        </button>
+                                                        </Link>
                                                         <button
                                                             title="Medical History"
                                                             className="p-1.5 text-purple-400 hover:text-amber-600 hover:bg-amber-50 rounded-sm transition-all"

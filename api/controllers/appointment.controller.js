@@ -5,6 +5,7 @@ import ErrorHandler from "../utils/errorHandler.utils.js";
 import QRCode from "qrcode";
 import { Doctor } from "../models/Doctor.model.js";
 import { Patient } from "../models/Patient.model.js";
+
 export const bookAppointment = asyncHandler(async (req, res, next) => {
   const {
     doctorId,
@@ -16,10 +17,11 @@ export const bookAppointment = asyncHandler(async (req, res, next) => {
     requestedTimeSlot,
     slotId,
     paymentMode,
+    previousAppointmentId,
   } = req.body;
 
   const patientId = req.patient?.id;
-  const patient = await Patient.findById(patientId);
+
   if (!patientId) {
     return next(new ErrorHandler("Unauthorized", 401));
   }
@@ -36,18 +38,30 @@ export const bookAppointment = asyncHandler(async (req, res, next) => {
     return next(new ErrorHandler("All required fields must be provided", 400));
   }
 
-  // 🔹 Validate doctorId format
   if (!mongoose.Types.ObjectId.isValid(doctorId)) {
     return next(new ErrorHandler("Invalid Doctor ID", 400));
   }
 
-  // 🔹 Check previous appointment with same doctor
-  const previousAppointment = await Appointment.findOne({
-    patientId,
-    doctorId,
-  }).sort({ createdAt: -1 });
-
   try {
+    let previousAppointment = null;
+
+    if (
+      previousAppointmentId &&
+      mongoose.Types.ObjectId.isValid(previousAppointmentId)
+    ) {
+      previousAppointment = await Appointment.findOne({
+        _id: previousAppointmentId,
+        patientId,
+      });
+    }
+
+    if (!previousAppointment) {
+      previousAppointment = await Appointment.findOne({
+        patientId,
+        doctorId,
+      }).sort({ createdAt: -1 });
+    }
+
     const appointment = await Appointment.create({
       patientId,
       doctorId,
@@ -60,12 +74,15 @@ export const bookAppointment = asyncHandler(async (req, res, next) => {
       slotId: slotId || requestedTimeSlot,
       paymentMode,
       isVisit: !!previousAppointment,
-      previousAppointmentId: previousAppointment?.appointmentId || null,
+      previousAppointmentId: previousAppointment?._id || null,
     });
 
-    patient.appointmentId = appointment._id;
-    patient.doctorId = appointment.doctorId;
-    await patient.save();
+    await Patient.findByIdAndUpdate(patientId, {
+      $addToSet: {
+        appointmentIds: appointment._id,
+        doctorIds: doctorId,
+      },
+    });
 
     res.status(201).json({
       success: true,
@@ -80,6 +97,7 @@ export const bookAppointment = asyncHandler(async (req, res, next) => {
 export const bookAppointmentOfSpecificDoctor = asyncHandler(
   async (req, res, next) => {
     const { doctorId } = req.params;
+
     const {
       name,
       email,
@@ -89,6 +107,7 @@ export const bookAppointmentOfSpecificDoctor = asyncHandler(
       requestedTimeSlot,
       slotId,
       paymentMode,
+      previousAppointmentId, // ✅ added
     } = req.body;
 
     const patientId = req.patient?.id;
@@ -98,6 +117,7 @@ export const bookAppointmentOfSpecificDoctor = asyncHandler(
     }
 
     if (
+      !doctorId ||
       !name ||
       !email ||
       !gender ||
@@ -106,20 +126,35 @@ export const bookAppointmentOfSpecificDoctor = asyncHandler(
       !paymentMode
     ) {
       return next(
-        new ErrorHandler("All required fields must be provided", 400),
+        new ErrorHandler("All required fields must be provided", 400)
       );
     }
 
+    // 🆔 Validate doctorId
     if (!mongoose.Types.ObjectId.isValid(doctorId)) {
       return next(new ErrorHandler("Invalid Doctor ID", 400));
     }
 
-    const previousAppointment = await Appointment.findOne({
-      patientId,
-      doctorId,
-    }).sort({ createdAt: -1 });
-
     try {
+      let previousAppointment = null;
+
+      if (
+        previousAppointmentId &&
+        mongoose.Types.ObjectId.isValid(previousAppointmentId)
+      ) {
+        previousAppointment = await Appointment.findOne({
+          _id: previousAppointmentId,
+          patientId,
+        });
+      }
+
+      if (!previousAppointment) {
+        previousAppointment = await Appointment.findOne({
+          patientId,
+          doctorId,
+        }).sort({ createdAt: -1 });
+      }
+
       const appointment = await Appointment.create({
         patientId,
         doctorId,
@@ -132,7 +167,14 @@ export const bookAppointmentOfSpecificDoctor = asyncHandler(
         slotId: slotId || requestedTimeSlot,
         paymentMode,
         isVisit: !!previousAppointment,
-        previousAppointmentId: previousAppointment?.appointmentId || null,
+        previousAppointmentId: previousAppointment?._id || null, 
+      });
+
+      await Patient.findByIdAndUpdate(patientId, {
+        $addToSet: {
+          appointmentIds: appointment._id,
+          doctorIds: doctorId,
+        },
       });
 
       res.status(201).json({
@@ -143,7 +185,7 @@ export const bookAppointmentOfSpecificDoctor = asyncHandler(
     } catch (error) {
       return next(error);
     }
-  },
+  }
 );
 
 export const approveAppointment = asyncHandler(async (req, res, next) => {
@@ -357,13 +399,20 @@ export const generateAppointmentQR = asyncHandler(async (req, res, next) => {
 });
 
 export const getPreviousAppointment = asyncHandler(async (req, res, next) => {
-  // const { appointmentId } = req.params;
-  const { email } = req.body;
-
-  const prevAppointments = await Appointment.findOne({ email }).sort({
+  const { email } = req.query; // ✅ FIXED (use query,
+  if (!email) {
+    return next(new ErrorHandler("Email is required", 400));
+  }
+  const prevAppointments = await Appointment.find({ email }).sort({
     createdAt: -1,
   });
-  if (!prevAppointments) return next(new ErrorHandler("not visited", 500));
+  if (!prevAppointments.length) {
+    return res.status(200).json({
+      success: true,
+      message: "No previous appointments found",
+      prevAppointments: [],
+    });
+  }
 
   res.status(200).json({
     success: true,
