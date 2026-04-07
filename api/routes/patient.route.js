@@ -35,7 +35,7 @@ router.get("/:patientId",  getPatientById);
 router.get("/previous/",  getPreviousAppointment);
 
 
-router.put("/:id", updatePatientById);
+router.put("/:id", isAdminAuth, updatePatientById);
 router.put("/status/:id", isAdminAuth, updatePatientStatusById);
 
 router.delete("/:patientId", isAdminAuth, deletePatientById);

@@ -8,19 +8,45 @@ import {
     IndianRupee, Star, Award, Clock, UserCheck, UserX,
     Eye, MoreVertical, CheckCircle, XCircle, Mail, Phone
 } from 'lucide-react';
-import { deleteDoctorThunk, getAllDoctorsThunk } from "../../redux/slices/doctor.slice";
-import { Link } from 'react-router-dom';
+import { deleteDoctorThunk, getAllDoctorsThunk, updateAdminDoctorThunk } from "../../redux/slices/doctor.slice";
+import { Link, useNavigate } from 'react-router-dom';
 import { api } from "../../utils/axios";
 import { toast } from "react-hot-toast";
 
 const DoctorManage = ({ isEmbedded }) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { doctors = [], loading } = useSelector((state) => state.doctor);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedDept, setSelectedDept] = useState("All");
     const [selectedStatus, setSelectedStatus] = useState("All");
     const [selectedVerification, setSelectedVerification] = useState("All");
+
+    // Modal States
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [editFormData, setEditFormData] = useState({});
+
+    const handleEditClick = (doc) => {
+        setEditFormData({ ...doc });
+        setIsEditModalOpen(true);
+    };
+
+    const handleEditChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setEditFormData((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+    };
+
+    const handleEditSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            await dispatch(updateAdminDoctorThunk({ id: editFormData._id, updateData: editFormData })).unwrap();
+            toast.success("Doctor details updated successfully");
+            setIsEditModalOpen(false);
+        } catch (error) {
+            toast.error(error || "Update failed");
+        }
+    };
 
     useEffect(() => {
         dispatch(getAllDoctorsThunk());
@@ -344,18 +370,21 @@ const DoctorManage = ({ isEmbedded }) => {
                                                         <button
                                                             title="View Details"
                                                             className="p-1.5 text-purple-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-sm transition-all"
+                                                            onClick={() => navigate(`/doctor/detail/${doc._id}`)}
                                                         >
                                                             <Eye size={14} />
                                                         </button>
                                                         <button
                                                             title="Edit Profile"
                                                             className="p-1.5 text-purple-400 hover:text-amber-500 hover:bg-amber-50 rounded-sm transition-all"
+                                                            onClick={() => handleEditClick(doc)}
                                                         >
                                                             <Edit3 size={14} />
                                                         </button>
                                                         <button
                                                             title="Schedule"
                                                             className="p-1.5 text-purple-400 hover:text-blue-500 hover:bg-blue-50 rounded-sm transition-all"
+                                                            onClick={() => navigate(`/doctor/scheduel/${doc._id}`)}
                                                         >
                                                             <Calendar size={14} />
                                                         </button>
@@ -407,6 +436,77 @@ const DoctorManage = ({ isEmbedded }) => {
                     )}
                 </div>
             </div>
+
+            {/* EDIT MODAL */}
+            {isEditModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                    <div className="bg-white rounded-md w-full max-w-xl shadow-2xl overflow-hidden border-t-4 border-purple-600">
+                        <div className="flex justify-between items-center p-4 lg:p-6 bg-purple-50">
+                            <h2 className="text-xl font-black text-gray-800">Edit Doctor Profile</h2>
+                            <button onClick={() => setIsEditModalOpen(false)} className="text-gray-400 hover:text-rose-500 transition-colors">
+                                <XCircle size={24} />
+                            </button>
+                        </div>
+                        <form onSubmit={handleEditSubmit} className="p-4 lg:p-6 space-y-4 h-[70vh] lg:h-auto overflow-y-auto">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">First Name</label>
+                                    <input type="text" name="firstName" value={editFormData.firstName || ''} onChange={handleEditChange} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-purple-500" required />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Last Name</label>
+                                    <input type="text" name="lastName" value={editFormData.lastName || ''} onChange={handleEditChange} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-purple-500" required />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Email</label>
+                                    <input type="email" name="email" value={editFormData.email || ''} onChange={handleEditChange} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-purple-500" required />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Phone</label>
+                                    <input type="text" name="phone" value={editFormData.phone || ''} onChange={handleEditChange} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-purple-500" required />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Specialization</label>
+                                    <input type="text" name="specialization" value={editFormData.specialization || ''} onChange={handleEditChange} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Fee (₹)</label>
+                                    <input type="number" name="consultationFees" value={editFormData.consultationFees || ''} onChange={handleEditChange} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Experience (Years)</label>
+                                    <input type="number" name="experience" value={editFormData.experience || ''} onChange={handleEditChange} className="w-full px-3 py-2 text-sm border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                </div>
+                                <div className="flex items-center gap-6 mt-6">
+                                    <label className="flex items-center gap-2 cursor-pointer group">
+                                        <input type="checkbox" name="isVerified" checked={editFormData.isVerified || false} onChange={handleEditChange} className="w-4 h-4 text-purple-600 rounded-sm focus:ring-purple-500" />
+                                        <span className="text-sm font-bold text-gray-700 group-hover:text-purple-700 transition">Verified</span>
+                                    </label>
+                                    <label className="flex items-center gap-2 cursor-pointer group">
+                                        <input type="checkbox" name="isBlocked" checked={editFormData.isBlocked || false} onChange={handleEditChange} className="w-4 h-4 text-rose-600 rounded-sm focus:ring-rose-500" />
+                                        <span className="text-sm font-bold text-gray-700 group-hover:text-rose-700 transition">Blocked</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div className="flex justify-end gap-3 mt-8 pt-4 border-t border-gray-200">
+                                <button type="button" onClick={() => setIsEditModalOpen(false)} className="px-5 py-2 text-sm font-bold text-gray-600 hover:bg-gray-100 outline-none rounded-sm transition-colors border border-gray-300 hover:border-gray-400 shadow-sm">
+                                    Cancel
+                                </button>
+                                <button type="submit" className="px-8 py-2 bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-sm font-bold uppercase tracking-wider rounded-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all outline-none flex items-center gap-2">
+                                    Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
