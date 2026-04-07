@@ -124,6 +124,34 @@ export const changePatientPasswordThunk = createAsyncThunk(
   },
 );
 
+export const updateAdminPatientThunk = createAsyncThunk(
+  "patient/updateAdminPatient",
+  async ({ id, updateData }, { rejectWithValue }) => {
+    try {
+      const { data } = await api.put(`/patient/${id}`, updateData);
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Failed to update patient",
+      );
+    }
+  },
+);
+
+export const updateAdminPatientStatusThunk = createAsyncThunk(
+  "patient/updateAdminPatientStatus",
+  async ({ id, isBlocked }, { rejectWithValue }) => {
+    try {
+      const { data } = await api.put(`/patient/status/${id}`, { isBlocked });
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Failed to update status",
+      );
+    }
+  },
+);
+
 export const getPatientByIdThunk = createAsyncThunk(
   "patient/byId",
   async (patientId, { rejectWithValue }) => {
@@ -297,6 +325,36 @@ const patientSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
         state.patientFromId = null;
+      })
+
+      /* ========= UPDATE ADMIN PATIENT ========= */
+      .addCase(updateAdminPatientThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateAdminPatientThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        const updatedPatient = action.payload?.patient;
+        if (updatedPatient) {
+          state.patients = state.patients.map((p) =>
+            p._id === updatedPatient._id ? updatedPatient : p
+          );
+        }
+        state.error = null;
+      })
+      .addCase(updateAdminPatientThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      /* ========= UPDATE ADMIN PATIENT STATUS ========= */
+      .addCase(updateAdminPatientStatusThunk.fulfilled, (state, action) => {
+        const updatedPatient = action.payload?.patient;
+        if (updatedPatient) {
+          state.patients = state.patients.map((p) =>
+            p._id === updatedPatient._id ? updatedPatient : p
+          );
+        }
       });
   },
 });

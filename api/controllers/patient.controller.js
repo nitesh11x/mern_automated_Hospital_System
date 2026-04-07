@@ -230,7 +230,17 @@ export const deletePatientById = asyncHandler(async (req, res, next) => {
 
 export const updatePatientById = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const patient = await Patient.findByIdAndUpdate(id, req.body, {
+  let updateData = { ...req.body };
+
+  // Intercept and Hash Password if explicitly provided by the Admin
+  if (updateData.password && updateData.password.trim() !== "") {
+    updateData.password = await bcrypt.hash(updateData.password, 10);
+  } else {
+    // Make absolutely sure we do NOT overwrite their real password with an empty string
+    delete updateData.password;
+  }
+
+  const patient = await Patient.findByIdAndUpdate(id, updateData, {
     new: true,
     runValidators: true,
   });
