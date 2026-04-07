@@ -53,8 +53,10 @@ import reviewRouter from "./routes/review.route.js";
 import prescriptionRouter from "./routes/prescription.route.js";
 import notificationRouter from "./routes/notification.route.js";
 import medicineRouter from "./routes/medicine.route.js";
+import aiRouter from "./routes/ai.route.js";
 import { startMedicineScheduler } from "./controllers/prescription.controller.js";
 
+app.use("/api/ai", aiRouter);
 app.use("/api/patient", userRouter);
 app.use("/api/otp", otpRouter);
 app.use("/api/admin", adminRouter);

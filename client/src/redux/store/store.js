@@ -8,6 +8,7 @@ import reviewReducer from "../slices/review.slice";
 import prescriptionReducer from "../slices/prescription.slice";
 import notifinationReducer from "../slices/notification.slice";
 import medicineReducer from "../slices/medicine.slice";
+import aiReducer from "../slices/ai.slice";
 export const store = configureStore({
   reducer: {
     patient: patientReducer,
@@ -19,5 +20,6 @@ export const store = configureStore({
     prescription: prescriptionReducer,
     notification: notifinationReducer,
     medicine: medicineReducer,
+    ai: aiReducer,
   },
 });
