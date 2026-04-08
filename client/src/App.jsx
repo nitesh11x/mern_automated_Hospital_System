@@ -46,6 +46,8 @@ import ShowAppointments from './components/appointment/ShowAppointments';
 import BookAppointmentOfSpecificDoctor from './components/appointment/BookAppointmentOfSpecificDoctor';
 import DoctorRoute from './utils/DoctorRoute';
 import PatientDetail from './components/patient/PatientDetail';
+import DoctorScheduel from './components/doctor/DoctorScheduel';
+import AppointmentDetail from './components/appointment/AppointmentDetail';
 
 function App() {
   const dispatch = useDispatch();
@@ -87,10 +89,11 @@ function App() {
           <Route path='/doctor/register' element={<AdminRoute><DoctorRegister /></AdminRoute>}></Route>
           <Route path='/doctor/dashboard' element={<DoctorDashboard />}></Route>
           <Route path='/doctor/all' element={<Doctors />}></Route>
-          <Route path='/doctor/all/:id' element={< DoctorDetail />}></Route >
+          <Route path='/doctor/detail/:id' element={< DoctorDetail />}></Route >
           <Route path='/doctor/:id' element={<DoctorRoute><DoctorProfile /></DoctorRoute>}></Route>
           <Route path='/doctor/detail' element={<DoctorDetail />}></Route>
           <Route path='/doctor/manage' element={<AdminRoute><DoctorManage /></AdminRoute>}></Route>
+          <Route path='/doctor/scheduel/:id' element={<AdminRoute><DoctorScheduel /></AdminRoute>}></Route>
 
           {/* admin routes  */}
           <Route path='/admin/login' element={<AdminLogin />}></Route >
@@ -103,6 +106,7 @@ function App() {
           {/* appointment routes  */}
           <Route path='/appointment/book' element={<PatientRoute><BookAppointment /> </PatientRoute>}></Route >
           <Route path='/appointment/book/:doctorId' element={<PatientRoute><BookAppointmentOfSpecificDoctor /> </PatientRoute>}></Route >
+          <Route path='/appointment/:id' element={<AppointmentDetail />}></Route >
           <Route path='/appointment/all' element={<AdminRoute><ShowAppointments /></AdminRoute>}></Route >
 
 

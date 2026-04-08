@@ -11,7 +11,7 @@ router.post('/logout', isDoctorAuth, logoutDoctor)
 router.get('/me', isDoctorAuth, doctorProfile)
 router.put('/me/update', isDoctorAuth, updateDoctorProfile)
 router.get('/all', getAllDoctor)
-router.get('/:id', isAdminAuth, getDoctorById)
+router.get('/:id', getDoctorById)
 
 router.put('/:id', isAdminAuth, updateDoctorById)
 

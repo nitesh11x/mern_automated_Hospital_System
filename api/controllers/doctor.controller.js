@@ -189,10 +189,18 @@ export const updateDoctorProfile = asyncHandler(async (req, res, next) => {
 
 export const updateDoctorById = asyncHandler(async (req, res, next) => {
   const doctorId = req.params.id;
+  const updateData = { ...req.body };
+
+  if (updateData.password) {
+    updateData.password = await bcrypt.hash(updateData.password, 10);
+  } else {
+    // If password is sent as empty string, don't attempt to overwrite with empty
+    delete updateData.password;
+  }
 
   const doctor = await Doctor.findByIdAndUpdate(
     doctorId,
-    req.body,
+    { $set: updateData },
     { new: true, runValidators: true }
   );
   if (!doctor) {

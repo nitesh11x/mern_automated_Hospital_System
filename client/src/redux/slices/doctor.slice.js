@@ -84,6 +84,34 @@ export const updateDoctorProfileThunk = createAsyncThunk(
     }
 );
 
+export const updateAdminDoctorThunk = createAsyncThunk(
+    "doctor/adminUpdate",
+    async ({ id, updateData }, { rejectWithValue }) => {
+        try {
+            const res = await api.put(`/doctor/${id}`, updateData);
+            return res.data;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message || "Failed to update doctor"
+            );
+        }
+    }
+);
+
+export const getDoctorByIdThunk = createAsyncThunk(
+    "doctor/getById",
+    async (id, { rejectWithValue }) => {
+        try {
+            const res = await api.get(`/doctor/${id}`);
+            return res.data;
+        } catch (error) {
+            return rejectWithValue(
+                error.response?.data?.message || "Failed to fetch doctor details"
+            );
+        }
+    }
+);
+
 export const doctorLogoutThunk = createAsyncThunk(
     "doctor/logout",
     async (_, { rejectWithValue }) => {
@@ -100,6 +128,7 @@ export const doctorLogoutThunk = createAsyncThunk(
 
 const initialState = {
     doctor: null,
+    singleDoctor: null,
     doctors: [],
     loading: false,
     error: null,
@@ -199,6 +228,41 @@ const doctorSlice = createSlice({
             .addCase(getAllDoctorsThunk.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+
+            .addCase(getDoctorByIdThunk.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getDoctorByIdThunk.fulfilled, (state, action) => {
+                state.loading = false;
+                state.singleDoctor = action.payload.doctor;
+            })
+            .addCase(getDoctorByIdThunk.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+
+            .addCase(updateAdminDoctorThunk.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.success = false;
+            })
+            .addCase(updateAdminDoctorThunk.fulfilled, (state, action) => {
+                state.loading = false;
+                state.success = true;
+                const updatedDoctor = action.payload.doctor;
+                state.doctors = state.doctors.map(doc => 
+                    doc._id === updatedDoctor._id ? updatedDoctor : doc
+                );
+                if (state.singleDoctor && state.singleDoctor._id === updatedDoctor._id) {
+                    state.singleDoctor = updatedDoctor;
+                }
+            })
+            .addCase(updateAdminDoctorThunk.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+                state.success = false;
             })
 
             .addCase(doctorLogoutThunk.pending, (state) => {

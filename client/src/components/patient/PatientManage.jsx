@@ -26,7 +26,7 @@ import {
     XCircle,
     AlertCircle
 } from "lucide-react";
-import { getAllPatientThunk } from "../../redux/slices/patient.slice";
+import { getAllPatientThunk, updateAdminPatientThunk, updateAdminPatientStatusThunk } from "../../redux/slices/patient.slice";
 import { useDispatch, useSelector } from "react-redux";
 import { api } from "../../utils/axios";
 import { toast } from "react-hot-toast";
@@ -39,17 +39,58 @@ const PatientManage = ({ isEmbedded }) => {
     const [selectedStatus, setSelectedStatus] = useState("All");
     const [selectedGender, setSelectedGender] = useState("All");
 
+    // Master Edit State
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [editForm, setEditForm] = useState({});
+    const [isSaving, setIsSaving] = useState(false);
+
+    const handleEditClick = (patient) => {
+        setEditForm({
+            ...patient,
+            password: "", // Security override
+            dob: patient.dob ? new Date(patient.dob).toISOString().split('T')[0] : ""
+        });
+        setIsEditOpen(true);
+    };
+
+    const handleEditChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setEditForm(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value
+        }));
+    };
+
+    const handleSave = async (e) => {
+        e.preventDefault();
+        setIsSaving(true);
+        try {
+            await dispatch(updateAdminPatientThunk({
+                id: editForm._id,
+                updateData: editForm
+            })).unwrap();
+            toast.success(`Patient ${editForm.firstName}'s Master Record Synced!`);
+            setIsEditOpen(false);
+        } catch (err) {
+            toast.error(err || "Failed to update patient");
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
     useEffect(() => {
         dispatch(getAllPatientThunk());
     }, [dispatch]);
 
     const handleBlockPatient = async (id, isBlocked) => {
         try {
-            await api.put(`/patient/status/${id}`, { isBlocked: !isBlocked });
+            await dispatch(updateAdminPatientStatusThunk({
+                id,
+                isBlocked: !isBlocked
+            })).unwrap();
             toast.success(`Patient ${isBlocked ? 'unblocked' : 'blocked'} successfully`);
-            dispatch(getAllPatientThunk());
         } catch (error) {
-            toast.error(error?.response?.data?.message || "Update failed");
+            toast.error(error || "Update failed");
         }
     };
 
@@ -382,6 +423,7 @@ const PatientManage = ({ isEmbedded }) => {
                                                             <History size={14} />
                                                         </button>
                                                         <button
+                                                            onClick={() => handleEditClick(patient)}
                                                             title="Edit Profile"
                                                             className="p-1.5 text-purple-400 hover:text-amber-500 hover:bg-amber-50 rounded-sm transition-all"
                                                         >
@@ -426,6 +468,157 @@ const PatientManage = ({ isEmbedded }) => {
                     )}
                 </div>
             </div>
+
+            {/* FULL SCHEMA EDIT MODAL OVERLAY */}
+            <AnimatePresence>
+                {isEditOpen && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-md overflow-hidden"
+                    >
+                        <motion.div 
+                            initial={{ scale: 0.95, y: 20 }}
+                            animate={{ scale: 1, y: 0 }}
+                            exit={{ scale: 0.95, y: 20 }}
+                            className="bg-white rounded-xl w-full max-w-4xl shadow-2xl border border-purple-100 flex flex-col max-h-[90vh] overflow-hidden transform transition-all duration-300"
+                        >
+                            
+                            <div className="px-6 py-4 border-b border-purple-100 bg-gradient-to-r from-purple-50 to-white flex justify-between items-center sticky top-0 z-10 shrink-0">
+                                <div>
+                                    <h2 className="text-xl font-black text-gray-800 flex items-center gap-2">
+                                        <Edit3 size={20} className="text-purple-600" /> Patient Master Edit
+                                    </h2>
+                                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-1">ID: {editForm.patientId || editForm._id}</p>
+                                </div>
+                                <button onClick={() => setIsEditOpen(false)} className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-lg transition-colors">
+                                    <XCircle size={24} />
+                                </button>
+                            </div>
+                            
+                            <form onSubmit={handleSave} className="overflow-y-auto px-6 py-6 space-y-8 custom-scrollbar">
+                                
+                                {/* BASE IDENTITY */}
+                                <div>
+                                    <h3 className="text-xs font-black uppercase text-purple-600 tracking-widest mb-4 border-b border-purple-100 pb-2">Core Identity</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">First Name</label>
+                                            <input type="text" name="firstName" value={editForm.firstName || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Last Name</label>
+                                            <input type="text" name="lastName" value={editForm.lastName || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Date of Birth</label>
+                                            <input type="date" name="dob" value={editForm.dob || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Gender</label>
+                                            <select name="gender" value={editForm.gender || 'Other'} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* COMM & SEC */}
+                                <div>
+                                    <h3 className="text-xs font-black uppercase text-purple-600 tracking-widest mb-4 border-b border-purple-100 pb-2">Security & Communications</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Email Node</label>
+                                            <input type="email" name="email" value={editForm.email || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Phone Line</label>
+                                            <input type="text" name="phone" value={editForm.phone || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
+                                        </div>
+                                    </div>
+                                    <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg relative overflow-hidden group">
+                                        <div className="absolute -right-4 -top-4 opacity-10 group-hover:scale-150 transition-transform duration-500 flex items-center justify-center w-24 h-24">
+                                            <div className="w-10 h-10 border-4 border-amber-500 rounded-full"></div>
+                                        </div>
+                                        <label className="block text-xs font-black text-amber-800 uppercase tracking-wide mb-1 relative z-10 flex items-center gap-1">
+                                            Override Password
+                                        </label>
+                                        <p className="text-[10px] text-amber-600 mb-2 relative z-10 font-medium">Leave completely blank to preserve original active password hash.</p>
+                                        <input type="password" name="password" placeholder="Enter new highly secure sequence..." value={editForm.password || ''} onChange={handleEditChange} className="w-full relative z-10 px-4 py-2 text-sm bg-white border border-amber-300 rounded focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all font-black" />
+                                    </div>
+                                </div>
+
+                                {/* MEDICAL DIRECTIVES */}
+                                <div>
+                                    <h3 className="text-xs font-black uppercase text-purple-600 tracking-widest mb-4 border-b border-purple-100 pb-2">Medical Directives</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Blood Group</label>
+                                            <select name="bloodGroup" value={editForm.bloodGroup || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold">
+                                                <option value="">Not Recorded</option>
+                                                <option value="A+">A+</option>
+                                                <option value="A-">A-</option>
+                                                <option value="B+">B+</option>
+                                                <option value="B-">B-</option>
+                                                <option value="O+">O+</option>
+                                                <option value="O-">O-</option>
+                                                <option value="AB+">AB+</option>
+                                                <option value="AB-">AB-</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">System Profile Bio</label>
+                                            <input type="text" name="about" value={editForm.about || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" />
+                                        </div>
+                                    </div>
+                                    <div className="mt-5">
+                                        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Residential Sector (Address)</label>
+                                        <textarea name="address" value={editForm.address || ''} onChange={handleEditChange} rows="2" className="w-full px-4 py-3 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-medium custom-scrollbar"></textarea>
+                                    </div>
+                                </div>
+
+                                {/* ACCESS STATUSES */}
+                                <div className="bg-gray-50 border border-gray-200 p-5 rounded-xl flex items-center justify-around flex-wrap gap-4">
+                                    <label className="flex items-center gap-3 cursor-pointer group">
+                                        <div className="relative flex items-center justify-center p-1">
+                                            <input type="checkbox" name="isVerified" checked={editForm.isVerified || false} onChange={handleEditChange} className="w-5 h-5 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500 cursor-pointer shadow-sm relative z-10 peer" />
+                                            <div className="absolute inset-0 bg-emerald-100 rounded opacity-0 peer-checked:opacity-100 scale-150 transition-all duration-300"></div>
+                                        </div>
+                                        <span className="text-sm font-black uppercase text-gray-700 group-hover:text-emerald-700 transition">Is Official (Verified)</span>
+                                    </label>
+                                    <div className="w-px h-8 bg-gray-300 hidden md:block"></div>
+                                    <label className="flex items-center gap-3 cursor-pointer group">
+                                        <div className="relative flex items-center justify-center p-1">
+                                            <input type="checkbox" name="isBlocked" checked={editForm.isBlocked || false} onChange={handleEditChange} className="w-5 h-5 text-rose-600 rounded border-gray-300 focus:ring-rose-500 cursor-pointer shadow-sm relative z-10 peer" />
+                                            <div className="absolute inset-0 bg-rose-100 rounded opacity-0 peer-checked:opacity-100 scale-150 transition-all duration-300"></div>
+                                        </div>
+                                        <span className="text-sm font-black uppercase text-gray-700 group-hover:text-rose-700 transition">Revoke Access (Blocked)</span>
+                                    </label>
+                                </div>
+
+                                {/* PADDING TO CLEAR FIXED FOOTER */}
+                                <div className="h-4"></div>
+                            </form>
+                            
+                            {/* FOOTER ACTIONS */}
+                            <div className="px-6 py-4 border-t border-purple-100 bg-gray-50 flex justify-end gap-3 shrink-0">
+                                <button type="button" onClick={() => setIsEditOpen(false)} className="px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-gray-600 hover:bg-gray-200 outline-none rounded-lg transition-colors border border-gray-300 hover:border-gray-400 shadow-sm">
+                                    Cancel Operation
+                                </button>
+                                <button type="button" onClick={handleSave} className="px-8 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all outline-none flex items-center gap-2 border border-purple-500/50">
+                                    {isSaving ? <Loader2 size={16} className="animate-spin" /> : "Deploy Updates"}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
         </div>
     );
 };

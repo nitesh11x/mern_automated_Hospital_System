@@ -7,12 +7,16 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "medical","hospital","automated","healthcare"
+    "medical",
+    "hospital",
+    "automated",
+    "healthcare"
   ],
   "type": "module",
   "author": "nitesh kumar",
   "license": "ISC",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "bcryptjs": "^3.0.3",
     "body-parser": "^2.2.2",
     "cloudinary": "^2.9.0",
