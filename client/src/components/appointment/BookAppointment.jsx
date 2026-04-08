@@ -376,11 +376,11 @@ const BookAppointment = () => {
                   <Stethoscope size={14} className="text-indigo-600" /> 01. Specialist Assignment
                 </span>
 
-                <div className="flex bg-slate-100 p-1 rounded-lg">
+                <div className="flex bg-slate-100 p-1 rounded-sm">
                   <button
                     type="button"
                     onClick={() => handleModeChange("standard")}
-                    className={`px-4 py-1.5 text-[9px] font-black uppercase rounded-md transition-all ${
+                    className={`px-4 py-1.5 text-[9px] font-black uppercase rounded-sm transition-all ${
                       assignmentMode === "standard"
                         ? "bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200"
                         : "text-slate-400 hover:text-slate-600"
@@ -391,7 +391,7 @@ const BookAppointment = () => {
                   <button
                     type="button"
                     onClick={() => handleModeChange("ai")}
-                    className={`px-4 py-1.5 text-[9px] font-black uppercase rounded-md flex items-center gap-1 transition-all ${
+                    className={`px-4 py-1.5 text-[9px] font-black uppercase rounded-sm flex items-center gap-1 transition-all ${
                       assignmentMode === "ai"
                         ? "bg-indigo-600 text-white shadow-sm"
                         : "text-slate-400 hover:text-slate-600"
@@ -490,7 +490,7 @@ const BookAppointment = () => {
               ) : (
                 <div className="space-y-4">
                   <textarea
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none resize-none"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-sm p-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none resize-none"
                     rows="3"
                     placeholder="Describe what you are experiencing... (e.g. 'I have had a severe migraine for 2 days and my vision is blurry')"
                     value={symptoms}
@@ -501,7 +501,7 @@ const BookAppointment = () => {
                     type="button"
                     onClick={handleAnalyzeSymptoms}
                     disabled={aiLoading}
-                    className="w-full bg-linear-to-r from-indigo-600 to-purple-600 text-white font-black text-[10px] uppercase tracking-widest py-3.5 rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="w-full bg-linear-to-r from-indigo-600 to-purple-600 text-white font-black text-[10px] uppercase tracking-widest py-3.5 rounded-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                   >
                     {aiLoading ? (
                       <RefreshCw size={14} className="animate-spin" />
@@ -536,7 +536,7 @@ const BookAppointment = () => {
                                 key={doc._id}
                                 type="button"
                                 onClick={() => handleSelectDoctor(doc)}
-                                className={`w-full text-left px-4 py-3 rounded-lg flex items-center justify-between border transition-all ${
+                                className={`w-full text-left px-4 py-3 rounded-sm flex items-center justify-between border transition-all ${
                                   formData.doctorId === doc._id
                                     ? "border-indigo-600 bg-indigo-600 text-white shadow-md"
                                     : "border-indigo-200 bg-white hover:bg-indigo-50 hover:border-indigo-300"
@@ -565,7 +565,7 @@ const BookAppointment = () => {
                               </button>
                             ))
                           ) : (
-                            <div className="p-3 bg-rose-50 border border-rose-100 rounded-lg text-center">
+                            <div className="p-3 bg-rose-50 border border-rose-100 rounded-sm text-center">
                               <p className="text-xs text-rose-600 font-bold">
                                 No specialists available for this condition currently.
                               </p>
@@ -827,7 +827,7 @@ const BookAppointment = () => {
                                   type="button"
                                   onClick={() => handleSelectTimeSlot(blockKey, slot)}
                                   disabled={isBooked}
-                                  className={`relative py-3 px-2 rounded-lg text-center transition-all duration-200 ${
+                                  className={`relative py-3 px-2 rounded-sm text-center transition-all duration-200 ${
                                     isSelected
                                       ? "bg-indigo-600 text-white shadow-lg scale-105 ring-2 ring-indigo-300"
                                       : isBooked
@@ -870,7 +870,7 @@ const BookAppointment = () => {
                 </div>
 
                 {selectedSlot && (
-                  <div className="mt-8 p-4 bg-indigo-50 border-2 border-indigo-200 rounded-lg">
+                  <div className="mt-8 p-4 bg-indigo-50 border-2 border-indigo-200 rounded-sm">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-xs font-bold uppercase text-indigo-600 mb-1">
@@ -906,7 +906,7 @@ const BookAppointment = () => {
             <button
               type="submit"
               disabled={bookingLoading || !selectedSlot}
-              className="w-full bg-slate-900 text-white py-6 rounded-lg font-black text-[11px] uppercase tracking-[0.4em] hover:bg-indigo-600 transition-all shadow-lg active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 group"
+              className="w-full bg-slate-900 text-white py-6 rounded-sm font-black text-[11px] uppercase tracking-[0.4em] hover:bg-indigo-600 transition-all shadow-lg active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 group"
             >
               {bookingLoading ? (
                 <>
@@ -926,7 +926,7 @@ const BookAppointment = () => {
           </form>
 
           <aside className="lg:col-span-4">
-            <div className="bg-slate-900 rounded-lg p-8 sticky top-28 border border-slate-800 shadow-2xl">
+            <div className="bg-slate-900 rounded-sm p-8 sticky top-28 border border-slate-800 shadow-2xl">
               <div className="relative z-10">
                 <div className="flex justify-between items-center mb-8 pb-4 border-b border-slate-800">
                   <h3 className="text-[11px] font-black text-white uppercase tracking-[0.3em]">
@@ -961,7 +961,7 @@ const BookAppointment = () => {
                       / Case Type
                     </p>
                     <div
-                      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-[9px] font-black uppercase ${
+                      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-sm border text-[9px] font-black uppercase ${
                         formData.isVisited
                           ? "bg-indigo-500/10 border-indigo-500/50 text-indigo-400"
                           : "bg-slate-800 border-slate-700 text-slate-400"
@@ -995,7 +995,7 @@ const BookAppointment = () => {
                   )}
                 </div>
 
-                <div className="mt-8 p-4 bg-slate-800/50 border border-slate-700 rounded-lg">
+                <div className="mt-8 p-4 bg-slate-800/50 border border-slate-700 rounded-sm">
                   <div className="flex items-center gap-2 text-indigo-400 mb-2">
                     <ShieldCheck size={14} />
                     <span className="text-[8px] font-black uppercase tracking-widest">
@@ -1024,7 +1024,7 @@ const FormGroup = ({ label, children }) => {
         {label}
       </label>
       {React.cloneElement(child, {
-        className: `w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-[12px] font-black text-slate-900 uppercase tracking-tight outline-none transition-all focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 ${
+        className: `w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-sm text-[12px] font-black text-slate-900 uppercase tracking-tight outline-none transition-all focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 ${
           child.props.className || ""
         }`,
       })}

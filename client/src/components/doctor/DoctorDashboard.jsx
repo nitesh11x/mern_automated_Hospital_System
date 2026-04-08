@@ -7,10 +7,12 @@ import {
   LayoutDashboard, CalendarCheck, Users, FileText, Settings,
   LogOut, Bell, Search, X, CheckCircle2, Clock, AlertCircle, Plus, Trash2, MapPin,
   Stethoscope, Heart, Activity, Calendar, ChevronRight, Download, Eye,
-  Pill, Award, TrendingUp, User, Phone, Mail, CalendarDays, Clock as ClockIcon, Filter, ChevronDown, Package
+  Pill, Award, TrendingUp, User, Phone, Mail, CalendarDays, Clock as ClockIcon, Filter, ChevronDown, Package, MessageSquare, Video
 } from "lucide-react";
 import DoctorSettings from "./DoctorSettings";
 import { getAllMedicineThunk } from "../../redux/slices/medicine.slice";
+import ChatWindow from "../telemedicine/ChatWindow";
+import VideoRoom from "../telemedicine/VideoRoom";
 
 const DoctorDashboard = () => {
   const dispatch = useDispatch();
@@ -27,6 +29,8 @@ const DoctorDashboard = () => {
     medicines: [{ name: "", dosage: "", duration: "", frequencyOfDose: "" }]
   });
   const [filterType, setFilterType] = useState('all');
+  const [chatAppt, setChatAppt] = useState(null);
+  const [videoAppt, setVideoAppt] = useState(null);
 
   // Medicine search states
   const [medicineSearchTerm, setMedicineSearchTerm] = useState("");
@@ -314,6 +318,8 @@ const DoctorDashboard = () => {
                               handleStatusUpdate={handleStatusUpdate}
                               setPrescriptionApptId={setPrescriptionApptId}
                               handleGetAllMedicine={handleGetAllMedicine}
+                              setChatAppt={setChatAppt}
+                              setVideoAppt={setVideoAppt}
                             />
                           </td>
                         </tr>
@@ -628,6 +634,21 @@ const DoctorDashboard = () => {
             </motion.div>
           </div>
         )}
+        
+        {chatAppt && (
+          <ChatWindow
+            appointment={chatAppt}
+            currentUser={doctor}
+            onClose={() => setChatAppt(null)}
+          />
+        )}
+        {videoAppt && (
+          <VideoRoom
+            appointment={videoAppt}
+            currentUser={doctor}
+            onClose={() => setVideoAppt(null)}
+          />
+        )}
       </AnimatePresence>
     </div>
   );
@@ -658,11 +679,16 @@ const StatCard = ({ label, value, icon, color, trend }) => {
   );
 };
 
-const ActionButtons = ({ apt, handleStatusUpdate, setPrescriptionApptId, handleGetAllMedicine }) => {
+const ActionButtons = ({ apt, handleStatusUpdate, setPrescriptionApptId, handleGetAllMedicine, setChatAppt, setVideoAppt }) => {
   const status = apt.status?.toLowerCase();
+  
+  const isCompleted = status === 'completed';
+  const completedDate = new Date(apt.completedAt || apt.updatedAt).getTime();
+  const diffDays = (Date.now() - completedDate) / (1000 * 60 * 60 * 24);
+  const isEligibleForTelemedicine = isCompleted && diffDays <= 5;
 
   return (
-    <div className="flex justify-end gap-2">
+    <div className="flex justify-end gap-2 flex-wrap">
       {status === 'pending' && (
         <button
           onClick={() => handleStatusUpdate(apt._id, 'Approved')}
@@ -689,6 +715,16 @@ const ActionButtons = ({ apt, handleStatusUpdate, setPrescriptionApptId, handleG
         >
           <FileText size={12} /> {apt.prescriptionId ? 'Modify Rx' : 'Prescribe'}
         </button>
+      )}
+      {isEligibleForTelemedicine && (
+        <>
+          <button onClick={() => setChatAppt(apt)} className="px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded-sm hover:bg-indigo-600 hover:text-white transition-all">
+            <MessageSquare size={14} />
+          </button>
+          <button onClick={() => setVideoAppt(apt)} className="px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-sm hover:bg-emerald-600 hover:text-white transition-all">
+            <Video size={14} />
+          </button>
+        </>
       )}
     </div>
   );

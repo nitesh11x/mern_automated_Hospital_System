@@ -244,10 +244,10 @@ export const getAppointmentById = asyncHandler(async (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(appointmentId))
     return next(new ErrorHandler("Invalid ID", 400));
 
-  const appointment = await Appointment.findById(appointmentId);
-  // .populate("patientId")
-  // .populate("doctorId")
-  // .populate("prescriptionId");
+  const appointment = await Appointment.findById(appointmentId)
+  .populate("patientId")
+  .populate("doctorId")
+  .populate("prescriptionId");
 
   if (!appointment) return next(new ErrorHandler("Appointment not found", 404));
 

@@ -33,6 +33,7 @@ import {
 } from "../../redux/slices/appointment.slice";
 import { getAllDoctorsThunk } from "../../redux/slices/doctor.slice";
 import { notifyPatientAppointmentThunk } from "../../redux/slices/notification.slice";
+import AppointmentDetail from "./AppointmentDetail";
 
 const ShowAppointments = () => {
   const dispatch = useDispatch();
@@ -47,6 +48,7 @@ const ShowAppointments = () => {
   const [editingApp, setEditingApp] = useState(null);
   const [payingApp, setPayingApp] = useState(null);
   const [qrCode, setQrCode] = useState(null);
+  const [viewingAppId, setViewingAppId] = useState(null);
 
   useEffect(() => {
     dispatch(getAllAppointments());
@@ -450,6 +452,7 @@ const ShowAppointments = () => {
                           <div className="flex items-center justify-center gap-1">
                             <button
                               title="View Details"
+                              onClick={() => setViewingAppId(app._id)}
                               className="p-1.5 text-purple-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-sm transition-all"
                             >
                               <Eye size={14} />
@@ -639,6 +642,14 @@ const ShowAppointments = () => {
                 </div>
               </motion.div>
             </div>
+          )}
+
+          {/* Appointment Details Modal */}
+          {viewingAppId && (
+            <AppointmentDetail 
+              appointmentId={viewingAppId} 
+              onClose={() => setViewingAppId(null)} 
+            />
           )}
         </AnimatePresence>
       </div>
