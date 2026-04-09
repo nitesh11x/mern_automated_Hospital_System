@@ -48,6 +48,7 @@ import DoctorRoute from './utils/DoctorRoute';
 import PatientDetail from './components/patient/PatientDetail';
 import DoctorScheduel from './components/doctor/DoctorScheduel';
 import AppointmentDetail from './components/appointment/AppointmentDetail';
+import BookingOptions from './components/common/BookingOptions';
 
 function App() {
   const dispatch = useDispatch();
@@ -74,6 +75,7 @@ function App() {
           <Route path='/otp-form' element={<OtpForm />}></Route>
           <Route path='/management' element={<LoginDashboard />}></Route>
           <Route path='/services' element={<Services />}></Route>
+          <Route path='/booking-options' element={<BookingOptions />}></Route>
 
           {/* patient routes  */}
           <Route path='/patient/login' element={<Login />}></Route>
