@@ -30,7 +30,6 @@ const DoctorDashboard = () => {
   });
   const [filterType, setFilterType] = useState('all');
   const [chatAppt, setChatAppt] = useState(null);
-  const [videoAppt, setVideoAppt] = useState(null);
 
   // Medicine search states
   const [medicineSearchTerm, setMedicineSearchTerm] = useState("");
@@ -319,7 +318,6 @@ const DoctorDashboard = () => {
                               setPrescriptionApptId={setPrescriptionApptId}
                               handleGetAllMedicine={handleGetAllMedicine}
                               setChatAppt={setChatAppt}
-                              setVideoAppt={setVideoAppt}
                             />
                           </td>
                         </tr>
@@ -642,13 +640,6 @@ const DoctorDashboard = () => {
             onClose={() => setChatAppt(null)}
           />
         )}
-        {videoAppt && (
-          <VideoRoom
-            appointment={videoAppt}
-            currentUser={doctor}
-            onClose={() => setVideoAppt(null)}
-          />
-        )}
       </AnimatePresence>
     </div>
   );
@@ -679,7 +670,7 @@ const StatCard = ({ label, value, icon, color, trend }) => {
   );
 };
 
-const ActionButtons = ({ apt, handleStatusUpdate, setPrescriptionApptId, handleGetAllMedicine, setChatAppt, setVideoAppt }) => {
+const ActionButtons = ({ apt, handleStatusUpdate, setPrescriptionApptId, handleGetAllMedicine, setChatAppt }) => {
   const status = apt.status?.toLowerCase();
   
   const isCompleted = status === 'completed';
@@ -717,14 +708,13 @@ const ActionButtons = ({ apt, handleStatusUpdate, setPrescriptionApptId, handleG
         </button>
       )}
       {isEligibleForTelemedicine && (
-        <>
-          <button onClick={() => setChatAppt(apt)} className="px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded-sm hover:bg-indigo-600 hover:text-white transition-all">
-            <MessageSquare size={14} />
-          </button>
-          <button onClick={() => setVideoAppt(apt)} className="px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-sm hover:bg-emerald-600 hover:text-white transition-all">
-            <Video size={14} />
-          </button>
-        </>
+        <button 
+          onClick={() => setChatAppt(apt)} 
+          className="px-4 py-2 bg-indigo-600 text-white rounded-sm hover:bg-indigo-700 transition-all flex items-center gap-2 shadow-md"
+        >
+          <MessageSquare size={12} /> 
+          <span className="text-[10px] font-black uppercase tracking-wider">Tele-Consult</span>
+        </button>
       )}
     </div>
   );

@@ -5,7 +5,11 @@ import { useNavigate } from "react-router-dom";
 import DoctorManage from "../doctor/DoctorManage";
 import PatientManage from "../patient/PatientManage";
 import ShowAppointments from "../appointment/ShowAppointments";
+import { io } from "socket.io-client";
+import { AlertTriangle, MapPin, ExternalLink, PhoneCall, X, Siren } from "lucide-react";
 import ManageReviews from "./ManageReviews";
+import ManageEmergency from "./ManageEmergency";
+import { updateEmergencyStatusThunk } from "../../redux/slices/emergency.slice";
 import {
   PieChart,
   Pie,
@@ -61,6 +65,8 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [emergencyAlert, setEmergencyAlert] = useState(null);
+  const [socket, setSocket] = useState(null);
 
   const { isAdminAuthenticated, admin, stats } = useSelector(
     (state) => state.admin,
@@ -73,6 +79,20 @@ const AdminDashboard = () => {
   useEffect(() => {
     if (isAdminAuthenticated) {
       dispatch(getDashboardStatsThunk());
+
+      const newSocket = io("http://localhost:1111", { withCredentials: true });
+      setSocket(newSocket);
+
+      newSocket.emit("join_admin_room");
+
+      newSocket.on("emergency_alert", (data) => {
+        setEmergencyAlert(data.emergency);
+        toast.error(`🚨 EMERGENCY: ${data.emergency.patientName} needs help!`, { duration: 10000 });
+
+        // Play alert sound logic could go here
+      });
+
+      return () => newSocket.disconnect();
     }
   }, [dispatch, isAdminAuthenticated]);
 
@@ -178,6 +198,12 @@ const AdminDashboard = () => {
             label="Faculty"
             active={activeTab === "faculty"}
             onClick={() => setActiveTab("faculty")}
+          />
+          <SidebarBtn
+            icon={<Siren size={20} />}
+            label="Emergency"
+            active={activeTab === "emergency"}
+            onClick={() => setActiveTab("emergency")}
           />
           <SidebarBtn
             icon={<Calendar size={20} />}
@@ -477,6 +503,11 @@ const AdminDashboard = () => {
               {/* <ShowAppointments isEmbedded /> */}
             </div>
           )}
+          {activeTab === "emergency" && (
+            <div className="-mx-6 -mt-10">
+              <ManageEmergency socket={socket} />
+            </div>
+          )}
           {activeTab === "setting" && (
             <div className="-mx-6 -mt-10">
               {/* <ShowAppointments isEmbedded /> */}
@@ -485,6 +516,98 @@ const AdminDashboard = () => {
 
         </div>
       </main>
+
+      {/* EMERGENCY MODAL */}
+      {/* {emergencyAlert && (
+        <div className="fixed inset-0 bg-indigo-950/90 backdrop-blur-xl z-[5000] flex items-center justify-center p-4">
+          <div className="bg-white rounded-sm shadow-2xl w-full max-w-2xl overflow-hidden border-4 border-purple-500 animate-in zoom-in-95 duration-200">
+            <div className="bg-purple-600 p-8 flex justify-between items-center text-white relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+              <div className="relative z-10 flex items-center gap-6">
+                <div className="w-16 h-16 bg-white rounded-sm flex items-center justify-center text-purple-600 shadow-xl animate-pulse">
+                  <AlertTriangle size={32} />
+                </div>
+                <div>
+                  <h2 className="text-3xl font-black uppercase tracking-tighter">Emergency SOS Received</h2>
+                  <p className="text-xs font-bold text-purple-100 uppercase tracking-widest mt-1">Priority 1: Immediate Dispatch Required</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setEmergencyAlert(null)}
+                className="relative z-10 bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="p-10 space-y-8">
+              <div className="grid grid-cols-2 gap-10">
+                <div className="space-y-4">
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-black uppercase text-slate-400">Patient Identity</p>
+                    <p className="text-xl font-black text-slate-800">{emergencyAlert.patientName}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-black uppercase text-slate-400">Contact Number</p>
+                    <p className="text-lg font-bold text-indigo-600 flex items-center gap-2">
+                      <PhoneCall size={16} /> {emergencyAlert.phone}
+                    </p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-black uppercase text-slate-400">Time Reported</p>
+                    <p className="text-lg font-bold text-slate-800">{new Date(emergencyAlert.createdAt).toLocaleTimeString()}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-black uppercase text-slate-400">Alert Severity</p>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-purple-500 animate-ping"></div>
+                      <p className="text-lg font-black text-purple-600 uppercase">Critical</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-slate-50 border border-slate-200 p-6 rounded-sm space-y-3">
+                <div className="flex items-center gap-2">
+                  <MapPin size={16} className="text-purple-600" />
+                  <p className="text-[10px] font-black uppercase text-slate-500 tracking-widest">Reported Location</p>
+                </div>
+                <p className="text-sm font-bold text-slate-700 leading-relaxed italic border-l-4 border-purple-500 pl-4 bg-white p-4">
+                  {emergencyAlert.address || "Live GPS Coordinates: View Map below"}
+                </p>
+              </div>
+
+
+              <div className="grid grid-cols-2 gap-4">
+                <a
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${emergencyAlert.location.lat},${emergencyAlert.location.lng}`}
+                  target="_blank" rel="noreferrer"
+                  className="w-full bg-slate-900 text-white py-4 rounded-sm font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-black transition-all shadow-xl"
+                >
+                  <MapPin size={18} /> Open In Google Maps
+                </a>
+                <button
+                  onClick={async () => {
+                    try {
+                      await dispatch(updateEmergencyStatusThunk({ id: emergencyAlert._id, status: "Dispatched" })).unwrap();
+                      toast.success("Ambulance Dispatched Immediately!");
+                      setEmergencyAlert(null);
+                      setActiveTab("emergency");
+                    } catch (error) {
+                      toast.error("Dispatch failed. Please try manual override.");
+                    }
+                  }}
+                  className="w-full bg-linear-to-r from-purple-600 via-purple-700 to-indigo-700 text-white py-4 rounded-sm font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:shadow-xl hover:scale-[1.02] transition-all"
+                >
+                  <Siren size={20} className="animate-pulse" /> Send Ambulance Now
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )} */}
     </div>
   );
 };

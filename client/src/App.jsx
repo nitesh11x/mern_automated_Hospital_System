@@ -15,6 +15,7 @@ import Footer from './components/common/Footer'
 import OtpForm from './components/common/OtpForm';
 import Services from './components/section/Services';
 import LoginDashboard from './components/common/LoginDashboard';
+import EmergencyButton from './components/section/EmergencyButton';
 
 import Profile from './components/patient/PatientDetail'
 import Login from './components/patient/Login'
@@ -111,12 +112,6 @@ function App() {
           <Route path='/appointment/:id' element={<AppointmentDetail />}></Route >
           <Route path='/appointment/all' element={<AdminRoute><ShowAppointments /></AdminRoute>}></Route >
 
-
-          {/* reviews routes  */}
-
-
-          {/*  routes  */}
-
         </Routes>
         <Footer />
       </BrowserRouter>
@@ -124,4 +119,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

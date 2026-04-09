@@ -14,11 +14,15 @@ export const initSocket = (server) => {
   io.on("connection", (socket) => {
     console.log(`Socket connected: ${socket.id}`);
 
-    socket.on("join_appointment_room", ({ appointmentId, userId }) => {
+    socket.on("join_appointment_room", ({ appointmentId, userId, peerId }) => {
       socket.join(appointmentId);
       console.log(`User ${userId} joined room ${appointmentId}`);
-      // Notify the room
-      socket.to(appointmentId).emit("user_joined", { userId });
+      socket.to(appointmentId).emit("user_joined", { userId, peerId });
+    });
+
+    socket.on("join_admin_room", () => {
+      socket.join("admin_room");
+      console.log("Admin joined the global alert room");
     });
 
     socket.on("send_message", ({ appointmentId, content, senderId, senderName, senderType }) => {

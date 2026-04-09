@@ -7,7 +7,7 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import { Patient } from "../models/Patient.model.js";
 
-dotenv.config();
+// dotenv.config(); // Redundant, handled in server.js
 
 const EMAIL = process.env.EMAIL;
 const PASSWORD = process.env.PASSWORD;
@@ -146,9 +146,12 @@ export const startMedicineScheduler = () => {
       const currentHour = now.getHours();
       const currentMinute = now.getMinutes();
 
-      const prescriptions = await Prescription.find()
-        .populate("patientId", "name email")
-        .lean();
+      // Fetch only prescriptions that have medicines needing reminders
+      const prescriptions = await Prescription.find({
+        "medicines.0": { $exists: true } 
+      })
+      .populate("patientId", "name email")
+      .lean();
 
       let remindersSent = 0;
 

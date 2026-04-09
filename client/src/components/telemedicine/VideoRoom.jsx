@@ -24,9 +24,29 @@ const VideoRoom = ({ appointment, currentUser, onClose }) => {
     // 1. Init Socket
     socketRef.current = io(SOCKET_SERVER_URL, { withCredentials: true });
     socketRef.current.emit("join_appointment_room", { 
-      appointmentId: appointment._id, 
+      appointmentId: appointment._id,
       userId: currentUser._id 
     });
+
+    const initiateCall = (targetPeerIdToCall) => {
+      if (!targetPeerIdToCall || !peerInstance.current || !stream) return;
+      
+      socketRef.current.emit("call_user", {
+        appointmentId: appointment._id,
+        callerId: currentUser._id,
+        peerId: peerId,
+        callerName: currentUser.name || currentUser.firstName || "User",
+      });
+
+      const call = peerInstance.current.call(targetPeerIdToCall, stream);
+      activeCall.current = call;
+      setCallActive(true);
+      setRemotePeerId(targetPeerIdToCall);
+
+      call.on("stream", (userVideoStream) => {
+        if (userVideo.current) userVideo.current.srcObject = userVideoStream;
+      });
+    };
 
     // 2. Fetch Media Stream natively
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
@@ -39,10 +59,11 @@ const VideoRoom = ({ appointment, currentUser, onClose }) => {
 
         peer.on("open", (id) => {
           setPeerId(id);
-          // Broadcast to everyone in the appointment room that we are ready to receive calls
+          // Broadcast presence and Peer ID to the room
           socketRef.current.emit("join_appointment_room", { 
             appointmentId: appointment._id, 
             userId: currentUser._id,
+            peerId: id // Share peer ID on join
           });
         });
 
@@ -66,10 +87,21 @@ const VideoRoom = ({ appointment, currentUser, onClose }) => {
       });
 
     // 4. Listeners for socket triggers
+    socketRef.current.on("user_joined", ({ userId, peerId: remoteId }) => {
+      console.log(`User ${userId} joined room with PeerID: ${remoteId}`);
+      
+      // AUTO-CALL LOGIC:
+      // If I am the doctor and the person who just joined is a patient with a peer ID
+      // Or if I already joined and see someone else's Peer ID, I (Doctor) will initiate call.
+      const isDoc = currentUser.role === "doctor";
+      if (isDoc && remoteId && remoteId !== peerId) {
+        // Slight delay to ensure their peer instance is ready to answer
+        setTimeout(() => initiateCall(remoteId), 1500);
+      }
+    });
+
     socketRef.current.on("incoming_call", ({ callerId, peerId: callerPeerId, callerName }) => {
-      // If we receive an incoming socket signal, we can optionally prompt or just wait for 
-      // the peerJS `call` event which handles the actual stream.
-      console.log(`Incoming call signal from ${callerName}`);
+      console.log(`Incoming call signal from ${callerName} (${callerPeerId})`);
     });
 
     socketRef.current.on("call_ended", () => {
@@ -84,26 +116,7 @@ const VideoRoom = ({ appointment, currentUser, onClose }) => {
     };
   }, [appointment._id, currentUser._id]);
 
-  const initiateCall = (targetPeerIdToCall) => {
-    if (!targetPeerIdToCall || !peerInstance.current || !stream) return;
-    
-    // Optional: socket emit to notify
-    socketRef.current.emit("call_user", {
-      appointmentId: appointment._id,
-      callerId: currentUser._id,
-      peerId: peerId,
-      callerName: currentUser.name || currentUser.firstName || "User",
-    });
 
-    const call = peerInstance.current.call(targetPeerIdToCall, stream);
-    activeCall.current = call;
-    setCallActive(true);
-    setRemotePeerId(targetPeerIdToCall);
-
-    call.on("stream", (userVideoStream) => {
-      if (userVideo.current) userVideo.current.srcObject = userVideoStream;
-    });
-  };
 
   const endCallLocally = () => {
     if (activeCall.current) {

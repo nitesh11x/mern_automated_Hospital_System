@@ -40,7 +40,6 @@ const Dashboard = () => {
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [chatModalAppt, setChatModalAppt] = useState(null);
-  const [videoModalAppt, setVideoModalAppt] = useState(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -573,14 +572,13 @@ const Dashboard = () => {
                                   Prescription
                                 </button>
                                 {isEligibleForTelemedicine && (
-                                  <>
-                                    <button onClick={() => setChatModalAppt(px)} className="px-3 py-1.5 bg-indigo-50 text-indigo-700 rounded-sm hover:bg-indigo-600 hover:text-white transition-all">
-                                      <MessageSquare size={14} />
-                                    </button>
-                                    <button onClick={() => setVideoModalAppt(px)} className="px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-sm hover:bg-emerald-600 hover:text-white transition-all">
-                                      <Video size={14} />
-                                    </button>
-                                  </>
+                                  <button 
+                                    onClick={() => setChatModalAppt(px)} 
+                                    className="px-6 py-1.5 bg-indigo-600 text-white rounded-sm hover:bg-indigo-700 transition-all flex items-center gap-2 shadow-md"
+                                  >
+                                    <MessageSquare size={14} />
+                                    <span className="text-[10px] font-black uppercase tracking-wider"> Chat</span>
+                                  </button>
                                 )}
                               </div>
                             </td>
@@ -784,13 +782,6 @@ const Dashboard = () => {
             appointment={chatModalAppt}
             currentUser={patient}
             onClose={() => setChatModalAppt(null)}
-          />
-        )}
-        {videoModalAppt && (
-          <VideoRoom
-            appointment={videoModalAppt}
-            currentUser={patient}
-            onClose={() => setVideoModalAppt(null)}
           />
         )}
 
