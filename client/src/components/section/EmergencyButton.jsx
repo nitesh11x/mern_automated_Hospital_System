@@ -85,7 +85,7 @@ const EmergencyButton = () => {
 
   return (
     <>
-      <div className="fixed bottom-8 left-8 z-[100]">
+      <div className="fixed bottom-8 left-8  ">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -103,7 +103,7 @@ const EmergencyButton = () => {
                 <AlertCircle size={22} className="group-hover:rotate-12 transition-transform" />
                 <div className="absolute inset-0 bg-white/20 blur-lg animate-pulse"></div>
               </div>
-              <span className="text-xs font-black uppercase tracking-[0.3em] font-mono">Contact SOS Response</span>
+              <span className="text-xs font-black uppercase tracking-[0.3em] font-mono">Emergency</span>
             </div>
           )}
         </motion.button>
@@ -111,7 +111,7 @@ const EmergencyButton = () => {
 
       <AnimatePresence>
         {showManualForm && (
-          <div className="fixed inset-0 bg-slate-900/90 backdrop-blur-xl z-[1000] flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-slate-900/90 backdrop-blur-xl z-1000 flex items-center justify-center p-4">
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}

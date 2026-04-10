@@ -5,7 +5,7 @@ export const connectDb = async () => {
     if (!uri) return console.log("uri is missing in env")
     // console.log(uri)
     try {
-        await mongoose.connect(uri, { dbName: "mern_Automated_Hospital_Systemchr" });
+        await mongoose.connect(uri, { dbName: "mern_Automated_Hospital_System" });
         console.log('✅ Database connected successfully');
     } catch (error) {
         console.error('❌ Database connection failed:', error.message);
