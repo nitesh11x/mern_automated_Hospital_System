@@ -588,7 +588,7 @@ const BookAppointment = () => {
                 <FormGroup label="Full Name">
                   <input
                     name="name"
-                    placeholder="E.G. JOHN DOE"
+                    placeholder="Name"
                     value={formData.name}
                     onChange={handleChange}
                     required

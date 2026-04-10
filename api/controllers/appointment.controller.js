@@ -126,7 +126,7 @@ export const bookAppointmentOfSpecificDoctor = asyncHandler(
       !paymentMode
     ) {
       return next(
-        new ErrorHandler("All required fields must be provided", 400)
+        new ErrorHandler("All required fields must be provided", 400),
       );
     }
 
@@ -167,7 +167,7 @@ export const bookAppointmentOfSpecificDoctor = asyncHandler(
         slotId: slotId || requestedTimeSlot,
         paymentMode,
         isVisit: !!previousAppointment,
-        previousAppointmentId: previousAppointment?._id || null, 
+        previousAppointmentId: previousAppointment?._id || null,
       });
 
       await Patient.findByIdAndUpdate(patientId, {
@@ -185,8 +185,124 @@ export const bookAppointmentOfSpecificDoctor = asyncHandler(
     } catch (error) {
       return next(error);
     }
-  }
+  },
 );
+
+export const bookAppointmentByAdmin = asyncHandler(async (req, res, next) => {
+  let {
+    doctorId,
+    patientId,
+    name,
+    email,
+    gender,
+    relation,
+    appointmentDate,
+    requestedTimeSlot,
+    slotId,
+    paymentMode,
+    previousAppointmentId,
+    phone,
+  } = req.body;
+
+  if (
+    !doctorId ||
+    !name ||
+    !email ||
+    !gender ||
+    !appointmentDate ||
+    !requestedTimeSlot ||
+    !paymentMode
+  ) {
+    return next(new ErrorHandler("All required fields must be provided", 400));
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(doctorId)) {
+    return next(new ErrorHandler("Invalid Doctor ID", 400));
+  }
+
+  try {
+    // ✅ STEP 1: AUTO CREATE PATIENT IF NOT EXISTS
+    let patient;
+
+    if (patientId && mongoose.Types.ObjectId.isValid(patientId)) {
+      patient = await Patient.findById(patientId);
+    }
+
+    // ❗ If no patient found → create new one
+    if (!patient) {
+      const existingPatient = await Patient.findOne({ email });
+
+      if (existingPatient) {
+        patient = existingPatient;
+      } else {
+        patient = await Patient.create({
+          firstName: name?.split(" ")[0] || "Guest",
+          lastName: name?.split(" ")[1] || "User",
+          email,
+          password: "123456", // 🔥 default password
+          phone: phone || "0000000000",
+          dob: new Date("2000-01-01"),
+          gender,
+        });
+      }
+
+      patientId = patient._id;
+    }
+
+    // ✅ STEP 2: CHECK PREVIOUS APPOINTMENT
+    let previousAppointment = null;
+
+    if (
+      previousAppointmentId &&
+      mongoose.Types.ObjectId.isValid(previousAppointmentId)
+    ) {
+      previousAppointment = await Appointment.findOne({
+        _id: previousAppointmentId,
+        patientId,
+      });
+    }
+
+    if (!previousAppointment) {
+      previousAppointment = await Appointment.findOne({
+        patientId,
+        doctorId,
+      }).sort({ createdAt: -1 });
+    }
+
+    // ✅ STEP 3: CREATE APPOINTMENT
+    const appointment = await Appointment.create({
+      patientId,
+      doctorId,
+      name,
+      email,
+      gender,
+      relation,
+      appointmentDate,
+      requestedTimeSlot,
+      slotId: slotId || requestedTimeSlot,
+      paymentMode,
+      isVisit: !!previousAppointment,
+      previousAppointmentId: previousAppointment?._id || null,
+    });
+
+    // ✅ STEP 4: UPDATE PATIENT
+    await Patient.findByIdAndUpdate(patientId, {
+      $addToSet: {
+        appointmentIds: appointment._id,
+        doctorIds: doctorId,
+      },
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Appointment booked successfully ",
+      appointment,
+      patient,
+    });
+  } catch (error) {
+    return next(error);
+  }
+});
 
 export const approveAppointment = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
@@ -245,9 +361,9 @@ export const getAppointmentById = asyncHandler(async (req, res, next) => {
     return next(new ErrorHandler("Invalid ID", 400));
 
   const appointment = await Appointment.findById(appointmentId)
-  .populate("patientId")
-  .populate("doctorId")
-  .populate("prescriptionId");
+    .populate("patientId")
+    .populate("doctorId")
+    .populate("prescriptionId");
 
   if (!appointment) return next(new ErrorHandler("Appointment not found", 404));
 

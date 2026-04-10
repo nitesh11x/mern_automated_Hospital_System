@@ -13,7 +13,8 @@ import {
   updateAppointmentPaymentStatus,
   updateAppointmentStatus,
   getDoctorSlots,
-  cancelAppointmentById
+  cancelAppointmentById,
+  bookAppointmentByAdmin
 } from "../controllers/appointment.controller.js";
 
 import {
@@ -25,8 +26,8 @@ import {
 const router = express.Router();
 router.post("/book", isPatientAuth, bookAppointment);
 router.post("/book/:doctorId", isPatientAuth, bookAppointmentOfSpecificDoctor);
-
 router.get("/:doctorId/slots", getDoctorSlots);
+router.post("/admin/book", isAdminAuth, bookAppointmentByAdmin);
 
 router.get("/all", isAdminAuth, getAllAppointments);
 router.get("/me", isPatientAuth, getPatientAppointments);

@@ -271,6 +271,11 @@ const AdminDashboard = () => {
                 />
                 <SmallBtn
                   icon={<Calendar size={16} />}
+                  label="Create New Appointment"
+                  to="/appointment/create"
+                />
+                <SmallBtn
+                  icon={<Calendar size={16} />}
                   label="Appointments"
                   onClick={() => setActiveTab("appointments")}
                 />

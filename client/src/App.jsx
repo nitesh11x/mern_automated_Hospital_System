@@ -51,6 +51,7 @@ import DoctorScheduel from './components/doctor/DoctorScheduel';
 import AppointmentDetail from './components/appointment/AppointmentDetail';
 import BookingOptions from './components/common/BookingOptions';
 import RegisterByAdmin from './components/patient/RegisterByAdmin';
+import BookAppointmentByAdmin from './components/appointment/BookAppointmentByAdmin';
 
 function App() {
   const dispatch = useDispatch();
@@ -113,6 +114,7 @@ function App() {
           <Route path='/appointment/book/:doctorId' element={<PatientRoute><BookAppointmentOfSpecificDoctor /> </PatientRoute>}></Route >
           <Route path='/appointment/:id' element={<AppointmentDetail />}></Route >
           <Route path='/appointment/all' element={<AdminRoute><ShowAppointments /></AdminRoute>}></Route >
+          <Route path='/appointment/create' element={<AdminRoute><BookAppointmentByAdmin /></AdminRoute>}></Route >
 
         </Routes>
         <Footer />

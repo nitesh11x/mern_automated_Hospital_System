@@ -58,7 +58,7 @@ const Contact = () => {
                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-700 ml-1">Name</label>
                   <input
                     type="text"
-                    placeholder="John Doe"
+                    placeholder="name"
                     className="w-full p-3 bg-white rounded-sm outline-none border border-gray-200 focus:border-purple-600 transition-all text-sm"
                   />
                 </div>
@@ -66,7 +66,7 @@ const Contact = () => {
                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-700 ml-1">Email</label>
                   <input
                     type="email"
-                    placeholder="john@example.com"
+                    placeholder="@example.com"
                     className="w-full p-3 bg-white rounded-sm outline-none border border-gray-200 focus:border-purple-600 transition-all text-sm"
                   />
                 </div>

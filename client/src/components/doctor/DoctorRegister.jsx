@@ -281,7 +281,7 @@ const DoctorRegister = () => {
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleInputChange}
-                        placeholder="John"
+                        placeholder="ab"
                         required
                       />
                       <Input
