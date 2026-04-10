@@ -485,7 +485,7 @@ const PatientManage = ({ isEmbedded }) => {
                             className="bg-white rounded-sm w-full max-w-4xl shadow-2xl border border-purple-100 flex flex-col max-h-[90vh] overflow-hidden transform transition-all duration-300"
                         >
                             
-                            <div className="px-6 py-4 border-b border-purple-100 bg-gradient-to-r from-purple-50 to-white flex justify-between items-center sticky top-0 z-10 shrink-0">
+                            <div className="px-6 py-4 border-b border-purple-100 bg-linear-to-r from-purple-50 to-white flex justify-between items-center sticky top-0 z-10 shrink-0">
                                 <div>
                                     <h2 className="text-xl font-black text-gray-800 flex items-center gap-2">
                                         <Edit3 size={20} className="text-purple-600" /> Patient Master Edit
@@ -545,7 +545,7 @@ const PatientManage = ({ isEmbedded }) => {
                                         <div className="absolute -right-4 -top-4 opacity-10 group-hover:scale-150 transition-transform duration-500 flex items-center justify-center w-24 h-24">
                                             <div className="w-10 h-10 border-4 border-amber-500 rounded-full"></div>
                                         </div>
-                                        <label className="block text-xs font-black text-amber-800 uppercase tracking-wide mb-1 relative z-10 flex items-center gap-1">
+                                        <label className="block text-xs font-black text-amber-800 uppercase tracking-wide mb-1 relative z-10 items-center gap-1">
                                             Override Password
                                         </label>
                                         <p className="text-[10px] text-amber-600 mb-2 relative z-10 font-medium">Leave completely blank to preserve original active password hash.</p>
@@ -610,7 +610,7 @@ const PatientManage = ({ isEmbedded }) => {
                                 <button type="button" onClick={() => setIsEditOpen(false)} className="px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-gray-600 hover:bg-gray-200 outline-none rounded-sm transition-colors border border-gray-300 hover:border-gray-400 shadow-sm">
                                     Cancel Operation
                                 </button>
-                                <button type="button" onClick={handleSave} className="px-8 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-black uppercase tracking-widest rounded-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all outline-none flex items-center gap-2 border border-purple-500/50">
+                                <button type="button" onClick={handleSave} className="px-8 py-2.5 bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-black uppercase tracking-widest rounded-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all outline-none flex items-center gap-2 border border-purple-500/50">
                                     {isSaving ? <Loader2 size={16} className="animate-spin" /> : "Deploy Updates"}
                                 </button>
                             </div>

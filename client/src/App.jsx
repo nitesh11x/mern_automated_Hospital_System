@@ -50,6 +50,7 @@ import PatientDetail from './components/patient/PatientDetail';
 import DoctorScheduel from './components/doctor/DoctorScheduel';
 import AppointmentDetail from './components/appointment/AppointmentDetail';
 import BookingOptions from './components/common/BookingOptions';
+import RegisterByAdmin from './components/patient/RegisterByAdmin';
 
 function App() {
   const dispatch = useDispatch();
@@ -77,6 +78,7 @@ function App() {
           <Route path='/management' element={<LoginDashboard />}></Route>
           <Route path='/services' element={<Services />}></Route>
           <Route path='/booking-options' element={<BookingOptions />}></Route>
+          <Route path='/register-x' element={<AdminRoute> <RegisterByAdmin /></AdminRoute>}></Route>
 
           {/* patient routes  */}
           <Route path='/patient/login' element={<Login />}></Route>
