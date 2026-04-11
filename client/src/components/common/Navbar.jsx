@@ -146,7 +146,7 @@ const Navbar = () => {
                   className="group bg-indigo-50 text-sm font-semibold text-indigo-700 hover:bg-indigo-600 hover:text-white flex items-center gap-2 transition-all duration-300 px-5 py-2.5 rounded-sm shadow-sm"
                 >
                   <User size={16} className="group-hover:scale-110 transition-transform" />
-                  <span>Patient Login</span>
+                  <span>Login</span>
                 </Link>
               </>
             ) : (

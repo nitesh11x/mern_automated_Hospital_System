@@ -59,6 +59,7 @@ import medicineRouter from "./routes/medicine.route.js";
 import aiRouter from "./routes/ai.route.js";
 import chatRouter from "./routes/chat.route.js";
 import emergencyRouter from "./routes/emergency.route.js";
+import contactRouter from "./routes/contact.route.js";
 import { startMedicineScheduler } from "./controllers/prescription.controller.js";
 import { initSocket } from "./lib/socket.js";
 
@@ -74,6 +75,7 @@ app.use("/api/notification", notificationRouter);
 app.use("/api/medicine", medicineRouter);
 app.use("/api/chat", chatRouter);
 app.use("/api/emergency", emergencyRouter);
+app.use("/api/contact", contactRouter);
 
 app.use(errorMiddleware);
 

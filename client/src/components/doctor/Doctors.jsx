@@ -301,10 +301,10 @@ const DoctorDetailsModal = ({ doctor, isOpen, onClose }) => {
                                 {/* Contact Info */}
                                 <div className="pt-4 border-t border-slate-100">
                                     <div className="flex gap-3">
-                                        <button className="flex-1 bg-indigo-600 text-white py-3 rounded-sm font-semibold text-sm hover:bg-indigo-700 transition-all flex items-center justify-center gap-2">
+                                        <Link to={'/appointment/book'} className="flex-1 bg-indigo-600 text-white py-3 rounded-sm font-semibold text-sm hover:bg-indigo-700 transition-all flex items-center justify-center gap-2">
                                             <Calendar size={16} />
                                             Book Appointment
-                                        </button>
+                                        </Link>
                                         <button className="flex-1 border border-slate-200 text-slate-700 py-3 rounded-sm font-semibold text-sm hover:border-indigo-600 hover:text-indigo-600 transition-all flex items-center justify-center gap-2">
                                             <Phone size={16} />
                                             Contact
