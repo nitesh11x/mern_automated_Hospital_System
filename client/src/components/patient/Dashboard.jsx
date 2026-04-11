@@ -20,13 +20,14 @@ import {
   Stethoscope,
   ArrowRight,
   User, Phone, Mail, MapPin, Heart, Activity, Star, CheckCircle, CheckCircle2,
-  XCircle, Clock, AlertCircle, CreditCard, QrCode, Eye, Download, Settings, ScanLine, Loader2, MessageSquare, Video
+  XCircle, Clock, AlertCircle, CreditCard, QrCode, Eye, Download, Settings, ScanLine, Loader2, MessageSquare, Video, Utensils
 } from "lucide-react";
 import PatientSettings from "./PatientSettings";
 import ChatWindow from "../telemedicine/ChatWindow";
 import VideoRoom from "../telemedicine/VideoRoom";
+import DietSuggestion from "./DietSuggestion";
 
-import { cancelAppointmentThunk, getPatientAppointments } from "../../redux/slices/appointment.slice";
+import { cancelAppointmentThunk, getPatientAppointments, updateAppointmentPaymentStatus } from "../../redux/slices/appointment.slice";
 import { getPatientPrescriptionByIdThunk, getPatientPrescriptionsThunk } from "../../redux/slices/prescription.slice";
 import { getAllDoctorsThunk } from "../../redux/slices/doctor.slice";
 import { patientLogoutThunk } from "../../redux/slices/patient.slice";
@@ -116,16 +117,24 @@ const Dashboard = () => {
   const processPayment = async () => {
     setPaymentLoading(true);
     // Simulate payment processing
-    setTimeout(() => {
-      setPaymentLoading(false);
-      setPaymentSuccess(true);
-      toast.success("Payment successful!");
-      // After 2 seconds, close modal and refresh appointments
-      setTimeout(() => {
-        setPaymentModal(null);
-        setPaymentSuccess(false);
-        dispatch(getPatientAppointments());
-      }, 2000);
+    setTimeout(async () => {
+      try {
+        if (paymentModal && paymentModal._id) {
+          await dispatch(updateAppointmentPaymentStatus({ id: paymentModal._id, paymentStatus: 'Paid' })).unwrap();
+        }
+        setPaymentLoading(false);
+        setPaymentSuccess(true);
+        toast.success("Payment successful!");
+        // After 2 seconds, close modal and refresh appointments
+        setTimeout(() => {
+          setPaymentModal(null);
+          setPaymentSuccess(false);
+          dispatch(getPatientAppointments());
+        }, 2000);
+      } catch (err) {
+        setPaymentLoading(false);
+        toast.error("Failed to update payment status.");
+      }
     }, 2000);
   };
 
@@ -235,6 +244,12 @@ const Dashboard = () => {
             label="Account Settings"
             active={activeTab === "settings"}
             onClick={() => { setActiveTab("settings"); setIsSidebarOpen(false); }}
+          />
+          <SidebarItem
+            icon={<Utensils size={18} />}
+            label="Suggestion"
+            active={activeTab === "suggestions"}
+            onClick={() => { setActiveTab("suggestions"); setIsSidebarOpen(false); }}
           />
         </nav>
 
@@ -716,61 +731,14 @@ const Dashboard = () => {
             </section>
           )}
 
+          {/* SUGGESTIONS TAB */}
+          {activeTab === "suggestions" && (
+            <DietSuggestion prescriptions={prescriptions} />
+          )}
+
           {/* SETTINGS TAB */}
           {activeTab === "settings" && (
-            <section className="bg-white rounded-sm border border-purple-100 shadow-xl overflow-hidden">
-              <div className="px-6 py-5 border-b border-purple-100 bg-linear-to-r from-purple-50/30 to-white">
-                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-purple-700">Account Settings</h3>
-              </div>
-              <div className="p-6">
-                <div className="space-y-3">
-                  <button className="w-full flex items-center justify-between px-5 py-4 rounded-sm border border-purple-100 bg-white hover:border-purple-300 hover:shadow-md transition-all group">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-purple-100 rounded-sm group-hover:bg-purple-600 transition-colors">
-                        <User size={16} className="text-purple-600 group-hover:text-white" />
-                      </div>
-                      <div className="flex flex-col text-left">
-                        <span className="text-sm font-bold text-slate-800">Edit Profile</span>
-                        <span className="text-[10px] text-purple-400">Update your personal information</span>
-                      </div>
-                    </div>
-                    <ChevronRight size={16} className="text-purple-400" />
-                  </button>
-
-                  <button className="w-full flex items-center justify-between px-5 py-4 rounded-sm border border-purple-100 bg-white hover:border-purple-300 hover:shadow-md transition-all group">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-purple-100 rounded-sm group-hover:bg-purple-600 transition-colors">
-                        <ShieldCheck size={16} className="text-purple-600 group-hover:text-white" />
-                      </div>
-                      <div className="flex flex-col text-left">
-                        <span className="text-sm font-bold text-slate-800">Security Settings</span>
-                        <span className="text-[10px] text-purple-400">Manage password and 2FA</span>
-                      </div>
-                    </div>
-                    <ChevronRight size={16} className="text-purple-400" />
-                  </button>
-
-                  <button className="w-full flex items-center justify-between px-5 py-4 rounded-sm border border-purple-100 bg-white hover:border-purple-300 hover:shadow-md transition-all group">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-purple-100 rounded-sm group-hover:bg-purple-600 transition-colors">
-                        <Bell size={16} className="text-purple-600 group-hover:text-white" />
-                      </div>
-                      <div className="flex flex-col text-left">
-                        <span className="text-sm font-bold text-slate-800">Notification Preferences</span>
-                        <span className="text-[10px] text-purple-400">Manage email and SMS alerts</span>
-                      </div>
-                    </div>
-                    <ChevronRight size={16} className="text-purple-400" />
-                  </button>
-                </div>
-
-                <div className="mt-8 pt-6 border-t border-dashed border-purple-100">
-                  <div className="text-center text-[10px] font-bold uppercase tracking-widest text-purple-400">
-                    More features coming soon
-                  </div>
-                </div>
-              </div>
-            </section>
+            <PatientSettings />
           )}
         </div>
       </main>

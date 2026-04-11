@@ -22,12 +22,36 @@ export const analyzeSymptomsThunk = createAsyncThunk(
   }
 );
 
+export const getDietSuggestionThunk = createAsyncThunk(
+  "ai/getDietSuggestion",
+  async (prescriptions, { rejectWithValue }) => {
+    try {
+      const { data } = await api.post("/ai/diet-suggestion", { prescriptions });
+
+      if (!data?.success) {
+        return rejectWithValue(data?.message || "AI diet recommendation failed");
+      }
+
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to contact the AI server"
+      );
+    }
+  }
+);
+
 const initialState = {
   loading: false,
   error: null,
   triageExplanation: "",
   recommendedSpecialization: "",
   recommendedDoctors: [],
+  dietLoading: false,
+  dietError: null,
+  dietData: null,
 };
 
 const aiSlice = createSlice({
@@ -40,6 +64,8 @@ const aiSlice = createSlice({
       state.triageExplanation = "";
       state.recommendedSpecialization = "";
       state.recommendedDoctors = [];
+      state.dietLoading = false;
+      state.dietError = null;
     },
   },
   extraReducers: (builder) => {
@@ -68,6 +94,19 @@ const aiSlice = createSlice({
         state.triageExplanation = "";
         state.recommendedSpecialization = "";
         state.recommendedDoctors = [];
+      })
+      .addCase(getDietSuggestionThunk.pending, (state) => {
+        state.dietLoading = true;
+        state.dietError = null;
+      })
+      .addCase(getDietSuggestionThunk.fulfilled, (state, action) => {
+        state.dietLoading = false;
+        state.dietError = null;
+        state.dietData = action.payload?.dietData || null;
+      })
+      .addCase(getDietSuggestionThunk.rejected, (state, action) => {
+        state.dietLoading = false;
+        state.dietError = action.payload || "Failed to fetch diet recommendations";
       });
   },
 });

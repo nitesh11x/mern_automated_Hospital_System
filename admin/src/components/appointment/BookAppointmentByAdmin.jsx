@@ -211,7 +211,7 @@ const BookAppointmentByAdmin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8f7ff] px-4 py-10 md:px-8">
+    <div className="min-h-screen bg-[#f8f7ff] px-4 py-24 md:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 border-l-4 border-indigo-600 pl-5">
           <div className="mb-2 flex items-center gap-2">
