@@ -7,24 +7,14 @@ import { adminProfileThunk } from './redux/slices/admin.slice';
 import { profilePatientThunk } from './redux/slices/patient.slice';
 import { profileDoctorThunk } from './redux/slices/doctor.slice';
 
-import Hero from './components/Home/Hero'
 import Navbar from './components/common/Navbar'
-import Contact from './components/section/Contact'
-import About from './components/section/About'
 import Footer from './components/common/Footer'
-import OtpForm from './components/common/OtpForm';
-import Services from './components/section/Services';
 import LoginDashboard from './components/common/LoginDashboard';
-import EmergencyButton from './components/section/EmergencyButton';
 
 import Profile from './components/patient/PatientDetail'
-import Login from './components/patient/Login'
-import Register from './components/patient/Register'
-import Dashboard from './components/patient/Dashboard'
 import Patients from './components/patient/Patients';
 import PatientManage from './components/patient/PatientManage';
 import PatientRoute from './utils/PatientRoute';
-
 
 import AdminDetail from './components/admin/AdminDetail';
 import AdminLogin from './components/admin/AdminLogin';
@@ -40,18 +30,13 @@ import DoctorDetail from './components/doctor/DoctorDetail';
 import DoctorProfile from './components/doctor/DoctorProfile';
 import DoctorLogin from './components/doctor/DoctorLogin';
 import DoctorManage from './components/doctor/DoctorManage';
-
-
-import BookAppointment from './components/appointment/BookAppointment';
-import ShowAppointments from './components/appointment/ShowAppointments';
-import BookAppointmentOfSpecificDoctor from './components/appointment/BookAppointmentOfSpecificDoctor';
 import DoctorRoute from './utils/DoctorRoute';
-import PatientDetail from './components/patient/PatientDetail';
 import DoctorScheduel from './components/doctor/DoctorScheduel';
+
+import ShowAppointments from './components/appointment/ShowAppointments';
 import AppointmentDetail from './components/appointment/AppointmentDetail';
-import BookingOptions from './components/common/BookingOptions';
-import RegisterByAdmin from './components/patient/RegisterByAdmin';
 import BookAppointmentByAdmin from './components/appointment/BookAppointmentByAdmin';
+import RegisterByAdmin from './components/patient/RegisterByAdmin';
 
 function App() {
   const dispatch = useDispatch();
@@ -71,27 +56,9 @@ function App() {
         <Toaster position="top-right" reverseOrder />
         <Navbar />
         <Routes>
-          {/* Basic Routes  */}
-          <Route path='/register-x' element={<AdminRoute> <RegisterByAdmin /></AdminRoute>}></Route>
+          {/* Staff Entry Gateway */}
           <Route path='/' element={<LoginDashboard />}></Route>
-
-          {/* patient routes  */}
-   
-      
-          <Route path='/patient/all' element={<AdminRoute><Patients /></AdminRoute>}></Route>
-          <Route path='/patient/manage' element={<AdminRoute><PatientManage /></AdminRoute>}></Route>
-          <Route path='/patient/:patientId' element={<PatientDetail />}></Route>
-
-          {/* doctor routes  */}
-          <Route path='/doctor/login' element={<DoctorLogin />}></Route>
-          <Route path='/doctor/register' element={<AdminRoute><DoctorRegister /></AdminRoute>}></Route>
-          <Route path='/doctor/dashboard' element={<DoctorDashboard />}></Route>
-          <Route path='/doctor/all' element={<Doctors />}></Route>
-          <Route path='/doctor/detail/:id' element={< DoctorDetail />}></Route >
-          <Route path='/doctor/:id' element={<DoctorRoute><DoctorProfile /></DoctorRoute>}></Route>
-          <Route path='/doctor/detail' element={<DoctorDetail />}></Route>
-          <Route path='/doctor/manage' element={<AdminRoute><DoctorManage /></AdminRoute>}></Route>
-          <Route path='/doctor/scheduel/:id' element={<AdminRoute><DoctorScheduel /></AdminRoute>}></Route>
+          <Route path='/register-x' element={<AdminRoute> <RegisterByAdmin /></AdminRoute>}></Route>
 
           {/* admin routes  */}
           <Route path='/admin/login' element={<AdminLogin />}></Route >
@@ -100,8 +67,22 @@ function App() {
           <Route path='/admin/detail' element={<AdminRoute><AdminDetail /></AdminRoute>}></Route >
           <Route path='/admin/:id' element={<AdminRoute><AdminProfile /></AdminRoute>}></Route >
 
+          {/* doctor routes  */}
+          <Route path='/doctor/login' element={<DoctorLogin />}></Route>
+          <Route path='/doctor/register' element={<AdminRoute><DoctorRegister /></AdminRoute>}></Route>
+          <Route path='/doctor/dashboard' element={<DoctorDashboard />}></Route>
+          <Route path='/doctor/all' element={<Doctors />}></Route>
+          <Route path='/doctor/detail/:id' element={< DoctorDetail />}></Route >
+          <Route path='/doctor/:id' element={<DoctorRoute><DoctorProfile /></DoctorRoute>}></Route>
+          <Route path='/doctor/manage' element={<AdminRoute><DoctorManage /></AdminRoute>}></Route>
+          <Route path='/doctor/scheduel/:id' element={<AdminRoute><DoctorScheduel /></AdminRoute>}></Route>
 
-          {/* appointment routes  */}
+          {/* patient management (for admins) */}
+          <Route path='/patient/all' element={<AdminRoute><Patients /></AdminRoute>}></Route>
+          <Route path='/patient/manage' element={<AdminRoute><PatientManage /></AdminRoute>}></Route>
+          <Route path='/patient/:patientId' element={<Profile />}></Route>
+
+          {/* appointment management */}
           <Route path='/appointment/:id' element={<AppointmentDetail />}></Route >
           <Route path='/appointment/all' element={<AdminRoute><ShowAppointments /></AdminRoute>}></Route >
           <Route path='/appointment/create' element={<AdminRoute><BookAppointmentByAdmin /></AdminRoute>}></Route >

@@ -91,30 +91,14 @@ function App() {
           <Route path='/patient/:patientId' element={<PatientDetail />}></Route>
 
           {/* doctor routes  */}
-          <Route path='/doctor/login' element={<DoctorLogin />}></Route>
-          <Route path='/doctor/register' element={<AdminRoute><DoctorRegister /></AdminRoute>}></Route>
-          <Route path='/doctor/dashboard' element={<DoctorDashboard />}></Route>
           <Route path='/doctor/all' element={<Doctors />}></Route>
           <Route path='/doctor/detail/:id' element={< DoctorDetail />}></Route >
-          <Route path='/doctor/:id' element={<DoctorRoute><DoctorProfile /></DoctorRoute>}></Route>
           <Route path='/doctor/detail' element={<DoctorDetail />}></Route>
-          <Route path='/doctor/manage' element={<AdminRoute><DoctorManage /></AdminRoute>}></Route>
-          <Route path='/doctor/scheduel/:id' element={<AdminRoute><DoctorScheduel /></AdminRoute>}></Route>
-
-          {/* admin routes  */}
-          <Route path='/admin/login' element={<AdminLogin />}></Route >
-          <Route path='/admin/register' element={<AdminRoute><AdminRegister /></AdminRoute>}></Route >
-          <Route path='/admin/dashboard' element={<AdminRoute><AdminDashboard /></AdminRoute>}></Route >
-          <Route path='/admin/detail' element={<AdminRoute><AdminDetail /></AdminRoute>}></Route >
-          <Route path='/admin/:id' element={<AdminRoute><AdminProfile /></AdminRoute>}></Route >
-
 
           {/* appointment routes  */}
           <Route path='/appointment/book' element={<PatientRoute><BookAppointment /> </PatientRoute>}></Route >
           <Route path='/appointment/book/:doctorId' element={<PatientRoute><BookAppointmentOfSpecificDoctor /> </PatientRoute>}></Route >
           <Route path='/appointment/:id' element={<AppointmentDetail />}></Route >
-          <Route path='/appointment/all' element={<AdminRoute><ShowAppointments /></AdminRoute>}></Route >
-          <Route path='/appointment/create' element={<AdminRoute><BookAppointmentByAdmin /></AdminRoute>}></Route >
 
         </Routes>
         <Footer />

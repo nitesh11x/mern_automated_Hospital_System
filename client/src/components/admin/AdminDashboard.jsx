@@ -83,7 +83,8 @@ const AdminDashboard = () => {
 
     dispatch(getDashboardStatsThunk());
 
-    const newSocket = io("http://localhost:1111", { withCredentials: true });
+    const SOCKET_SERVER_URL = import.meta.env.VITE_APP_SOCKET_URL || "http://localhost:1111";
+    const newSocket = io(SOCKET_SERVER_URL, { withCredentials: true });
     setSocket(newSocket);
     newSocket.emit("join_admin_room");
 

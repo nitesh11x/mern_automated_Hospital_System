@@ -51,22 +51,16 @@ const LoginDashboard = () => {
                 </div>
 
                 {/* Selection Grid */}
-                <div className="grid md:grid-cols-2 gap-8">
-                    <SelectionCard
-                        title="Administrative Staff"
-                        desc="Manage facility operations, staff scheduling, and billing systems with full oversight."
-                        icon={<UserCog size={28} />}
-                        type="admin"
-                        onClick={() => navigate("/admin/login")}
-                    />
-
-                    <SelectionCard
-                        title="Medical Professionals"
-                        desc="Access electronic health records (EHR), diagnostic tools, and real-time patient monitoring."
-                        icon={<Stethoscope size={28} />}
-                        type="doctor"
-                        onClick={() => navigate("/doctor/login")}
-                    />
+                <div className="flex justify-center">
+                    <div className="max-w-md w-full">
+                        <SelectionCard
+                            title="Patient Portal"
+                            desc="View your medical history, book appointments, and connect with your care team."
+                            icon={<Activity size={28} />}
+                            type="patient"
+                            onClick={() => navigate("/patient/login")}
+                        />
+                    </div>
                 </div>
 
                 {/* Institutional Compliance Footer */}
@@ -111,7 +105,9 @@ const SelectionCard = ({ title, desc, icon, onClick, type }) => {
                 <div className={`w-16 h-16 rounded-sm flex items-center justify-center mb-8 border transition-all duration-500 shadow-sm
                     ${type === 'admin'
                         ? 'bg-purple-50 border-purple-100 text-purple-600 group-hover:bg-white/20 group-hover:border-white/30 group-hover:text-white'
-                        : 'bg-indigo-50 border-indigo-100 text-indigo-600 group-hover:bg-white/20 group-hover:border-white/30 group-hover:text-white'
+                        : type === 'doctor'
+                            ? 'bg-indigo-50 border-indigo-100 text-indigo-600 group-hover:bg-white/20 group-hover:border-white/30 group-hover:text-white'
+                            : 'bg-emerald-50 border-emerald-100 text-emerald-600 group-hover:bg-white/20 group-hover:border-white/30 group-hover:text-white'
                     }`}>
                     {icon}
                 </div>

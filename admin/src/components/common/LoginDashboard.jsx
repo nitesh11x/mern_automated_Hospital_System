@@ -51,7 +51,7 @@ const LoginDashboard = () => {
                 </div>
 
                 {/* Selection Grid */}
-                <div className="grid md:grid-cols-2 gap-8">
+                <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                     <SelectionCard
                         title="Administrative Staff"
                         desc="Manage facility operations, staff scheduling, and billing systems with full oversight."

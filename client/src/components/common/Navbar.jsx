@@ -143,17 +143,10 @@ const Navbar = () => {
               <>
                 <Link
                   to="/patient/login"
-                  className="group text-sm font-semibold text-slate-700 hover:text-indigo-600 flex items-center gap-2 transition-all duration-300 px-3 py-2 rounded-sm hover:bg-indigo-50"
+                  className="group bg-indigo-50 text-sm font-semibold text-indigo-700 hover:bg-indigo-600 hover:text-white flex items-center gap-2 transition-all duration-300 px-5 py-2.5 rounded-sm shadow-sm"
                 >
-                  <User size={16} className="text-indigo-500 group-hover:scale-110 transition-transform" />
-                  <span>Login</span>
-                </Link>
-
-                <Link
-                  to="/management"
-                  className="text-sm font-semibold text-slate-500 hover:text-slate-800 transition-all duration-300 px-3 py-2 rounded-sm hover:bg-slate-100"
-                >
-                  Portal
+                  <User size={16} className="group-hover:scale-110 transition-transform" />
+                  <span>Patient Login</span>
                 </Link>
               </>
             ) : (

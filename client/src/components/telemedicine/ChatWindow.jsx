@@ -11,7 +11,7 @@ import { Send, X, User, Stethoscope, Video, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import VideoRoom from "./VideoRoom";
 
-const SOCKET_SERVER_URL = "http://localhost:1111"; // Should use env var in prod
+const SOCKET_SERVER_URL = import.meta.env.VITE_APP_SOCKET_URL || "http://localhost:1111";
 
 const ChatWindow = ({ appointment, currentUser, onClose }) => {
   const dispatch = useDispatch();

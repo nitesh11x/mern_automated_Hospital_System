@@ -74,8 +74,8 @@ export const loginAdmin = asyncHandler(async (req, res, next) => {
   );
   res.cookie("adminToken", token, {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: process.env.NODE_ENV === "production", // Only secure in production
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "Lax",
     maxAge: process.env.MAX_AGE
   });
 
@@ -171,9 +171,9 @@ export const getAdminProfile = asyncHandler(async (req, res, next) => {
 export const logoutAdmin = (req, res) => {
   res.cookie("adminToken", "", {
     httpOnly: true,
-    expires: new Date(0), // Set to past date to delete
-    secure: true,        // Must match how it was created
-    sameSite: "none",    // Must match how it was created
+    expires: new Date(0),
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "Lax",
   }).status(200).json({
     success: true,
     message: "Logged out successfully"
