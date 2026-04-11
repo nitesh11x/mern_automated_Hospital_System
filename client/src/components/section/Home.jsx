@@ -351,7 +351,7 @@ const Home = () => {
                 viewport={{ once: true }}
                 className="px-6 lg:px-12 py-20 max-w-7xl mx-auto"
             >
-                <div className="bg-linear-to-r from-indigo-600 to-purple-600 rounded-3xl p-12 text-center relative overflow-hidden">
+                <div className="bg-linear-to-r from-indigo-600 to-purple-600 rounded-sm p-12 text-center relative overflow-hidden">
                     <motion.div
                         animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
                         transition={{ duration: 8, repeat: Infinity }}

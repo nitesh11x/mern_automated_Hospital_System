@@ -36,10 +36,10 @@ const DoctorScheduel = () => {
             <div className="max-w-6xl mx-auto space-y-6">
                 
                 {/* Header Sequence */}
-                <div className="flex items-center gap-4 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <div className="flex items-center gap-4 bg-white p-6 rounded-sm shadow-sm border border-slate-200">
                     <button 
                         onClick={() => navigate(-1)}
-                        className="p-2 bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-800 rounded-lg transition-colors border border-slate-200"
+                        className="p-2 bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-800 rounded-sm transition-colors border border-slate-200"
                     >
                         <ArrowLeft size={20} />
                     </button>
@@ -57,7 +57,7 @@ const DoctorScheduel = () => {
                     
                     {/* Control Panel (Left) */}
                     <div className="lg:col-span-1 space-y-6">
-                        <section className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 sticky top-6">
+                        <section className="bg-white border border-slate-200 rounded-sm shadow-sm p-6 sticky top-6">
                             <h3 className="text-[10px] font-black uppercase text-slate-400 mb-6 border-b border-slate-100 pb-2">Target Date</h3>
                             <div>
                                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-2">Select Target</label>
@@ -65,10 +65,10 @@ const DoctorScheduel = () => {
                                     type="date"
                                     value={selectedDate}
                                     onChange={(e) => setSelectedDate(e.target.value)}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-slate-700 shadow-inner transition-all"
+                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 font-bold text-slate-700 shadow-inner transition-all"
                                 />
                             </div>
-                            <div className="mt-6 p-4 bg-indigo-50/50 rounded-lg border border-indigo-100">
+                            <div className="mt-6 p-4 bg-indigo-50/50 rounded-sm border border-indigo-100">
                                 <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-wide mb-1">Status Legend</p>
                                 <div className="space-y-2 mt-3">
                                     <div className="flex items-center gap-2">
@@ -88,7 +88,7 @@ const DoctorScheduel = () => {
 
                     {/* Matrix View (Right) */}
                     <div className="lg:col-span-3">
-                        <section className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 min-h-[500px]">
+                        <section className="bg-white border border-slate-200 rounded-sm shadow-sm p-6 min-h-125">
                             <h3 className="text-[10px] font-black uppercase text-slate-400 mb-6 flex items-center gap-2 border-b border-slate-100 pb-2">
                                 <Clock size={14} className="text-indigo-600" /> Chrono Slots Viewer
                             </h3>
@@ -105,7 +105,7 @@ const DoctorScheduel = () => {
                                         const bookedCount = block.slots?.length - availableCount;
 
                                         return (
-                                            <div key={blockKey} className="border border-slate-100 bg-slate-50/30 rounded-xl p-6 relative overflow-hidden">
+                                            <div key={blockKey} className="border border-slate-100 bg-slate-50/30 rounded-sm p-6 relative overflow-hidden">
                                                 <div className="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
                                                     <div>
                                                         <h4 className="text-lg font-black uppercase tracking-tight text-indigo-700">
@@ -136,7 +136,7 @@ const DoctorScheduel = () => {
                                                         return (
                                                             <div
                                                                 key={slot.slotId}
-                                                                className={`relative p-3 rounded-lg text-center transition-all duration-200 ${
+                                                                className={`relative p-3 rounded-sm text-center transition-all duration-200 ${
                                                                     isBooked
                                                                         ? "bg-slate-100 text-slate-400 border border-slate-200 shadow-inner"
                                                                         : "bg-white hover:bg-indigo-50 hover:-translate-y-0.5 border border-indigo-100 shadow-sm"

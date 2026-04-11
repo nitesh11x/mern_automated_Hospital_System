@@ -15,6 +15,7 @@ import Footer from './components/common/Footer'
 import OtpForm from './components/common/OtpForm';
 import Services from './components/section/Services';
 import LoginDashboard from './components/common/LoginDashboard';
+import EmergencyButton from './components/section/EmergencyButton';
 
 import Profile from './components/patient/PatientDetail'
 import Login from './components/patient/Login'
@@ -48,6 +49,9 @@ import DoctorRoute from './utils/DoctorRoute';
 import PatientDetail from './components/patient/PatientDetail';
 import DoctorScheduel from './components/doctor/DoctorScheduel';
 import AppointmentDetail from './components/appointment/AppointmentDetail';
+import BookingOptions from './components/common/BookingOptions';
+import RegisterByAdmin from './components/patient/RegisterByAdmin';
+import BookAppointmentByAdmin from './components/appointment/BookAppointmentByAdmin';
 
 function App() {
   const dispatch = useDispatch();
@@ -74,6 +78,8 @@ function App() {
           <Route path='/otp-form' element={<OtpForm />}></Route>
           <Route path='/management' element={<LoginDashboard />}></Route>
           <Route path='/services' element={<Services />}></Route>
+          <Route path='/booking-options' element={<BookingOptions />}></Route>
+          <Route path='/register-x' element={<AdminRoute> <RegisterByAdmin /></AdminRoute>}></Route>
 
           {/* patient routes  */}
           <Route path='/patient/login' element={<Login />}></Route>
@@ -108,12 +114,7 @@ function App() {
           <Route path='/appointment/book/:doctorId' element={<PatientRoute><BookAppointmentOfSpecificDoctor /> </PatientRoute>}></Route >
           <Route path='/appointment/:id' element={<AppointmentDetail />}></Route >
           <Route path='/appointment/all' element={<AdminRoute><ShowAppointments /></AdminRoute>}></Route >
-
-
-          {/* reviews routes  */}
-
-
-          {/*  routes  */}
+          <Route path='/appointment/create' element={<AdminRoute><BookAppointmentByAdmin /></AdminRoute>}></Route >
 
         </Routes>
         <Footer />
@@ -122,4 +123,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

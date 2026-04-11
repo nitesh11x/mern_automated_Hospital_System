@@ -424,7 +424,7 @@ const BookAppointmentOfSpecificDoctor = () => {
                 <FormGroup label="Full Name">
                   <input
                     name="name"
-                    placeholder="E.G. JOHN DOE"
+                    placeholder="E.G"
                     value={formData.name}
                     onChange={handleChange}
                     required
@@ -665,7 +665,7 @@ const BookAppointmentOfSpecificDoctor = () => {
                                   type="button"
                                   onClick={() => handleSelectTimeSlot(blockKey, slot)}
                                   disabled={isBooked}
-                                  className={`relative py-3 px-2 rounded-lg text-center transition-all duration-200 ${
+                                  className={`relative py-3 px-2 rounded-sm text-center transition-all duration-200 ${
                                     isSelected
                                       ? "bg-indigo-600 text-white shadow-lg scale-105 ring-2 ring-indigo-300"
                                       : isBooked
@@ -708,7 +708,7 @@ const BookAppointmentOfSpecificDoctor = () => {
                 </div>
 
                 {selectedSlot && (
-                  <div className="mt-8 p-4 bg-indigo-50 border-2 border-indigo-200 rounded-lg">
+                  <div className="mt-8 p-4 bg-indigo-50 border-2 border-indigo-200 rounded-sm">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-xs font-bold uppercase text-indigo-600 mb-1">
@@ -744,7 +744,7 @@ const BookAppointmentOfSpecificDoctor = () => {
             <button
               type="submit"
               disabled={bookingLoading || !selectedSlot}
-              className="w-full bg-slate-900 text-white py-6 rounded-lg font-black text-[11px] uppercase tracking-[0.4em] hover:bg-indigo-600 transition-all shadow-lg active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 group"
+              className="w-full bg-slate-900 text-white py-6 rounded-sm font-black text-[11px] uppercase tracking-[0.4em] hover:bg-indigo-600 transition-all shadow-lg active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 group"
             >
               {bookingLoading ? (
                 <>
@@ -764,7 +764,7 @@ const BookAppointmentOfSpecificDoctor = () => {
           </form>
 
           <aside className="lg:col-span-4">
-            <div className="bg-slate-900 rounded-lg p-8 sticky top-28 border border-slate-800 shadow-2xl">
+            <div className="bg-slate-900 rounded-sm p-8 sticky top-28 border border-slate-800 shadow-2xl">
               <div className="relative z-10">
                 <div className="flex justify-between items-center mb-8 pb-4 border-b border-slate-800">
                   <h3 className="text-[11px] font-black text-white uppercase tracking-[0.3em]">
@@ -802,7 +802,7 @@ const BookAppointmentOfSpecificDoctor = () => {
                       / Case Type
                     </p>
                     <div
-                      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-[9px] font-black uppercase ${
+                      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-sm border text-[9px] font-black uppercase ${
                         formData.isVisited
                           ? "bg-indigo-500/10 border-indigo-500/50 text-indigo-400"
                           : "bg-slate-800 border-slate-700 text-slate-400"
@@ -836,7 +836,7 @@ const BookAppointmentOfSpecificDoctor = () => {
                   )}
                 </div>
 
-                <div className="mt-8 p-4 bg-slate-800/50 border border-slate-700 rounded-lg">
+                <div className="mt-8 p-4 bg-slate-800/50 border border-slate-700 rounded-sm">
                   <div className="flex items-center gap-2 text-indigo-400 mb-2">
                     <ShieldCheck size={14} />
                     <span className="text-[8px] font-black uppercase tracking-widest">
@@ -865,7 +865,7 @@ const FormGroup = ({ label, children }) => {
         {label}
       </label>
       {React.cloneElement(child, {
-        className: `w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-[12px] font-black text-slate-900 uppercase tracking-tight outline-none transition-all focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 ${
+        className: `w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-sm text-[12px] font-black text-slate-900 uppercase tracking-tight outline-none transition-all focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 ${
           child.props.className || ""
         }`,
       })}

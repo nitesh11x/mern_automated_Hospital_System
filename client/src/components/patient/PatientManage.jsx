@@ -482,17 +482,17 @@ const PatientManage = ({ isEmbedded }) => {
                             initial={{ scale: 0.95, y: 20 }}
                             animate={{ scale: 1, y: 0 }}
                             exit={{ scale: 0.95, y: 20 }}
-                            className="bg-white rounded-xl w-full max-w-4xl shadow-2xl border border-purple-100 flex flex-col max-h-[90vh] overflow-hidden transform transition-all duration-300"
+                            className="bg-white rounded-sm w-full max-w-4xl shadow-2xl border border-purple-100 flex flex-col max-h-[90vh] overflow-hidden transform transition-all duration-300"
                         >
                             
-                            <div className="px-6 py-4 border-b border-purple-100 bg-gradient-to-r from-purple-50 to-white flex justify-between items-center sticky top-0 z-10 shrink-0">
+                            <div className="px-6 py-4 border-b border-purple-100 bg-linear-to-r from-purple-50 to-white flex justify-between items-center sticky top-0 z-10 shrink-0">
                                 <div>
                                     <h2 className="text-xl font-black text-gray-800 flex items-center gap-2">
                                         <Edit3 size={20} className="text-purple-600" /> Patient Master Edit
                                     </h2>
                                     <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-1">ID: {editForm.patientId || editForm._id}</p>
                                 </div>
-                                <button onClick={() => setIsEditOpen(false)} className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-lg transition-colors">
+                                <button onClick={() => setIsEditOpen(false)} className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-sm transition-colors">
                                     <XCircle size={24} />
                                 </button>
                             </div>
@@ -505,21 +505,21 @@ const PatientManage = ({ isEmbedded }) => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                         <div>
                                             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">First Name</label>
-                                            <input type="text" name="firstName" value={editForm.firstName || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
+                                            <input type="text" name="firstName" value={editForm.firstName || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
                                         </div>
                                         <div>
                                             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Last Name</label>
-                                            <input type="text" name="lastName" value={editForm.lastName || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
+                                            <input type="text" name="lastName" value={editForm.lastName || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
                                         <div>
                                             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Date of Birth</label>
-                                            <input type="date" name="dob" value={editForm.dob || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
+                                            <input type="date" name="dob" value={editForm.dob || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
                                         </div>
                                         <div>
                                             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Gender</label>
-                                            <select name="gender" value={editForm.gender || 'Other'} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required>
+                                            <select name="gender" value={editForm.gender || 'Other'} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required>
                                                 <option value="Male">Male</option>
                                                 <option value="Female">Female</option>
                                                 <option value="Other">Other</option>
@@ -534,18 +534,18 @@ const PatientManage = ({ isEmbedded }) => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                                         <div>
                                             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Email Node</label>
-                                            <input type="email" name="email" value={editForm.email || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
+                                            <input type="email" name="email" value={editForm.email || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
                                         </div>
                                         <div>
                                             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Phone Line</label>
-                                            <input type="text" name="phone" value={editForm.phone || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
+                                            <input type="text" name="phone" value={editForm.phone || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
                                         </div>
                                     </div>
-                                    <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg relative overflow-hidden group">
+                                    <div className="bg-amber-50 border border-amber-200 p-4 rounded-sm relative overflow-hidden group">
                                         <div className="absolute -right-4 -top-4 opacity-10 group-hover:scale-150 transition-transform duration-500 flex items-center justify-center w-24 h-24">
                                             <div className="w-10 h-10 border-4 border-amber-500 rounded-full"></div>
                                         </div>
-                                        <label className="block text-xs font-black text-amber-800 uppercase tracking-wide mb-1 relative z-10 flex items-center gap-1">
+                                        <label className="block text-xs font-black text-amber-800 uppercase tracking-wide mb-1 relative z-10 items-center gap-1">
                                             Override Password
                                         </label>
                                         <p className="text-[10px] text-amber-600 mb-2 relative z-10 font-medium">Leave completely blank to preserve original active password hash.</p>
@@ -559,7 +559,7 @@ const PatientManage = ({ isEmbedded }) => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                                         <div>
                                             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Blood Group</label>
-                                            <select name="bloodGroup" value={editForm.bloodGroup || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold">
+                                            <select name="bloodGroup" value={editForm.bloodGroup || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold">
                                                 <option value="">Not Recorded</option>
                                                 <option value="A+">A+</option>
                                                 <option value="A-">A-</option>
@@ -573,17 +573,17 @@ const PatientManage = ({ isEmbedded }) => {
                                         </div>
                                         <div>
                                             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">System Profile Bio</label>
-                                            <input type="text" name="about" value={editForm.about || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" />
+                                            <input type="text" name="about" value={editForm.about || ''} onChange={handleEditChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" />
                                         </div>
                                     </div>
                                     <div className="mt-5">
                                         <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Residential Sector (Address)</label>
-                                        <textarea name="address" value={editForm.address || ''} onChange={handleEditChange} rows="2" className="w-full px-4 py-3 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-medium custom-scrollbar"></textarea>
+                                        <textarea name="address" value={editForm.address || ''} onChange={handleEditChange} rows="2" className="w-full px-4 py-3 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-medium custom-scrollbar"></textarea>
                                     </div>
                                 </div>
 
                                 {/* ACCESS STATUSES */}
-                                <div className="bg-gray-50 border border-gray-200 p-5 rounded-xl flex items-center justify-around flex-wrap gap-4">
+                                <div className="bg-gray-50 border border-gray-200 p-5 rounded-sm flex items-center justify-around flex-wrap gap-4">
                                     <label className="flex items-center gap-3 cursor-pointer group">
                                         <div className="relative flex items-center justify-center p-1">
                                             <input type="checkbox" name="isVerified" checked={editForm.isVerified || false} onChange={handleEditChange} className="w-5 h-5 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500 cursor-pointer shadow-sm relative z-10 peer" />
@@ -607,10 +607,10 @@ const PatientManage = ({ isEmbedded }) => {
                             
                             {/* FOOTER ACTIONS */}
                             <div className="px-6 py-4 border-t border-purple-100 bg-gray-50 flex justify-end gap-3 shrink-0">
-                                <button type="button" onClick={() => setIsEditOpen(false)} className="px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-gray-600 hover:bg-gray-200 outline-none rounded-lg transition-colors border border-gray-300 hover:border-gray-400 shadow-sm">
+                                <button type="button" onClick={() => setIsEditOpen(false)} className="px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-gray-600 hover:bg-gray-200 outline-none rounded-sm transition-colors border border-gray-300 hover:border-gray-400 shadow-sm">
                                     Cancel Operation
                                 </button>
-                                <button type="button" onClick={handleSave} className="px-8 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all outline-none flex items-center gap-2 border border-purple-500/50">
+                                <button type="button" onClick={handleSave} className="px-8 py-2.5 bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-black uppercase tracking-widest rounded-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all outline-none flex items-center gap-2 border border-purple-500/50">
                                     {isSaving ? <Loader2 size={16} className="animate-spin" /> : "Deploy Updates"}
                                 </button>
                             </div>

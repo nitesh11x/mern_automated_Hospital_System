@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
+import http from "http";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary";
@@ -15,7 +16,7 @@ app.use(
   cors({
     origin: [process.env.FRONTEND_URL],
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   }),
 );
 
@@ -54,7 +55,10 @@ import prescriptionRouter from "./routes/prescription.route.js";
 import notificationRouter from "./routes/notification.route.js";
 import medicineRouter from "./routes/medicine.route.js";
 import aiRouter from "./routes/ai.route.js";
+import chatRouter from "./routes/chat.route.js";
+import emergencyRouter from "./routes/emergency.route.js";
 import { startMedicineScheduler } from "./controllers/prescription.controller.js";
+import { initSocket } from "./lib/socket.js";
 
 app.use("/api/ai", aiRouter);
 app.use("/api/patient", userRouter);
@@ -66,14 +70,20 @@ app.use("/api/appointment", appointmentRouter);
 app.use("/api/prescription", prescriptionRouter);
 app.use("/api/notification", notificationRouter);
 app.use("/api/medicine", medicineRouter);
+app.use("/api/chat", chatRouter);
+app.use("/api/emergency", emergencyRouter);
 
 app.use(errorMiddleware);
 
 const startServer = async () => {
     await connectDb();
     await startMedicineScheduler();
+    
+    const server = http.createServer(app);
+    initSocket(server); // Attach Socket.io
+
     const PORT = process.env.PORT || 1111;
-    app.listen(PORT, () => console.log(`server is live on ${PORT}`));
+    server.listen(PORT, () => console.log(`server is live on ${PORT} with WebSockets enabled`));
 };
 
 startServer();

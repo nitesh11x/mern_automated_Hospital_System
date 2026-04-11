@@ -20,9 +20,11 @@ import {
   Stethoscope,
   ArrowRight,
   User, Phone, Mail, MapPin, Heart, Activity, Star, CheckCircle, CheckCircle2,
-  XCircle, Clock, AlertCircle, CreditCard, QrCode, Eye, Download, Settings, ScanLine, Loader2
+  XCircle, Clock, AlertCircle, CreditCard, QrCode, Eye, Download, Settings, ScanLine, Loader2, MessageSquare, Video
 } from "lucide-react";
 import PatientSettings from "./PatientSettings";
+import ChatWindow from "../telemedicine/ChatWindow";
+import VideoRoom from "../telemedicine/VideoRoom";
 
 import { cancelAppointmentThunk, getPatientAppointments } from "../../redux/slices/appointment.slice";
 import { getPatientPrescriptionByIdThunk, getPatientPrescriptionsThunk } from "../../redux/slices/prescription.slice";
@@ -37,6 +39,7 @@ const Dashboard = () => {
   const [paymentModal, setPaymentModal] = useState(null);
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [chatModalAppt, setChatModalAppt] = useState(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -507,6 +510,11 @@ const Dashboard = () => {
                           return 'bg-slate-100 text-slate-600 border-slate-200';
                         };
 
+                        const isCompleted = px.status?.toLowerCase() === 'completed';
+                        const completedDate = new Date(px.completedAt || px.updatedAt).getTime();
+                        const diffDays = (Date.now() - completedDate) / (1000 * 60 * 60 * 24);
+                        const isEligibleForTelemedicine = isCompleted && diffDays <= 5;
+
                         return (
                           <tr key={px._id} className="hover:bg-purple-50/30 transition-colors group">
                             <td className="px-6 py-4">
@@ -563,9 +571,15 @@ const Dashboard = () => {
                                 >
                                   Prescription
                                 </button>
-                                <button onClick={() => toast("Laboratory reports pending or unavailable. Please refer to Prescription records.", { icon: "ℹ️" })} className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-sm hover:bg-blue-600 hover:text-white transition-all">
-                                  Reports
-                                </button>
+                                {isEligibleForTelemedicine && (
+                                  <button 
+                                    onClick={() => setChatModalAppt(px)} 
+                                    className="px-6 py-1.5 bg-indigo-600 text-white rounded-sm hover:bg-indigo-700 transition-all flex items-center gap-2 shadow-md"
+                                  >
+                                    <MessageSquare size={14} />
+                                    <span className="text-[10px] font-black uppercase tracking-wider"> Chat</span>
+                                  </button>
+                                )}
                               </div>
                             </td>
 
@@ -667,7 +681,7 @@ const Dashboard = () => {
                           </div>
                           <div>
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="px-2 py-0.5 bg-purple-100 text-purple-600 text-[8px] font-black uppercase tracking-wider rounded-md">
+                              <span className="px-2 py-0.5 bg-purple-100 text-purple-600 text-[8px] font-black uppercase tracking-wider rounded-sm">
                                 Clinical Record
                               </span>
                             </div>
@@ -763,6 +777,14 @@ const Dashboard = () => {
 
       {/* PAYMENT MODAL */}
       <AnimatePresence>
+        {chatModalAppt && (
+          <ChatWindow
+            appointment={chatModalAppt}
+            currentUser={patient}
+            onClose={() => setChatModalAppt(null)}
+          />
+        )}
+
         {paymentModal && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
             <motion.div

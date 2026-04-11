@@ -93,7 +93,7 @@ const DoctorDetail = () => {
     if (error) {
         return (
             <div className="flex bg-gradient-to-br from-purple-50 via-white to-indigo-50 items-center justify-center min-h-screen p-4">
-                <div className="bg-white p-8 rounded-xl shadow-2xl flex flex-col items-center text-center max-w-md w-full border border-red-100">
+                <div className="bg-white p-8 rounded-sm shadow-2xl flex flex-col items-center text-center max-w-md w-full border border-red-100">
                     <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-6">
                         <XCircle className="text-red-500 w-10 h-10" />
                     </div>
@@ -101,7 +101,7 @@ const DoctorDetail = () => {
                     <p className="text-sm text-gray-500 mb-8">{error}</p>
                     <button 
                         onClick={() => navigate(-1)}
-                        className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+                        className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-sm transition-colors flex items-center justify-center gap-2"
                     >
                         <ArrowLeft size={16} /> Retreat
                     </button>
@@ -121,7 +121,7 @@ const DoctorDetail = () => {
                     <div className="flex items-center gap-4">
                         <button 
                             onClick={() => navigate(-1)}
-                            className="p-2 bg-purple-50 text-purple-600 hover:bg-purple-100 rounded-lg transition-colors"
+                            className="p-2 bg-purple-50 text-purple-600 hover:bg-purple-100 rounded-sm transition-colors"
                         >
                             <ArrowLeft size={20} />
                         </button>
@@ -134,7 +134,7 @@ const DoctorDetail = () => {
                     {/* EDIT TRIGGER BUTTON */}
                     <button 
                         onClick={handleOpenEdit}
-                        className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider shadow-lg hover:shadow-xl transition-all"
+                        className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-4 py-2 rounded-sm text-xs font-bold uppercase tracking-wider shadow-lg hover:shadow-xl transition-all"
                     >
                         <Edit3 size={16} /> Edit Profile
                     </button>
@@ -147,7 +147,7 @@ const DoctorDetail = () => {
                     {/* Left Column: Hero & Quick Info */}
                     <div className="lg:col-span-1 space-y-6">
                         {/* Profile Card */}
-                        <div className="bg-white rounded-2xl shadow-xl border border-purple-100 overflow-hidden relative">
+                        <div className="bg-white rounded-sm shadow-xl border border-purple-100 overflow-hidden relative">
                             <div className="h-32 bg-gradient-to-r from-purple-600 to-indigo-600 relative overflow-hidden">
                                 <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-white text-[10px] uppercase font-black border border-white/30 truncate max-w-full">
                                     Lic: {doctor.licenseNumber || "Pending"}
@@ -191,7 +191,7 @@ const DoctorDetail = () => {
                         </div>
 
                         {/* Contact Card */}
-                        <div className="bg-white p-6 rounded-2xl shadow-lg border border-purple-100">
+                        <div className="bg-white p-6 rounded-sm shadow-lg border border-purple-100">
                             <h3 className="text-sm font-black text-gray-800 uppercase tracking-widest mb-4 flex items-center gap-2">
                                 <Mail size={16} className="text-purple-500"/> Direct Contact
                             </h3>
@@ -231,7 +231,7 @@ const DoctorDetail = () => {
                     <div className="lg:col-span-2 space-y-6">
                         
                         {/* Bio / About */}
-                        <div className="bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-purple-100">
+                        <div className="bg-white p-6 md:p-8 rounded-sm shadow-lg border border-purple-100">
                             <h3 className="text-lg font-black text-gray-800 mb-4 flex items-center gap-2">
                                 <GraduationCap size={20} className="text-indigo-600" /> Professional Bio
                             </h3>
@@ -243,9 +243,9 @@ const DoctorDetail = () => {
                         {/* Professional Details Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Experience */}
-                            <div className="bg-white p-6 rounded-2xl shadow-lg border border-purple-100 hover:shadow-xl transition-shadow relative overflow-hidden group">
+                            <div className="bg-white p-6 rounded-sm shadow-lg border border-purple-100 hover:shadow-xl transition-shadow relative overflow-hidden group">
                                 <div className="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-indigo-50 to-purple-100 rounded-full group-hover:scale-150 transition-transform duration-700 opacity-50 border border-purple-200"></div>
-                                <div className="w-12 h-12 bg-gradient-to-br relative z-10 from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center mb-4 shadow-md text-white">
+                                <div className="w-12 h-12 bg-gradient-to-br relative z-10 from-indigo-500 to-purple-600 rounded-sm flex items-center justify-center mb-4 shadow-md text-white">
                                     <Briefcase size={24} />
                                 </div>
                                 <h4 className="text-xs relative z-10 font-bold text-gray-500 uppercase tracking-widest mb-1">Field Experience</h4>
@@ -253,9 +253,9 @@ const DoctorDetail = () => {
                             </div>
 
                             {/* Consultation Fee */}
-                            <div className="bg-white p-6 rounded-2xl shadow-lg border border-purple-100 hover:shadow-xl transition-shadow relative overflow-hidden group">
+                            <div className="bg-white p-6 rounded-sm shadow-lg border border-purple-100 hover:shadow-xl transition-shadow relative overflow-hidden group">
                                 <div className="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-emerald-50 to-teal-100 rounded-full group-hover:scale-150 transition-transform duration-700 opacity-50 border border-emerald-200"></div>
-                                <div className="w-12 h-12 bg-gradient-to-br relative z-10 from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center mb-4 shadow-md text-white">
+                                <div className="w-12 h-12 bg-gradient-to-br relative z-10 from-emerald-500 to-teal-500 rounded-sm flex items-center justify-center mb-4 shadow-md text-white">
                                     <IndianRupee size={24} />
                                 </div>
                                 <h4 className="text-xs relative z-10 font-bold text-gray-500 uppercase tracking-widest mb-1">Standard Levy</h4>
@@ -263,16 +263,16 @@ const DoctorDetail = () => {
                             </div>
                             
                             {/* Protocols / Languages */}
-                            <div className="bg-white p-6 rounded-2xl shadow-lg border border-purple-100">
+                            <div className="bg-white p-6 rounded-sm shadow-lg border border-purple-100">
                                 <h4 className="text-sm font-bold text-gray-800 mb-4 flex items-center gap-2">
                                 <Award size={16} className="text-purple-600" /> Operational Protocols
                                 </h4>
                                 <div className="space-y-4">
-                                    <div className="bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                    <div className="bg-gray-50 p-3 rounded-sm border border-gray-100">
                                         <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Registry Code</p>
                                         <p className="font-semibold text-gray-800">{doctor.licenseNumber || "N/A"}</p>
                                     </div>
-                                    <div className="bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                    <div className="bg-gray-50 p-3 rounded-sm border border-gray-100">
                                         <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Comm Linguistics</p>
                                         <p className="font-semibold text-gray-800">
                                             {doctor.languages?.join(", ") || "English"}
@@ -282,18 +282,18 @@ const DoctorDetail = () => {
                             </div>
 
                             {/* Schedule */}
-                            <div className="bg-white p-6 rounded-2xl shadow-lg border border-purple-100">
+                            <div className="bg-white p-6 rounded-sm shadow-lg border border-purple-100">
                                 <h4 className="text-sm font-bold text-gray-800 mb-4 flex items-center gap-2">
                                 <Clock size={16} className="text-purple-600" /> Authorized Windows
                                 </h4>
                                 <div className="space-y-3">
-                                    <div className="flex justify-between items-center bg-purple-50 p-4 rounded-lg border border-purple-100 hover:bg-purple-100 transition-colors">
+                                    <div className="flex justify-between items-center bg-purple-50 p-4 rounded-sm border border-purple-100 hover:bg-purple-100 transition-colors">
                                         <span className="text-xs font-bold uppercase text-purple-700">Morning Sequence</span>
                                         <span className="text-sm font-black text-gray-700 bg-white px-2 py-1 rounded shadow-sm">
                                             {doctor.workingHours?.morning?.start || '10:00'} - {doctor.workingHours?.morning?.end || '14:00'}
                                         </span>
                                     </div>
-                                    <div className="flex justify-between items-center bg-indigo-50 p-4 rounded-lg border border-indigo-100 hover:bg-indigo-100 transition-colors">
+                                    <div className="flex justify-between items-center bg-indigo-50 p-4 rounded-sm border border-indigo-100 hover:bg-indigo-100 transition-colors">
                                         <span className="text-xs font-bold uppercase text-indigo-700">Evening Sequence</span>
                                         <span className="text-sm font-black text-gray-700 bg-white px-2 py-1 rounded shadow-sm">
                                             {doctor.workingHours?.evening?.start || '16:00'} - {doctor.workingHours?.evening?.end || '20:00'}
@@ -310,7 +310,7 @@ const DoctorDetail = () => {
             {/* FULL SCHEMA EDIT MODAL OVERLAY */}
             {isEditOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-md overflow-hidden">
-                    <div className="bg-white rounded-xl w-full max-w-4xl shadow-2xl border border-purple-100 flex flex-col max-h-[90vh] overflow-hidden transform transition-all duration-300">
+                    <div className="bg-white rounded-sm w-full max-w-4xl shadow-2xl border border-purple-100 flex flex-col max-h-[90vh] overflow-hidden transform transition-all duration-300">
                         
                         <div className="px-6 py-4 border-b border-purple-100 bg-gradient-to-r from-purple-50 to-white flex justify-between items-center sticky top-0 z-10 shrink-0">
                             <div>
@@ -319,7 +319,7 @@ const DoctorDetail = () => {
                                 </h2>
                                 <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-1">Modifying: {doctor._id}</p>
                             </div>
-                            <button onClick={() => setIsEditOpen(false)} className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-lg transition-colors">
+                            <button onClick={() => setIsEditOpen(false)} className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-sm transition-colors">
                                 <XCircle size={24} />
                             </button>
                         </div>
@@ -332,11 +332,11 @@ const DoctorDetail = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     <div>
                                         <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">First Name</label>
-                                        <input type="text" name="firstName" value={editForm.firstName || ''} onChange={handleChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
+                                        <input type="text" name="firstName" value={editForm.firstName || ''} onChange={handleChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
                                     </div>
                                     <div>
                                         <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Last Name</label>
-                                        <input type="text" name="lastName" value={editForm.lastName || ''} onChange={handleChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
+                                        <input type="text" name="lastName" value={editForm.lastName || ''} onChange={handleChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
                                     </div>
                                 </div>
                             </div>
@@ -347,14 +347,14 @@ const DoctorDetail = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                                     <div>
                                         <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Email Node</label>
-                                        <input type="email" name="email" value={editForm.email || ''} onChange={handleChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
+                                        <input type="email" name="email" value={editForm.email || ''} onChange={handleChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
                                     </div>
                                     <div>
                                         <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Phone Line</label>
-                                        <input type="text" name="phone" value={editForm.phone || ''} onChange={handleChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
+                                        <input type="text" name="phone" value={editForm.phone || ''} onChange={handleChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
                                     </div>
                                 </div>
-                                <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg relative overflow-hidden group">
+                                <div className="bg-amber-50 border border-amber-200 p-4 rounded-sm relative overflow-hidden group">
                                     <div className="absolute -right-4 -top-4 opacity-10 group-hover:scale-150 transition-transform duration-500">
                                         <Key size={100} className="text-amber-500" />
                                     </div>
@@ -372,34 +372,34 @@ const DoctorDetail = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
                                     <div>
                                         <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Specialization</label>
-                                        <input type="text" name="specialization" value={editForm.specialization || ''} onChange={handleChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
+                                        <input type="text" name="specialization" value={editForm.specialization || ''} onChange={handleChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
                                     </div>
                                     <div>
                                         <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Cost Levy (₹)</label>
-                                        <input type="number" name="consultationFees" value={editForm.consultationFees || ''} onChange={handleChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-black" required />
+                                        <input type="number" name="consultationFees" value={editForm.consultationFees || ''} onChange={handleChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-black" required />
                                     </div>
                                     <div>
                                         <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Yield (Years)</label>
-                                        <input type="number" name="experience" value={editForm.experience || ''} onChange={handleChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-black" required />
+                                        <input type="number" name="experience" value={editForm.experience || ''} onChange={handleChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-black" required />
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                                     <div>
                                         <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Registry Code</label>
-                                        <input type="text" name="licenseNumber" value={editForm.licenseNumber || ''} onChange={handleChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold uppercase" required />
+                                        <input type="text" name="licenseNumber" value={editForm.licenseNumber || ''} onChange={handleChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold uppercase" required />
                                     </div>
                                     <div>
                                         <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Base Sector</label>
-                                        <input type="text" name="location" value={editForm.location || ''} onChange={handleChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
+                                        <input type="text" name="location" value={editForm.location || ''} onChange={handleChange} className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
                                     </div>
                                 </div>
                                 <div>
                                     <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Languages Array (CSV)</label>
-                                    <input type="text" name="languagesStr" value={editForm.languagesStr || ''} onChange={handleChange} placeholder="English, Hindi, Spanish" className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
+                                    <input type="text" name="languagesStr" value={editForm.languagesStr || ''} onChange={handleChange} placeholder="English, Hindi, Spanish" className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-semibold" required />
                                 </div>
                                 <div className="mt-5">
                                     <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">System Profile Bio</label>
-                                    <textarea name="bio" value={editForm.bio || ''} onChange={handleChange} rows="3" className="w-full px-4 py-3 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-medium custom-scrollbar"></textarea>
+                                    <textarea name="bio" value={editForm.bio || ''} onChange={handleChange} rows="3" className="w-full px-4 py-3 text-sm bg-gray-50 border border-gray-200 rounded-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-medium custom-scrollbar"></textarea>
                                 </div>
                             </div>
 
@@ -408,9 +408,9 @@ const DoctorDetail = () => {
                                 <h3 className="text-xs font-black uppercase text-purple-600 tracking-widest mb-4 border-b border-purple-100 pb-2 flex items-center gap-2">
                                     <Clock size={14}/> Chrono Scheduling Matrix
                                 </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-purple-50/50 p-4 rounded-xl border border-purple-100">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-purple-50/50 p-4 rounded-sm border border-purple-100">
                                     
-                                    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                                    <div className="bg-white p-4 rounded-sm shadow-sm border border-gray-100">
                                         <label className="block text-xs font-black text-indigo-700 uppercase tracking-widest mb-3">Morning Sequence</label>
                                         <div className="flex items-center gap-3">
                                             <div className="flex-1">
@@ -423,7 +423,7 @@ const DoctorDetail = () => {
                                         </div>
                                     </div>
                                     
-                                    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                                    <div className="bg-white p-4 rounded-sm shadow-sm border border-gray-100">
                                         <label className="block text-xs font-black text-purple-700 uppercase tracking-widest mb-3">Evening Sequence</label>
                                         <div className="flex items-center gap-3">
                                             <div className="flex-1">
@@ -440,7 +440,7 @@ const DoctorDetail = () => {
                             </div>
 
                             {/* ACCESS STATUSES */}
-                            <div className="bg-gray-50 border border-gray-200 p-5 rounded-xl flex items-center justify-around flex-wrap gap-4">
+                            <div className="bg-gray-50 border border-gray-200 p-5 rounded-sm flex items-center justify-around flex-wrap gap-4">
                                 <label className="flex items-center gap-3 cursor-pointer group">
                                     <div className="relative flex items-center justify-center p-1">
                                         <input type="checkbox" name="isVerified" checked={editForm.isVerified || false} onChange={handleChange} className="w-5 h-5 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500 cursor-pointer shadow-sm relative z-10 peer" />
@@ -464,10 +464,10 @@ const DoctorDetail = () => {
                         
                         {/* FOOTER ACTIONS */}
                         <div className="px-6 py-4 border-t border-purple-100 bg-gray-50 flex justify-end gap-3 shrink-0">
-                            <button type="button" onClick={() => setIsEditOpen(false)} className="px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-gray-600 hover:bg-gray-200 outline-none rounded-lg transition-colors border border-gray-300 hover:border-gray-400 shadow-sm">
+                            <button type="button" onClick={() => setIsEditOpen(false)} className="px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-gray-600 hover:bg-gray-200 outline-none rounded-sm transition-colors border border-gray-300 hover:border-gray-400 shadow-sm">
                                 Cancel Operation
                             </button>
-                            <button type="button" onClick={handleSave} className="px-8 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all outline-none flex items-center gap-2 border border-purple-500/50">
+                            <button type="button" onClick={handleSave} className="px-8 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-black uppercase tracking-widest rounded-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all outline-none flex items-center gap-2 border border-purple-500/50">
                                 {isSaving ? <Loader2 size={16} className="animate-spin" /> : "Deploy Updates"}
                             </button>
                         </div>

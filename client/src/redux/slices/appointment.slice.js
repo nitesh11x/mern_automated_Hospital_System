@@ -197,6 +197,23 @@ export const getAppointmentById = createAsyncThunk(
     }
   },
 );
+export const bookAppointmentByAdminThunk = createAsyncThunk(
+  "appointment/bookByAdmin",
+  async (appointmentData, { rejectWithValue }) => {
+    try {
+      const { data } = await api.post(
+        "/appointment/admin/book", 
+        appointmentData,
+      );
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Failed to book appointment",
+        console.log(error)
+      );
+    }
+  },
+);
 
 const initialState = {
   appointments: [],
@@ -208,8 +225,7 @@ const initialState = {
   bookingSuccess: false,
   previousAppointments: [],
   qrCode: null,
-  // Store appointments in a map for easy lookup
-  appointmentsMap: {}, // { appointmentId: appointmentData }
+  appointmentsMap: {}, 
   currentAppointment: null,
 };
 
@@ -470,6 +486,21 @@ const appointmentSlice = createSlice({
       .addCase(getAppointmentById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      // book by admin
+      .addCase(bookAppointmentByAdminThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = false;
+      })
+      .addCase(bookAppointmentByAdminThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+      })
+      .addCase(bookAppointmentByAdminThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.success = false;
+        state.error = action.payload || "Something went wrong";
       });
   },
 });

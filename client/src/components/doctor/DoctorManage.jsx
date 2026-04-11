@@ -440,7 +440,7 @@ const DoctorManage = ({ isEmbedded }) => {
             {/* EDIT MODAL */}
             {isEditModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                    <div className="bg-white rounded-md w-full max-w-xl shadow-2xl overflow-hidden border-t-4 border-purple-600">
+                    <div className="bg-white rounded-sm w-full max-w-xl shadow-2xl overflow-hidden border-t-4 border-purple-600">
                         <div className="flex justify-between items-center p-4 lg:p-6 bg-purple-50">
                             <h2 className="text-xl font-black text-gray-800">Edit Doctor Profile</h2>
                             <button onClick={() => setIsEditModalOpen(false)} className="text-gray-400 hover:text-rose-500 transition-colors">

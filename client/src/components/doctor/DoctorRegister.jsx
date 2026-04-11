@@ -80,12 +80,12 @@ const DoctorRegister = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-md w-full bg-white/90 backdrop-blur-xl border border-indigo-100 p-12 rounded-2xl shadow-2xl text-center"
+          className="max-w-md w-full bg-white/90 backdrop-blur-xl border border-indigo-100 p-12 rounded-sm shadow-2xl text-center"
         >
           <motion.div
             animate={{ rotate: [0, 10, -10, 0] }}
             transition={{ duration: 0.5 }}
-            className="w-24 h-24 bg-linear-to-br from-red-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg"
+            className="w-24 h-24 bg-linear-to-br from-red-500 to-pink-500 rounded-sm flex items-center justify-center mx-auto mb-8 shadow-lg"
           >
             <ShieldAlert size={48} className="text-white" strokeWidth={2} />
           </motion.div>
@@ -96,7 +96,7 @@ const DoctorRegister = () => {
           </p>
           <Link
             to="/admin/login"
-            className="group relative inline-flex items-center justify-center gap-3 w-full bg-linear-to-r from-indigo-600 to-purple-600 text-white py-4 rounded-xl font-bold text-sm uppercase tracking-wider hover:shadow-xl transition-all duration-300 overflow-hidden"
+            className="group relative inline-flex items-center justify-center gap-3 w-full bg-linear-to-r from-indigo-600 to-purple-600 text-white py-4 rounded-sm font-bold text-sm uppercase tracking-wider hover:shadow-xl transition-all duration-300 overflow-hidden"
           >
             <span className="relative z-10 flex items-center gap-2">
               Authenticate Admin
@@ -170,18 +170,18 @@ const DoctorRegister = () => {
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="bg-white rounded-2xl p-6 shadow-lg border border-indigo-100"
+                className="bg-white rounded-sm p-6 shadow-lg border border-indigo-100"
               >
                 <div className="relative group flex flex-col items-center">
                   <div className="relative">
-                    <div className="w-32 h-32 rounded-2xl bg-linear-to-br from-indigo-100 to-purple-100 border-2 border-dashed border-indigo-200 flex items-center justify-center overflow-hidden">
+                    <div className="w-32 h-32 rounded-sm bg-linear-to-br from-indigo-100 to-purple-100 border-2 border-dashed border-indigo-200 flex items-center justify-center overflow-hidden">
                       {preview ? (
                         <img src={preview} alt="Preview" className="w-full h-full object-cover" />
                       ) : (
                         <Camera className="text-indigo-300" size={40} />
                       )}
                     </div>
-                    <label className="absolute -bottom-2 -right-2 p-2 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-xl cursor-pointer hover:shadow-lg transition-all">
+                    <label className="absolute -bottom-2 -right-2 p-2 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-sm cursor-pointer hover:shadow-lg transition-all">
                       <Plus size={16} />
                       <input type="file" onChange={handleFileChange} className="hidden" accept="image/*" />
                     </label>
@@ -214,7 +214,7 @@ const DoctorRegister = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.1 }}
-                className="bg-linear-to-br from-indigo-600 to-purple-600 rounded-2xl p-6 text-white"
+                className="bg-linear-to-br from-indigo-600 to-purple-600 rounded-sm p-6 text-white"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <ShieldCheck size={20} className="text-white/80" />
@@ -233,7 +233,7 @@ const DoctorRegister = () => {
                         value={formData.email}
                         onChange={handleInputChange}
                         placeholder="admin@hospital.com"
-                        className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 outline-none focus:bg-white/20 focus:border-white/40 transition-all text-sm"
+                        className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-sm text-white placeholder-white/40 outline-none focus:bg-white/20 focus:border-white/40 transition-all text-sm"
                         required
                       />
                     </div>
@@ -250,7 +250,7 @@ const DoctorRegister = () => {
                         value={formData.password}
                         onChange={handleInputChange}
                         placeholder="••••••••"
-                        className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 outline-none focus:bg-white/20 focus:border-white/40 transition-all text-sm"
+                        className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-sm text-white placeholder-white/40 outline-none focus:bg-white/20 focus:border-white/40 transition-all text-sm"
                         required
                       />
                     </div>
@@ -269,7 +269,7 @@ const DoctorRegister = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
-                    className="bg-white rounded-2xl p-8 shadow-lg border border-indigo-100"
+                    className="bg-white rounded-sm p-8 shadow-lg border border-indigo-100"
                   >
                     <h3 className="text-sm font-bold text-slate-900 mb-6 flex items-center gap-2">
                       <User size={18} className="text-indigo-600" />
@@ -281,7 +281,7 @@ const DoctorRegister = () => {
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleInputChange}
-                        placeholder="John"
+                        placeholder="ab"
                         required
                       />
                       <Input
@@ -321,7 +321,7 @@ const DoctorRegister = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
-                    className="bg-white rounded-2xl p-8 shadow-lg border border-indigo-100"
+                    className="bg-white rounded-sm p-8 shadow-lg border border-indigo-100"
                   >
                     <h3 className="text-sm font-bold text-slate-900 mb-6 flex items-center gap-2">
                       <Award size={18} className="text-indigo-600" />
@@ -386,7 +386,7 @@ const DoctorRegister = () => {
                           onChange={handleInputChange}
                           placeholder="Enter medical history, board certifications, and areas of expertise..."
                           rows={4}
-                          className="w-full p-4 bg-slate-50 border border-indigo-100 rounded-xl outline-none focus:bg-white focus:border-indigo-400 transition-all text-sm text-slate-700"
+                          className="w-full p-4 bg-slate-50 border border-indigo-100 rounded-sm outline-none focus:bg-white focus:border-indigo-400 transition-all text-sm text-slate-700"
                         />
                       </div>
                     </div>
@@ -400,14 +400,14 @@ const DoctorRegister = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
-                    className="bg-white rounded-2xl p-8 shadow-lg border border-indigo-100"
+                    className="bg-white rounded-sm p-8 shadow-lg border border-indigo-100"
                   >
                     <h3 className="text-sm font-bold text-slate-900 mb-6 flex items-center gap-2">
                       <ShieldCheck size={18} className="text-indigo-600" />
                       Security Summary
                     </h3>
                     <div className="space-y-4">
-                      <div className="bg-linear-to-r from-indigo-50 to-purple-50 p-4 rounded-xl">
+                      <div className="bg-linear-to-r from-indigo-50 to-purple-50 p-4 rounded-sm">
                         <div className="flex items-center gap-3">
                           <Mail size={16} className="text-indigo-600" />
                           <div>
@@ -416,7 +416,7 @@ const DoctorRegister = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="bg-linear-to-r from-emerald-50 to-teal-50 p-4 rounded-xl">
+                      <div className="bg-linear-to-r from-emerald-50 to-teal-50 p-4 rounded-sm">
                         <div className="flex items-center gap-3">
                           <Heart size={16} className="text-emerald-600" />
                           <div>
@@ -440,7 +440,7 @@ const DoctorRegister = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="group relative px-8 py-4 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold text-sm uppercase tracking-wider hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+                  className="group relative px-8 py-4 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-sm font-bold text-sm uppercase tracking-wider hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
                 >
                   <span className="relative z-10 flex items-center gap-3">
                     {loading ? (
@@ -479,7 +479,7 @@ const Input = ({ label, icon, ...props }) => (
         </div>
       )}
       <input
-        className={`w-full ${icon ? 'pl-10' : 'pl-4'} pr-4 py-3 bg-slate-50 border border-indigo-100 rounded-xl outline-none focus:bg-white focus:border-indigo-400 transition-all text-sm text-slate-900 placeholder:text-slate-400`}
+        className={`w-full ${icon ? 'pl-10' : 'pl-4'} pr-4 py-3 bg-slate-50 border border-indigo-100 rounded-sm outline-none focus:bg-white focus:border-indigo-400 transition-all text-sm text-slate-900 placeholder:text-slate-400`}
         {...props}
       />
     </div>
