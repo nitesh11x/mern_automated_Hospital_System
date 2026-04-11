@@ -11,6 +11,7 @@ import medicineReducer from "../slices/medicine.slice";
 import aiReducer from "../slices/ai.slice";
 import chatReducer from "../slices/chat.slice";
 import emergencyReducer from "../slices/emergency.slice";
+import contactReducer from "../slices/contact.slice";
 
 export const store = configureStore({
   reducer: {
@@ -26,5 +27,6 @@ export const store = configureStore({
     ai: aiReducer,
     chat: chatReducer,
     emergency: emergencyReducer,
+    contact: contactReducer,
   },
 });

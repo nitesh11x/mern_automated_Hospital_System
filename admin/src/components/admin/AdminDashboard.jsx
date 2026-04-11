@@ -30,6 +30,7 @@ import {
   Award,
   PlusCircle,
   ArrowRight,
+  Mail,
 } from "lucide-react";
 import ManageReviews from "./ManageReviews";
 import ManageEmergency from "./ManageEmergency";
@@ -44,6 +45,7 @@ import {
 } from "recharts";
 import { toast } from "react-hot-toast";
 import ShowMedicine from "../medicine/ShowMedicine";
+import ManageMessages from "./ManageMessages";
 
 const COLORS = {
   primary: "#8B5CF6",
@@ -83,7 +85,7 @@ const AdminDashboard = () => {
 
     dispatch(getDashboardStatsThunk());
 
-    const newSocket = io("http://localhost:1111", { withCredentials: true });
+    const newSocket = io("http://localhost:1111" || "https://newcare.onrender.com" ||import.meta.env.VITE_SOCKET_URL, { withCredentials: true });
     setSocket(newSocket);
     newSocket.emit("join_admin_room");
 
@@ -200,6 +202,12 @@ const AdminDashboard = () => {
             label="Emergency"
             active={activeTab === "emergency"}
             onClick={() => setActiveTab("emergency")}
+          />
+          <SidebarBtn
+            icon={<Mail size={20} />}
+            label="Messages"
+            active={activeTab === "messages"}
+            onClick={() => setActiveTab("messages")}
           />
           <SidebarBtn
             icon={<Calendar size={20} />}
@@ -479,6 +487,12 @@ const AdminDashboard = () => {
           {activeTab === "emergency" && (
             <div className="-mx-6 -mt-10">
               <ManageEmergency socket={socket} />
+            </div>
+          )}
+
+          {activeTab === "messages" && (
+            <div className="-mx-6 -mt-10">
+              <ManageMessages />
             </div>
           )}
 

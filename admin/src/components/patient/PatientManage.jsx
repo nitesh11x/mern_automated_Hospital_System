@@ -106,8 +106,8 @@ const PatientManage = ({ isEmbedded }) => {
         const colors = {
             'A+': 'bg-green-100 text-green-700 border-green-200',
             'A-': 'bg-green-50 text-green-600 border-green-100',
-            'B+': 'bg-blue-100 text-blue-700 border-blue-200',
-            'B-': 'bg-blue-50 text-blue-600 border-blue-100',
+            'B+': 'bg-indigo-100 text-indigo-700 border-indigo-200',
+            'B-': 'bg-indigo-50 text-indigo-600 border-indigo-100',
             'O+': 'bg-purple-100 text-purple-700 border-purple-200',
             'O-': 'bg-purple-50 text-purple-600 border-purple-100',
             'AB+': 'bg-amber-100 text-amber-700 border-amber-200',
@@ -186,8 +186,8 @@ const PatientManage = ({ isEmbedded }) => {
                             <p className="text-2xl font-black text-rose-600">{stats.blocked}</p>
                         </div>
                         <div className="bg-white rounded-sm border border-purple-100 p-4 shadow-sm">
-                            <p className="text-[10px] font-bold text-blue-500 uppercase">Male</p>
-                            <p className="text-2xl font-black text-blue-600">{stats.male}</p>
+                            <p className="text-[10px] font-bold text-indigo-500 uppercase">Male</p>
+                            <p className="text-2xl font-black text-indigo-600">{stats.male}</p>
                         </div>
                         <div className="bg-white rounded-sm border border-purple-100 p-4 shadow-sm">
                             <p className="text-[10px] font-bold text-pink-500 uppercase">Female</p>

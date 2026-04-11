@@ -11,7 +11,7 @@ import { Send, X, User, Stethoscope, Video, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import VideoRoom from "./VideoRoom";
 
-const SOCKET_SERVER_URL = "http://localhost:1111"; // Should use env var in prod
+const SOCKET_SERVER_URL = import.meta.env.VITE_SOCKET_URL; 
 
 const ChatWindow = ({ appointment, currentUser, onClose }) => {
   const dispatch = useDispatch();
@@ -197,7 +197,7 @@ const ChatWindow = ({ appointment, currentUser, onClose }) => {
               <div key={msg._id || i} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
                 <div className="flex items-end gap-2 max-w-[85%]">
                   {!isMe && (
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${isDocUser ? 'bg-blue-100 text-blue-600' : 'bg-purple-100 text-purple-600'}`}>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${isDocUser ? 'bg-indigo-100 text-indigo-600' : 'bg-purple-100 text-purple-600'}`}>
                       {isDocUser ? <Stethoscope size={10} /> : <User size={10} />}
                     </div>
                   )}

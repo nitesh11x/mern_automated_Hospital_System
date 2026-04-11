@@ -1,8 +1,50 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Send, Clock } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Clock, Loader2 } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
+import { submitContactThunk, resetContactState } from "../../redux/slices/contact.slice";
 
 const Contact = () => {
+  const dispatch = useDispatch();
+  const { loading, success, error } = useSelector((state) => state.contact);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "General Inquiry",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email || !formData.message) {
+      return toast.error("Please fill all required fields");
+    }
+    dispatch(submitContactThunk(formData));
+  };
+
+  useEffect(() => {
+    if (success) {
+      toast.success("Message sent successfully!");
+      setFormData({
+        name: "",
+        email: "",
+        subject: "General Inquiry",
+        message: "",
+      });
+      dispatch(resetContactState());
+    }
+    if (error) {
+      toast.error(error);
+      dispatch(resetContactState());
+    }
+  }, [success, error, dispatch]);
+
   return (
     <div className="min-h-screen bg-white pt-16">
       <div className="max-w-7xl mx-auto px-6 py-20">
@@ -52,13 +94,16 @@ const Contact = () => {
             animate={{ opacity: 1, y: 0 }}
             className="bg-gray-50 p-8 md:p-10 rounded-sm border-t-4 border-indigo-600 shadow-xl shadow-indigo-100"
           >
-            <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-5" onSubmit={handleSubmit}>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-700 ml-1">Name</label>
                   <input
                     type="text"
-                    placeholder="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Your Name"
                     className="w-full p-3 bg-white rounded-sm outline-none border border-gray-200 focus:border-purple-600 transition-all text-sm"
                   />
                 </div>
@@ -66,6 +111,9 @@ const Contact = () => {
                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-700 ml-1">Email</label>
                   <input
                     type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
                     placeholder="@example.com"
                     className="w-full p-3 bg-white rounded-sm outline-none border border-gray-200 focus:border-purple-600 transition-all text-sm"
                   />
@@ -74,10 +122,16 @@ const Contact = () => {
 
               <div className="space-y-1">
                 <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-700 ml-1">Subject</label>
-                <select className="w-full p-3 bg-white rounded-sm outline-none border border-gray-200 focus:border-purple-600 appearance-none cursor-pointer text-sm">
+                <select 
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  className="w-full p-3 bg-white rounded-sm outline-none border border-gray-200 focus:border-purple-600 appearance-none cursor-pointer text-sm"
+                >
                   <option>General Inquiry</option>
                   <option>Appointment Issue</option>
                   <option>Feedback</option>
+                  <option>Emergency Services</option>
                 </select>
               </div>
 
@@ -85,14 +139,21 @@ const Contact = () => {
                 <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-700 ml-1">Message</label>
                 <textarea
                   rows="4"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
                   placeholder="How can we help?"
                   className="w-full p-3 bg-white rounded-sm outline-none border border-gray-200 focus:border-purple-600 transition-all resize-none text-sm"
                 ></textarea>
               </div>
 
-              <button className="w-full bg-linear-to-r from-indigo-600 to-purple-600 text-white py-4 rounded-sm font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:from-indigo-700 hover:to-purple-700 transition-all shadow-lg shadow-indigo-200 group">
-                Send Message
-                <Send size={14} className="group-hover:translate-x-1 transition-transform" />
+              <button 
+                type="submit"
+                disabled={loading}
+                className="w-full bg-linear-to-r from-indigo-600 to-purple-600 text-white py-4 rounded-sm font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:from-indigo-700 hover:to-purple-700 transition-all shadow-lg shadow-indigo-200 group disabled:opacity-50"
+              >
+                {loading ? <Loader2 size={14} className="animate-spin" /> : "Send Message"}
+                {!loading && <Send size={14} className="group-hover:translate-x-1 transition-transform" />}
               </button>
             </form>
           </motion.div>
