@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import { Toaster } from "react-hot-toast";
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { adminProfileThunk } from './redux/slices/admin.slice';
-import { profilePatientThunk } from './redux/slices/patient.slice';
 import { profileDoctorThunk } from './redux/slices/doctor.slice';
 
 import Navbar from './components/common/Navbar'
@@ -14,7 +13,6 @@ import LoginDashboard from './components/common/LoginDashboard';
 import Profile from './components/patient/PatientDetail'
 import Patients from './components/patient/Patients';
 import PatientManage from './components/patient/PatientManage';
-import PatientRoute from './utils/PatientRoute';
 
 import AdminDetail from './components/admin/AdminDetail';
 import AdminLogin from './components/admin/AdminLogin';
@@ -45,9 +43,6 @@ function App() {
   }, [dispatch]);
   useEffect(() => {
     dispatch(profileDoctorThunk());
-  }, []);
-  useEffect(() => {
-    dispatch(profilePatientThunk());
   }, []);
 
   return (

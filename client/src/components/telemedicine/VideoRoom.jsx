@@ -16,6 +16,7 @@ const VideoRoom = ({ appointment, currentUser, onClose }) => {
 
   const socketRef = useRef(null);
   const peerInstance = useRef(null);
+  const streamRef = useRef(null);
   const myVideo = useRef();
   const userVideo = useRef();
   const activeCall = useRef(null);
@@ -29,16 +30,17 @@ const VideoRoom = ({ appointment, currentUser, onClose }) => {
     });
 
     const initiateCall = (targetPeerIdToCall) => {
-      if (!targetPeerIdToCall || !peerInstance.current || !stream) return;
+      const activeStream = streamRef.current;
+      if (!targetPeerIdToCall || !peerInstance.current || !activeStream) return;
       
       socketRef.current.emit("call_user", {
         appointmentId: appointment._id,
         callerId: currentUser._id,
-        peerId: peerId,
+        peerId: peerInstance.current.id,
         callerName: currentUser.name || currentUser.firstName || "User",
       });
 
-      const call = peerInstance.current.call(targetPeerIdToCall, stream);
+      const call = peerInstance.current.call(targetPeerIdToCall, activeStream);
       activeCall.current = call;
       setCallActive(true);
       setRemotePeerId(targetPeerIdToCall);
@@ -52,6 +54,7 @@ const VideoRoom = ({ appointment, currentUser, onClose }) => {
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then((currentStream) => {
         setStream(currentStream);
+        streamRef.current = currentStream;
         if (myVideo.current) myVideo.current.srcObject = currentStream;
 
         // 3. Init PeerJS using the default PeerJS public cloud network
@@ -91,10 +94,9 @@ const VideoRoom = ({ appointment, currentUser, onClose }) => {
       console.log(`User ${userId} joined room with PeerID: ${remoteId}`);
       
       // AUTO-CALL LOGIC:
-      // If I am the doctor and the person who just joined is a patient with a peer ID
-      // Or if I already joined and see someone else's Peer ID, I (Doctor) will initiate call.
-      const isDoc = currentUser.role === "doctor";
-      if (isDoc && remoteId && remoteId !== peerId) {
+      // Whoever is already in the room will receive this event when the other person joins.
+      // So the person already here will initiate the call to the newcomer.
+      if (remoteId && remoteId !== peerInstance.current?.id) {
         // Slight delay to ensure their peer instance is ready to answer
         setTimeout(() => initiateCall(remoteId), 1500);
       }
