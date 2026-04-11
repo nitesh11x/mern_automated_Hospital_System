@@ -19,6 +19,7 @@ import {
 
 import {
   isAdminAuth,
+  isAdminOrDoctorAuth,
   isDoctorAuth,
   isPatientAuth
 } from "../middlewares/auth.middleware.js";
@@ -37,7 +38,7 @@ router.get("/previous", isPatientAuth, getPreviousAppointment);
 router.get("/:appointmentId",  getAppointmentById);
 
 
-router.put("/status/:id", isAdminAuth, updateAppointmentStatus);
+router.put("/status/:id", isAdminOrDoctorAuth, updateAppointmentStatus);
 router.put("/status/payment/:id", isAdminAuth, updateAppointmentPaymentStatus);
 router.put("/rescheduel/:appointmentId", isAdminAuth, reScheduelAppointmentById);
 router.put("/cancel/:appointmentId",  cancelAppointmentById);

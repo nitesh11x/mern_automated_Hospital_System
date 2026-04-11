@@ -7,13 +7,19 @@ import EmergencyStatus from './EmergencyStatus';
 
 const EmergencyButton = () => {
   const dispatch = useDispatch();
-  const { user: patient } = useSelector((state) => state.patient);
+  const { patient } = useSelector((state) => state.patient);
   const [loading, setLoading] = useState(false);
   const [showManualForm, setShowManualForm] = useState(false);
   const [emergencyData, setEmergencyData] = useState(null);
   
   const [phone, setPhone] = useState(patient?.phone || '');
   const [address, setAddress] = useState('');
+
+  React.useEffect(() => {
+    if (patient?.phone) {
+      setPhone(patient.phone);
+    }
+  }, [patient]);
 
   const triggerEmergency = () => {
     setLoading(true);
@@ -32,7 +38,7 @@ const EmergencyButton = () => {
           const res = await dispatch(createEmergencyRequestThunk({
             patientId: patient?._id,
             patientName: patient?.firstName ? `${patient.firstName} ${patient.lastName}` : 'Guest',
-            phone: phone || "000-000-0000",
+            phone: phone || patient?.phone || "000-000-0000",
             location: { lat: latitude, lng: longitude },
             address: "Live GPS Coordinates"
           })).unwrap();

@@ -14,7 +14,9 @@ const app = express();
 
 app.use(
   cors({
-    origin: [process.env.FRONTEND_URL],
+    origin: function (origin, callback) {
+      callback(null, origin || true);
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   }),
@@ -76,14 +78,16 @@ app.use("/api/emergency", emergencyRouter);
 app.use(errorMiddleware);
 
 const startServer = async () => {
-    await connectDb();
-    await startMedicineScheduler();
-    
-    const server = http.createServer(app);
-    initSocket(server); // Attach Socket.io
+  await connectDb();
+  await startMedicineScheduler();
 
-    const PORT = process.env.PORT || 1111;
-    server.listen(PORT, () => console.log(`server is live on ${PORT} with WebSockets enabled`));
+  const server = http.createServer(app);
+  initSocket(server); // Attach Socket.io
+
+  const PORT = process.env.PORT || 1111;
+  server.listen(PORT, () =>
+    console.log(`server is live on ${PORT} with WebSockets enabled`),
+  );
 };
 
 startServer();

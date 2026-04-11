@@ -9,7 +9,7 @@ const PatientSettings = () => {
   const { patient, loading } = useSelector((state) => state.patient);
 
   const [profileData, setProfileData] = useState({
-    firstName: "", lastName: "", phone: "", dob: "", address: "", gender: ""
+    firstName: "", lastName: "", phone: "", dob: "", address: "", gender: "", bloodGroup: ""
   });
   
   const [passwordData, setPasswordData] = useState({
@@ -24,7 +24,8 @@ const PatientSettings = () => {
         phone: patient.phone || "",
         dob: patient.dob ? new Date(patient.dob).toISOString().split('T')[0] : "",
         address: patient.address || "",
-        gender: patient.gender || ""
+        gender: patient.gender || "",
+        bloodGroup: patient.bloodGroup || ""
       });
     }
   }, [patient]);
@@ -86,6 +87,29 @@ const PatientSettings = () => {
           <div className="space-y-2">
              <label className="text-[10px] font-black text-emerald-700 uppercase tracking-wider flex items-center gap-2"><Calendar size={12}/> Date of Birth</label>
              <input type="date" name="dob" value={profileData.dob} onChange={handleProfileChange} className="w-full px-4 py-3 border border-emerald-200 rounded-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none bg-emerald-50/30" />
+          </div>
+          <div className="space-y-2">
+             <label className="text-[10px] font-black text-emerald-700 uppercase tracking-wider flex items-center gap-2"><User size={12}/> Gender</label>
+             <select name="gender" value={profileData.gender} onChange={handleProfileChange} className="w-full px-4 py-3 border border-emerald-200 rounded-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none bg-emerald-50/30">
+               <option value="">Select Gender</option>
+               <option value="Male">Male</option>
+               <option value="Female">Female</option>
+               <option value="Other">Other</option>
+             </select>
+          </div>
+          <div className="space-y-2">
+             <label className="text-[10px] font-black text-emerald-700 uppercase tracking-wider flex items-center gap-2"><User size={12}/> Blood Group</label>
+             <select name="bloodGroup" value={profileData.bloodGroup} onChange={handleProfileChange} className="w-full px-4 py-3 border border-emerald-200 rounded-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none bg-emerald-50/30">
+               <option value="">Select Blood Group</option>
+               <option value="A+">A+</option>
+               <option value="A-">A-</option>
+               <option value="B+">B+</option>
+               <option value="B-">B-</option>
+               <option value="AB+">AB+</option>
+               <option value="AB-">AB-</option>
+               <option value="O+">O+</option>
+               <option value="O-">O-</option>
+             </select>
           </div>
           <div className="space-y-2 md:col-span-2">
              <label className="text-[10px] font-black text-emerald-700 uppercase tracking-wider flex items-center gap-2"><MapPin size={12}/> Mailing Address</label>

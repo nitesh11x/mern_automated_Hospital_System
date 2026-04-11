@@ -87,8 +87,8 @@ export const loginDoctor = asyncHandler(async (req, res, next) => {
 
   res.cookie("doctorToken", doctorToken, {
     httpOnly: true,
-    secure: true, // true in production (HTTPS)
-    sameSite: "none", // use "lax" if not cross-origin
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "Lax",
     maxAge: Number(process.env.MAX_AGE),
   });
   doctor.password = undefined;
@@ -103,7 +103,9 @@ export const loginDoctor = asyncHandler(async (req, res, next) => {
 export const logoutDoctor = asyncHandler(async (req, res) => {
   res.cookie("doctorToken", "", {
     httpOnly: true,
-    expires: new Date(0)
+    expires: new Date(0),
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "Lax",
   });
 
   res.status(200).json({

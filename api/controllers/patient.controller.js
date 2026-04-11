@@ -156,7 +156,7 @@ export const getPatientById = asyncHandler(async (req, res, next) => {
 
 export const updatePatientProfile = asyncHandler(async (req, res, next) => {
   const patientId = req.patient.id;
-  const { firstName, lastName, phone, dob, address, gender } = req.body;
+  const { firstName, lastName, phone, dob, address, gender, bloodGroup } = req.body;
 
   const updateData = {};
   if (firstName) updateData.firstName = firstName;
@@ -165,6 +165,7 @@ export const updatePatientProfile = asyncHandler(async (req, res, next) => {
   if (dob) updateData.dob = dob;
   if (address) updateData.address = address;
   if (gender) updateData.gender = gender;
+  if (bloodGroup) updateData.bloodGroup = bloodGroup;
 
   const patient = await Patient.findByIdAndUpdate(
     patientId,

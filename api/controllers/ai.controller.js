@@ -5,6 +5,73 @@ import ErrorHandler from "../utils/errorHandler.utils.js";
 
 const escapeRegex = (text = "") => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
+export const generateDietSuggestion = asyncHandler(async (req, res, next) => {
+  const { prescriptions } = req.body;
+
+  if (!process.env.GEMINI_API_KEY) {
+    return next(new ErrorHandler("AI Configuration Error: Missing GEMINI_API_KEY.", 500));
+  }
+
+  const diagnosisList =
+    prescriptions && prescriptions.length > 0
+      ? prescriptions.map((p) => p.diagnosis).filter(Boolean).join(", ")
+      : "General health maintenance, no specific diseases";
+
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.5-flash",
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: SchemaType.OBJECT,
+        properties: {
+          conditions: {
+            type: SchemaType.ARRAY,
+            items: { type: SchemaType.STRING },
+            description: "List of conditions identified",
+          },
+          foodsToEat: {
+            type: SchemaType.ARRAY,
+            items: {
+              type: SchemaType.OBJECT,
+              properties: {
+                category: { type: SchemaType.STRING },
+                items: { type: SchemaType.STRING },
+                benefits: { type: SchemaType.STRING },
+              },
+            },
+          },
+          foodsToAvoid: {
+            type: SchemaType.ARRAY,
+            items: {
+              type: SchemaType.OBJECT,
+              properties: {
+                category: { type: SchemaType.STRING },
+                items: { type: SchemaType.STRING },
+                reason: { type: SchemaType.STRING },
+              },
+            },
+          },
+        },
+        required: ["conditions", "foodsToEat", "foodsToAvoid"],
+      },
+    },
+  });
+
+  const prompt = `You are a clinical nutritionist AI. A patient has the following medical diagnosis based on their prescription history: ${diagnosisList}. Provide a diet suggestion outlining foods to eat and foods to avoid perfectly tailored for these conditions. Provide max 4 foods for each.`;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const responseText = result.response.text().trim();
+    const dietData = JSON.parse(responseText);
+
+    return res.status(200).json({ success: true, dietData });
+  } catch (error) {
+    console.error("AI Diet API Error:", error.message);
+    return next(new ErrorHandler("Failed to generate diet suggestion", 500));
+  }
+});
+
 export const analyzeSymptoms = asyncHandler(async (req, res, next) => {
   const { symptoms } = req.body;
 
