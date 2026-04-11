@@ -4,7 +4,7 @@ import Peer from "peerjs";
 import { Mic, MicOff, Video, VideoOff, PhoneOff, User, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 
-const SOCKET_SERVER_URL = import.meta.env.VITE_APP_SOCKET_URL || "http://localhost:1111"; // Use environment variable
+const SOCKET_SERVER_URL = import.meta.env.VITE_APP_SOCKET_URL || `http://${window.location.hostname}:1111`; // Use environment variable
 
 const VideoRoom = ({ appointment, currentUser, onClose }) => {
   const [peerId, setPeerId] = useState(null);
