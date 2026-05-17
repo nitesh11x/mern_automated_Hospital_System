@@ -1,7 +1,4 @@
 # 🏥 Automated Hospital Management System
-**Tech Fest 2k26 Project | MERN Stack**
----
-## 🚀 Getting Started
 
 Follow these steps to get the project running on your local machine.
 
@@ -35,6 +32,25 @@ The backend handles the logic for the 10-slot hourly limit and appointment persi
 
 ---
 
+### 3. Frontend Setup (admin)
+1.  **Navigate to the client directory:**
+    ```bash
+    cd admin
+    ```
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+3.  **Environment Variables:**
+    Update your local `.env` values to point to the backend:
+    ```env
+    VITE_API_URL=
+    ```
+4.  **Launch the development server:**
+    ```bash
+    npm run dev
+    ```
+---
 ### 2. Frontend Setup (Client)
 1.  **Navigate to the client directory:**
     ```bash
@@ -60,3 +76,10 @@ The backend handles the logic for the 10-slot hourly limit and appointment persi
 * **Express.js:** Backend framework.
 * **React.js:** Frontend library.
 * **Node.js:** Runtime environment.
+
+backend port = 1111
+client port = 1112
+admin port = 1113
+
+production = main branch
+devlopment = devlopment branch
